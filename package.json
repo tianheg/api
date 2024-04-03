@@ -8,6 +8,9 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview"
   },
+  "dependencies": {
+    "csv-parser": "^3.0.0"
+  },
   "devDependencies": {
     "nuxt": "^3.11.1",
     "vue": "^3.4.21"
