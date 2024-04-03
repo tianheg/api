@@ -6,6 +6,10 @@
         {
           "key": "Content-Security-Policy",
           "value": "frame-ancestors 'self' https://tianheg.org"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://tianheg.org"
         }
       ]
     }
