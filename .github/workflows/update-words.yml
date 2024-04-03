@@ -1,4 +1,4 @@
-name: Build feeds-json.json
+name: Build json
 
 on:
   workflow_dispatch:
