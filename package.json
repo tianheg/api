@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "main": "api/serverless.js",
+  "main": "server .js",
   "type": "module",
   "devDependencies": {
     "@types/bun": "latest"
@@ -13,6 +13,6 @@
     "fastify": "^4.26.2"
   },
   "scripts": {
-    "dev": "node api/serverless.js"
+    "dev": "vercel dev"
   }
 }
