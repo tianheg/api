@@ -5,16 +5,33 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 // Require the framework
-import http from 'node:http';
+//import http from 'node:http';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import Fastify from 'fastify';
 import fastifyCaching from '@fastify/caching';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 // Instantiate Fastify with some config
 const app = Fastify({
-  logger: true,
+  logger: {
+    transport: {
+      target: '@fastify/one-line-logger',
+      colors: {
+        35: "bgYellow",
+        45: "magenta",
+        60: "bgRedBright" // overwriting the `fatal` log color
+      }
+    },
+  },
 });
 
 // plugins
+app.register(import('@fastify/autoload'), {
+  dir: join(__dirname, 'routes'),
+});
 app.register(
   import('@fastify/caching'),
   { privacy: fastifyCaching.privacy.PUBLIC },
@@ -50,9 +67,11 @@ app.register(import('@fastify/swagger-ui'), {
   },
   transformSpecificationClone: true,
 });
-
-// Register your application as a normal plugin.
-app.register(import('./src/app.js'));
+app.register(import('@fastify/under-pressure'), {
+  maxEventLoopDelay: 10,
+  message: 'Under pressure!',
+  retryAfter: 1,
+});
 
 if (process.env.NODE_ENV === 'development') {
   const start = async () => {
