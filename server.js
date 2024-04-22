@@ -34,7 +34,7 @@ app.register(import('@fastify/autoload'), {
 });
 app.register(
   import('@fastify/caching'),
-  { privacy: fastifyCaching.privacy.PUBLIC },
+  { privacy: fastifyCaching.privacy.NOCACHE },
   (err) => {
     if (err) throw err;
   }
