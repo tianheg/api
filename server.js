@@ -1,10 +1,5 @@
 'use strict';
 
-// Read the .env file.
-import * as dotenv from 'dotenv';
-dotenv.config();
-
-// Require the framework
 //import http from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -18,12 +13,7 @@ const __dirname = dirname(__filename);
 const app = Fastify({
   logger: {
     transport: {
-      target: '@fastify/one-line-logger',
-      colors: {
-        35: "bgYellow",
-        45: "magenta",
-        60: "bgRedBright" // overwriting the `fatal` log color
-      }
+      target: '@fastify/one-line-logger'
     },
   },
 });
@@ -39,8 +29,8 @@ app.register(
     if (err) throw err;
   }
 );
-// app.register(import('@fastify/cors'));
-// app.register(import('@fastify/helmet'));
+app.register(import('@fastify/cors'));
+app.register(import('@fastify/helmet'));
 app.register(import('@fastify/rate-limit'), {
   max: 100,
   timeWindow: '1 minute',
