@@ -11,11 +11,7 @@ const __dirname = dirname(__filename);
 
 // Instantiate Fastify with some config
 const app = Fastify({
-  logger: {
-    transport: {
-      target: '@fastify/one-line-logger'
-    },
-  },
+  logger: true,
 });
 
 // plugins
