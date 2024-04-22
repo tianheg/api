@@ -40,7 +40,7 @@ app.register(
   }
 );
 // app.register(import('@fastify/cors'));
-app.register(import('@fastify/helmet'));
+// app.register(import('@fastify/helmet'));
 app.register(import('@fastify/rate-limit'), {
   max: 100,
   timeWindow: '1 minute',
