@@ -53,14 +53,14 @@ app.register(import('@fastify/swagger-ui'), {
   },
   transformSpecificationClone: true,
 });
-app.register(import('@fastify/under-pressure'), {
-  maxEventLoopDelay: 1000,
-  maxHeapUsedBytes: 100000000,
-  maxRssBytes: 100000000,
-  maxEventLoopUtilization:0.98,
-  message: 'Under pressure!',
-  retryAfter: 50,
-});
+// app.register(import('@fastify/under-pressure'), {
+//   maxEventLoopDelay: 1000,
+//   maxHeapUsedBytes: 100000000,
+//   maxRssBytes: 100000000,
+//   maxEventLoopUtilization: 0.98,
+//   message: 'Under pressure!',
+//   retryAfter: 50,
+// });
 
 if (process.env.NODE_ENV === 'development') {
   const start = async () => {
