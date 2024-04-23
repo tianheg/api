@@ -1,7 +1,7 @@
-import jsondata from '../data/words.js';
+import jsondata from '../data/books.js';
 
 export default function (f, opts, next) {
-  f.get('/words', (request, reply) => {
+  f.get('/books', (request, reply) => {
     reply.send(jsondata);
   });
 
