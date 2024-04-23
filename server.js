@@ -10,9 +10,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Instantiate Fastify with some config
-const app = Fastify({
-  logger: true,
+import pino from 'pino';
+
+const logger = pino({
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      translateTime: 'SYS:HH:MM:ss Z',
+      messageFormat: '{levelLabel} - {pid} - url:{req.url}',
+      singleLine: true,
+    },
+  },
 });
+
+const app = Fastify({ logger });
 
 // plugins
 app.register(import('@fastify/autoload'), {
