@@ -11,17 +11,14 @@ const __dirname = dirname(__filename);
 
 // Instantiate Fastify with some config
 import pino from 'pino';
+import pretty from 'pino-pretty';
 
-const logger = pino({
-  transport: {
-    target: 'pino-pretty',
-    options: {
-      translateTime: 'SYS:HH:MM:ss Z',
-      messageFormat: '{levelLabel} - {pid} - url:{req.url}',
-      singleLine: true,
-    },
-  },
+const stream = pretty({
+  translateTime: 'SYS:HH:MM:ss Z',
+  messageFormat: '{levelLabel} - {pid} - url:{req.url}',
+  singleLine: true,
 });
+const logger = pino({ level: 'info' }, stream);
 
 const app = Fastify({ logger });
 
