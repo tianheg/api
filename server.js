@@ -10,13 +10,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Instantiate Fastify with some config
+// logger
 import pino from 'pino';
 import pretty from 'pino-pretty';
-
 const stream = pretty({
   translateTime: 'SYS:HH:MM:ss Z',
-  messageFormat: '{levelLabel} - {pid} - url:{req.url}',
-  singleLine: true,
+  messageFormat: '{msg} {req.method} {req.url}',
+  include: 'time,pid,level',
+  hideObject: true,
+  colorize: false,
 });
 const logger = pino({ level: 'info' }, stream);
 
