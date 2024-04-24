@@ -36,7 +36,16 @@ app.register(
   }
 );
 app.register(import('@fastify/cors'), {
-  origin: [ /\.tianheg\.org$/, "http://localhost:*"]
+  origin: (origin, cb) => {
+    const hostname = new URL(origin).hostname;
+    if (hostname === 'localhost' || hostname.endsWith('.tianheg.org')) {
+      // Request from localhost will pass
+      cb(null, true);
+      return;
+    }
+    // Generate an error on other origins, disabling access
+    cb(new Error('Not allowed'), false);
+  },
 });
 app.register(import('@fastify/helmet'));
 app.register(import('@fastify/rate-limit'), {
@@ -70,7 +79,6 @@ if (process.env.NODE_ENV === 'development') {
   const start = async () => {
     try {
       await app.listen({ port: 3000 });
-
     } catch (err) {
       app.log.error(err);
       process.exit(1);
