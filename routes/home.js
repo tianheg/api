@@ -12,8 +12,9 @@ export default function (f, opts, next) {
     ];
 
     reply.send({
-      intro: "tianheg's api homepage",
-      repo: 'https://github.com/tianheg/api/, powered by Fastify(https://fastify.dev/), deployed on Vercel(https://vercel.com/)',
+      repo: 'https://github.com/tianheg/api/',
+      tech: 'https://fastify.dev/',
+      deploy: 'https://vercel.com/',
       routes: routes,
     });
   });
