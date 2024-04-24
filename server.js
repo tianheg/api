@@ -36,7 +36,7 @@ app.register(
   }
 );
 app.register(import('@fastify/cors'), {
-  origin: [ /\.tianheg\.org$/ ]
+  origin: [ /\.tianheg\.org$/, "http://localhost:*"]
 });
 app.register(import('@fastify/helmet'));
 app.register(import('@fastify/rate-limit'), {
