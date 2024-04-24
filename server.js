@@ -35,7 +35,9 @@ app.register(
     if (err) throw err;
   }
 );
-app.register(import('@fastify/cors'));
+app.register(import('@fastify/cors'), {
+  origin: [ /\.tianheg\.org$/ ]
+});
 app.register(import('@fastify/helmet'));
 app.register(import('@fastify/rate-limit'), {
   max: 100,
