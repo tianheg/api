@@ -35,13 +35,7 @@ app.register(
     if (err) throw err;
   }
 );
-app.register(import('@fastify/cors'), {
-  origin: (origin, callback) => {
-    //["http://localhost:*", /\.tianheg\.org$/]
-    const isLocalhost = origin.startsWith('localhost');
-    callback(null, isLocalhost || origin.endsWith('.tianheg.org'));
-  },
-});
+app.register(import('@fastify/cors'));
 app.register(import('@fastify/helmet'));
 app.register(import('@fastify/rate-limit'), {
   max: 100,
