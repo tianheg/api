@@ -9,6 +9,7 @@ export default function (f, opts, next) {
       `${baseUrl}/series`,
       `${baseUrl}/music`,
       `${baseUrl}/feeds`,
+      `${baseUrl}/prompts`,
     ];
 
     reply.send({
