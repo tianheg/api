@@ -1,5 +1,9 @@
 export default [
   {
+    name: 'Deathcab',
+    singer: 'Ditty',
+  },
+  {
     text: 'Vivaldi : The 4 seasons(维瓦尔第：四季) Concerto In F Minor for Violin, String Orchestra and Continuo, Op. 8, No. 4, RV 297, "L\'inverno" (Winter):Allegro non molto',
     href: '',
   },
