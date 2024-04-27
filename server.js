@@ -42,7 +42,6 @@ app.register(import('@fastify/rate-limit'), {
   timeWindow: '1 minute',
 });
 app.register(import('@fastify/swagger-ui'), {
-  // baseDir: join(__dirname, 'routes'),
   routePrefix: '/doc',
   uiConfig: {
     docExpansion: 'full',
