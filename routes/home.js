@@ -22,3 +22,10 @@ export default function (f, opts, next) {
 
   next();
 }
+
+/**
+ * definition:
+ * movies - 单集
+ * series - 系列剧集，包括动漫
+ * 例外，如果是一个系列，既有剧集又有剧场版电影，视为series
+ */
