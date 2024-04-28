@@ -11,7 +11,7 @@ const stream = pretty({
   messageFormat: '{msg} {req.method} {req.url}',
   include: 'time,pid,level',
   hideObject: true,
-  colorize: false,
+  colorize: true,
 });
 const logger = pino({ level: 'info' }, stream);
 
