@@ -3,7 +3,6 @@
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import Fastify from 'fastify';
-import fastifyCaching from '@fastify/caching';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,14 +26,8 @@ const app = Fastify({ logger });
 app.register(import('@fastify/swagger'));
 app.register(import('@fastify/autoload'), {
   dir: join(__dirname, 'routes'),
+  forceESM: true,
 });
-app.register(
-  import('@fastify/caching'),
-  { privacy: fastifyCaching.privacy.NOCACHE },
-  (err) => {
-    if (err) throw err;
-  }
-);
 app.register(import('@fastify/cors'));
 app.register(import('@fastify/helmet'));
 app.register(import('@fastify/rate-limit'), {
