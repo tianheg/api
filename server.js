@@ -28,6 +28,7 @@ app.register(import('@fastify/autoload'), {
   dir: join(__dirname, 'routes'),
   forceESM: true,
 });
+app.register(import('@fastify/compress'), { requestEncodings: ['gzip'] });
 app.register(import('@fastify/cors'));
 app.register(import('@fastify/helmet'));
 app.register(import('@fastify/rate-limit'), {
