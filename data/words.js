@@ -1,6 +1,6 @@
 export default [
   {
-    content: '缺少image，对成功开发出软件的自我想象',
+    content: '缺少image（这个image，来自《葬送的芙莉莲》，对成功开发出软件的自我想象',
   },
   {
     content:
