@@ -2,7 +2,6 @@
 
 import Fastify from 'fastify';
 
-
 // logger
 import pino from 'pino';
 import pretty from 'pino-pretty';
@@ -65,16 +64,24 @@ import wordsData from './data/words.js';
  * @param {number} limit - The limit of items per page.
  * @return {Object} An object containing paginated data, current page, limit, total data count, total pages.
  */
-function getPaginatedData(data, page, limit) {
+function getPaginatedData(data, searchTerm, page, limit) {
+  // Filter data if searchTerm is provided
+  const filteredData = searchTerm
+    ? data.filter((item) =>
+        JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : data;
+
+  // Calculate pagination as before
   const startIndex = (page - 1) * limit;
-  const endIndex = Math.min(startIndex + limit, data.length);
-  const paginatedData = data.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(data.length / limit);
+  const endIndex = Math.min(startIndex + limit, filteredData.length);
+  const paginatedData = filteredData.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredData.length / limit);
 
   return {
     page,
     limit,
-    total: data.length,
+    total: filteredData.length,
     totalPages,
     data: paginatedData,
   };
@@ -86,6 +93,7 @@ const paginationSchema = {
     properties: {
       page: { type: 'integer', minimum: 1, default: 1 },
       limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+      search: { type: 'string', default: '' },
     },
   },
 };
@@ -100,11 +108,10 @@ const paginationSchema = {
  */
 function createRoute(path, data, opts) {
   app.get(path, { schema: opts.schema }, async (request, reply) => {
-    const { page, limit } = request.query;
-    return getPaginatedData(data, page, limit);
+    const { page, limit, search } = request.query;
+    return getPaginatedData(data, search, page, limit);
   });
 }
-
 
 app.get('/', (request, reply) => {
   const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
@@ -134,7 +141,6 @@ createRoute('/music', musicData, { schema: paginationSchema });
 createRoute('/prompts', promptsData, { schema: paginationSchema });
 createRoute('/series', seriesData, { schema: paginationSchema });
 createRoute('/words', wordsData, { schema: paginationSchema });
-
 
 if (process.env.NODE_ENV === 'development') {
   /**
