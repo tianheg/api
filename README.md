@@ -9,6 +9,7 @@
 
 - routes files merged into main server.js
 - add page, limit, search ability
+- added security measures
 
 ## Refer
 
