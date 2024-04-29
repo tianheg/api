@@ -15,11 +15,6 @@ const logger = pino({ level: "info" }, stream);
 const app = Fastify({ logger });
 
 // plugins
-import { apitallyPlugin } from "apitally/fastify";
-await app.register(apitallyPlugin, {
-	clientId: "6317af0b-5121-408a-adf3-5d020cd0b36f",
-	env: "prod", // or "dev"
-});
 app.register(import("@fastify/swagger"));
 app.register(import("@fastify/compress"), { encodings: ["gzip"] });
 app.register(import("@fastify/cors"));
