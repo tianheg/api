@@ -14,8 +14,10 @@
     "@fastify/swagger": "^8.14.0",
     "@fastify/swagger-ui": "^3.0.0",
     "@fastify/under-pressure": "^8.3.0",
+    "apitally": "^0.4.0",
     "cheerio": "^1.0.0-rc.12",
     "fastify": "^4.26.2",
+    "fastify-plugin": "^4.5.1",
     "pino": "^9.0.0",
     "pino-pretty": "^11.0.0"
   },
