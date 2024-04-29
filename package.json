@@ -23,6 +23,6 @@
 	"scripts": {
 		"dev": "export NODE_ENV=development && nodemon .",
 		"lint": "biome lint .",
-		"lint:fix": "biome lint --apply .",
+		"lint:fix": "biome lint --apply ."
 	}
 }
