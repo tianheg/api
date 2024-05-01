@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import * as fs from "fs";
+import * as fs from "node:fs";
 
 const url = "https://read.tianheg.org/";
 
@@ -17,7 +17,7 @@ fetch(url)
 
 			const linkData = {
 				text: linkText,
-				href: "https://read.tianheg.org" + linkHref,
+				href: `https://read.tianheg.org${linkHref}`,
 			};
 
 			jsonArr.push(linkData);
