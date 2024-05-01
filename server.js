@@ -21,13 +21,12 @@ app.register(import("@fastify/swagger"));
 app.register(import("@fastify/compress"), { encodings: ["gzip"] });
 app.register(import("@fastify/cors"), {
 	origin: (origin, cb) => {
-		const allowedOrigins = [/^http:\/\/localhost:\d+$/, /\.tianheg\.org$/];
+		const allowedOrigins = [/^http:\/\/localhost:\d+$/, /^https?:\/\/tianheg\.org$/];
 		const isAllowed = allowedOrigins.some(regex => regex.test(origin));
 		cb(null, isAllowed);
 		return
 	},
-}
-);
+});
 app.register(import("@fastify/helmet"));
 app.register(import("@fastify/rate-limit"), {
 	max: 100,
