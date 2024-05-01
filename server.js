@@ -19,13 +19,12 @@ const app = Fastify({ logger });
 // plugins
 app.register(import("@fastify/swagger"));
 app.register(import("@fastify/compress"), { encodings: ["gzip"] });
+
+// security
+/// not using RegExp or a function for origin
+/// avoid DoS attacks https://github.com/fastify/fastify-cors#warning-dos-attacks
 app.register(import("@fastify/cors"), {
-	origin: (origin, cb) => {
-		const allowedOrigins = [/^http:\/\/localhost:\d+$/, /^https?:\/\/tianheg\.org$/];
-		const isAllowed = allowedOrigins.some(regex => regex.test(origin));
-		cb(null, isAllowed);
-		return
-	},
+	origin: ["http://localhost:5173", "https://tianheg.org", "https://ui-api.tianheg.org"],
 });
 app.register(import("@fastify/helmet"));
 app.register(import("@fastify/rate-limit"), {
