@@ -8,7 +8,9 @@ const stream = pretty({
 	messageFormat: "{msg} {req.method} {req.url}",
 	include: "time,pid,level",
 	hideObject: true,
-	colorize: false,
+	colorize: false,  // enable this will make Vercel log get:
+	// [15:32:27 UTC] [32mINFO[39m (10): [36mincoming request GET /[39m
+	//[15:32:27 UTC] [32mINFO[39m (10): [36mrequest completed  [39m
 });
 const logger = pino({ level: "info" }, stream);
 
@@ -66,8 +68,8 @@ function getPaginatedData(data, searchTerm, page, limit) {
 	// Filter data if searchTerm is provided
 	const filteredData = searchTerm
 		? data.filter((item) =>
-				JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase()),
-			)
+			JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase()),
+		)
 		: data;
 
 	// Calculate pagination as before
