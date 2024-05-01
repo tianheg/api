@@ -6,6 +6,7 @@
 - 把 https://neodb.social/users/tianheg/ 中标记的内容放到 api 中
 - add https://github.com/SkeLLLa/fastify-metrics
 - add test
+- read https://www.mock-server.com/
 
 ## DONE
 
