@@ -114,12 +114,12 @@ const paginationSchema = {
  * @param {string} path - The path for the route.
  * @param {Array} data - The data to be paginated.
  * @param {Object} opts - The options object containing the schema.
- * @return {Promise} A promise containing the paginated data.
  */
-function createRoute(path, data, opts) {
+async function createRoute(path, data, opts) {
   app.get(path, { schema: opts.schema }, async (request, reply) => {
     const { page, limit, search } = request.query;
-    return getPaginatedData(data, search, page, limit);
+    const paginatedData = await getPaginatedData(data, search, page, limit);
+    reply.send(paginatedData);
   });
 }
 
