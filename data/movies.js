@@ -1,8 +1,8 @@
 export default [
-    {
-        "name": "Waterworld 未来水世界 at 1995"
-        "review": "拍得不错，男女主生活在帆船上竟然有种《猩球崛起》的感觉。这种水淹没陆地的幻想，在刘慈欣的小说《超新星爆发》里见过"
-    },
+  {
+    "name": "Waterworld 未来水世界 at 1995",
+    "review": "拍得不错，男女主生活在帆船上竟然有种《猩球崛起》的感觉。这种水淹没陆地的幻想，在刘慈欣的小说《超新星爆发》里见过"
+  },
   {
     "name": "Con Air 空中监狱 by Nicolas Cage",
     "review": "this is the review"
@@ -348,8 +348,8 @@ export default [
     "review": "this is the review"
   },
   {
-    "name": "预见未来 Next",
-    "review": "this is the review"
+    "name": "预见未来 Next at 2007",
+    "review": "有意思的设定，没想到最后竟然揭示：可以预测那么长时间"
   },
   {
     "name": "黑袍纠察队 第二季",
