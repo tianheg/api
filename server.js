@@ -144,13 +144,13 @@ app.get("/", (request, reply) => {
   });
 });
 
-createRoute("/books", booksData, { schema: paginationSchema });
-createRoute("/feeds", feedsData, { schema: paginationSchema });
-createRoute("/movies", moviesData, { schema: paginationSchema });
-createRoute("/music", musicData, { schema: paginationSchema });
-createRoute("/prompts", promptsData, { schema: paginationSchema });
-createRoute("/series", seriesData, { schema: paginationSchema });
-createRoute("/words", wordsData, { schema: paginationSchema });
+createRoute("/books", booksData);
+createRoute("/feeds", feedsData);
+createRoute("/movies", moviesData);
+createRoute("/music", musicData);
+createRoute("/prompts", promptsData);
+createRoute("/series", seriesData);
+createRoute("/words", wordsData);
 
 if (process.env.NODE_ENV === "development") {
   /**
