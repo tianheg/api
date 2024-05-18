@@ -102,7 +102,7 @@ const paginationSchema = {
     type: "object",
     properties: {
       page: { type: "integer", minimum: 1, default: 1 },
-      limit: { type: "integer", minimum: 1, maximum: 100, default: 10 },
+      limit: { type: "integer", minimum: 1, maximum: 10000, default: 1000 },
       search: { type: "string", default: "" },
     },
   },
@@ -144,13 +144,13 @@ app.get("/", (request, reply) => {
   });
 });
 
-createRoute("/books", booksData);
-createRoute("/feeds", feedsData);
-createRoute("/movies", moviesData);
-createRoute("/music", musicData);
-createRoute("/prompts", promptsData);
-createRoute("/series", seriesData);
-createRoute("/words", wordsData);
+createRoute("/books", booksData, { schema: paginationSchema });
+createRoute("/feeds", feedsData, { schema: paginationSchema });
+createRoute("/movies", moviesData, { schema: paginationSchema });
+createRoute("/music", musicData, { schema: paginationSchema });
+createRoute("/prompts", promptsData, { schema: paginationSchema });
+createRoute("/series", seriesData, { schema: paginationSchema });
+createRoute("/words", wordsData, { schema: paginationSchema });
 
 if (process.env.NODE_ENV === "development") {
   /**
