@@ -1,5 +1,11 @@
 export default [
   {
+    title: "Changelog podcast",
+    url: "https://changelog.com/podcast/",
+    rss: "https://changelog.com/podcast/feed",
+    desc: "唯一常听的技术博客，《软件那些事儿》栋哥推荐"
+  },
+  {
     title: "Shtetl-Optimized",
     url: "https://scottaaronson.blog/",
     rss: "https://scottaaronson.blog/?feed=rss2",
