@@ -1,5 +1,11 @@
 export default [
     {
+        title: "DHH",
+        url: "https://world.hey.com/dhh",
+        rss: "https://world.hey.com/dhh/feed.atom",
+        desc: "知道这个人很久了，是 Ruby on Rails 的作者"
+    },
+    {
         title: "Derek Sivers",
         url: "https://sive.rs/",
         rss: "https://sive.rs/en.atom",
