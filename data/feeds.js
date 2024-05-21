@@ -1,4 +1,10 @@
 export default [
+    {
+        title: "Derek Sivers",
+        url: "https://sive.rs/",
+        rss: "https://sive.rs/en.atom",
+        desc: "一位学习的榜样，学习他对生活、技术的态度，学习他思考世界的方法。他建立了/now页面 https://nownownow.com/"
+    },
   {
     title: "Changelog podcast",
     url: "https://changelog.com/podcast/",
