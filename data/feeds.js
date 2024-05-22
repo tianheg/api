@@ -1,5 +1,11 @@
 export default [
     {
+        title: "meWho",
+        url: "https://www.mewho.com/",
+        rss: "",
+        desc: "这个人做了好几个关于太空的项目，有Star Trek，DoctorWho，还有 NASA 相关的"
+    },
+    {
         title: "DHH",
         url: "https://world.hey.com/dhh",
         rss: "https://world.hey.com/dhh/feed.atom",
