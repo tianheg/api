@@ -1,4 +1,10 @@
 import Fastify from "fastify";
+import compress from "@fastify/compress";
+import cors from "@fastify/cors";
+import helmet from "@fastify/helmet";
+import rateLimit from "@fastify/rate-limit";
+import swagger from "@fastify/swagger";
+import swaggerUi from "@fastify/swagger-ui";
 
 // logger
 import pino from "pino";
@@ -17,25 +23,21 @@ const logger = pino({ level: "info" }, stream);
 const app = Fastify({ logger });
 
 // plugins
-app.register(import("@fastify/swagger"));
-app.register(import("@fastify/compress"), { encodings: ["gzip"] });
+await app.register(compress, { encodings: ["gzip"] });
 
 // security
 /// not using RegExp or a function for origin
 /// avoid DoS attacks https://github.com/fastify/fastify-cors#warning-dos-attacks
-app.register(import("@fastify/cors"), {
-  origin: [
-    "http://localhost:5173",
-    "https://tianheg.org",
-    "https://ui-api.tianheg.org",
-  ],
+await app.register(cors, {
+  origin: ["https://tianheg.org"],
 });
-app.register(import("@fastify/helmet"));
-app.register(import("@fastify/rate-limit"), {
+await app.register(helmet);
+await app.register(rateLimit, {
   max: 100,
   timeWindow: "1 minute",
 });
-app.register(import("@fastify/swagger-ui"), {
+await app.register(swagger);
+await app.register(swaggerUi, {
   routePrefix: "/doc",
   uiConfig: {
     docExpansion: "full",
@@ -78,8 +80,8 @@ function getPaginatedData(data, searchTerm, page, limit) {
   // Filter data if searchTerm is provided
   const filteredData = searchTerm
     ? data.filter((item) =>
-        JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase()),
-      )
+      JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase()),
+    )
     : data;
 
   // Calculate pagination as before
