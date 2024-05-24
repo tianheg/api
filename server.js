@@ -140,6 +140,7 @@ app.get("/", (request, reply) => {
 
   reply.send({
     repo: "https://github.com/tianheg/api/",
+    doc: `${baseUrl}/doc`,
     tech: "https://fastify.dev/",
     deploy: "https://vercel.com/",
     routes: routes,
