@@ -1,7 +1,7 @@
 export default [
-    {
-        content: "死亡可能是好事。我们做事要快些，否则会一事无成。——神秘博士S14E3"
-    },
+  {
+    content: "死亡可能是好事。我们做事要快些，否则会一事无成。——神秘博士S14E3"
+  },
   {
     content: "Loneliness does not come from having no people around you, but from being unable to communicate the things that seem important to you. 孤独的本质，是无法把自己觉得重要的事情，深入与外界沟通。所以勉强和一群不同频的人凑热闹，只是暂时麻醉钝化孤独带来的痛感，但散场后发现问题没有解决，痛感就会以更大的强度卷土重来。",
   },

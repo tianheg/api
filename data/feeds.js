@@ -1,22 +1,28 @@
 export default [
-    {
-        title: "meWho",
-        url: "https://www.mewho.com/",
-        rss: "",
-        desc: "这个人做了好几个关于太空的项目，有Star Trek，DoctorWho，还有 NASA 相关的"
-    },
-    {
-        title: "DHH",
-        url: "https://world.hey.com/dhh",
-        rss: "https://world.hey.com/dhh/feed.atom",
-        desc: "知道这个人很久了，是 Ruby on Rails 的作者"
-    },
-    {
-        title: "Derek Sivers",
-        url: "https://sive.rs/",
-        rss: "https://sive.rs/en.atom",
-        desc: "一位学习的榜样，学习他对生活、技术的态度，学习他思考世界的方法。他建立了/now页面 https://nownownow.com/"
-    },
+  {
+    title: "Idle Words - brevity is for the weak",
+    url: "https://idlewords.com/",
+    rss: "https://idlewords.com/index.xml",
+    desc: "这个人写了篇对NASA新登月计划——Artemis campaign（阿耳忒弥斯计划）的文章"
+  },
+  {
+    title: "meWho",
+    url: "https://www.mewho.com/",
+    rss: "",
+    desc: "这个人做了好几个关于太空的项目，有Star Trek，DoctorWho，还有 NASA 相关的"
+  },
+  {
+    title: "DHH",
+    url: "https://world.hey.com/dhh",
+    rss: "https://world.hey.com/dhh/feed.atom",
+    desc: "知道这个人很久了，是 Ruby on Rails 的作者"
+  },
+  {
+    title: "Derek Sivers",
+    url: "https://sive.rs/",
+    rss: "https://sive.rs/en.atom",
+    desc: "一位学习的榜样，学习他对生活、技术的态度，学习他思考世界的方法。他建立了/now页面 https://nownownow.com/"
+  },
   {
     title: "Changelog podcast",
     url: "https://changelog.com/podcast/",
