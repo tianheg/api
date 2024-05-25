@@ -119,7 +119,7 @@ async function createRoute(path, data, opts) {
   app.get(path, { schema: opts.schema }, async (request, reply) => {
     const { page, limit, search } = request.query;
     const paginatedData = await getPaginatedData(data, search, page, limit);
-    reply.send(paginatedData);
+    return reply.send(paginatedData);
   });
 }
 
