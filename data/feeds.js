@@ -1,4 +1,10 @@
 export default [
+    {
+        title: "Juntao Qiu",
+        url: "https://juntao-qiu.medium.com/",
+        rss: "",
+        desc: "这个人是个React专家，他写的关于前端开发的文章值得一读，他的NewsLetter：https://juntao.substack.com/"
+    },
   {
     title: "Idle Words - brevity is for the weak",
     url: "https://idlewords.com/",
