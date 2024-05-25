@@ -28,9 +28,7 @@ await app.register(compress, { encodings: ["gzip"] });
 // security
 /// not using RegExp or a function for origin
 /// avoid DoS attacks https://github.com/fastify/fastify-cors#warning-dos-attacks
-await app.register(cors, {
-  origin: ["https://tianheg.org"],
-});
+await app.register(cors);
 await app.register(helmet);
 await app.register(rateLimit, {
   max: 100,
