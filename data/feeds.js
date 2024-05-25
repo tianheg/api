@@ -1,22 +1,22 @@
 export default [
-    {
-        title: "最小可读 - 基本无害，可能有用",
-        url: "https://mvread.blog/",
-        rss: "https://mvread.blog/feed",
-        desc: "这个人和评论尸一样喜欢写长文，很喜欢。读了他的《互联网公司变平庸的原因：不够爱国》"
-    },
-    {
-        title: "虹线 - 评论尸的自留地"
-        url: "https://1q43.blog/",
-        rss: "https://1q43.blog/feed",
-        desc: "这个人写文章写得长又好，他写的《互联网与中国后现代性呓语》、《垄断的困境》都读过"
-    },
-    {
-        title: "Juntao Qiu",
-        url: "https://juntao-qiu.medium.com/",
-        rss: "",
-        desc: "这个人是个React专家，他写的关于前端开发的文章值得一读，他的NewsLetter：https://juntao.substack.com/"
-    },
+  {
+    title: "最小可读 - 基本无害，可能有用",
+    url: "https://mvread.blog/",
+    rss: "https://mvread.blog/feed",
+    desc: "这个人和评论尸一样喜欢写长文，很喜欢。读了他的《互联网公司变平庸的原因：不够爱国》"
+  },
+  {
+    title: "虹线 - 评论尸的自留地",
+    url: "https://1q43.blog/",
+    rss: "https://1q43.blog/feed",
+    desc: "这个人写文章写得长又好，他写的《互联网与中国后现代性呓语》、《垄断的困境》都读过"
+  },
+  {
+    title: "Juntao Qiu",
+    url: "https://juntao-qiu.medium.com/",
+    rss: "",
+    desc: "这个人是个React专家，他写的关于前端开发的文章值得一读，他的NewsLetter：https://juntao.substack.com/"
+  },
   {
     title: "Idle Words - brevity is for the weak",
     url: "https://idlewords.com/",
