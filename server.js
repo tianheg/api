@@ -24,12 +24,12 @@ const logger = pino({ level: "info" }, stream);
 
 const app = Fastify({ logger });
 
-// plugins
+/// plugins
 await app.register(compress, { encodings: ["gzip"] });
 
 // security
-/// not using RegExp or a function for origin
-/// avoid DoS attacks https://github.com/fastify/fastify-cors#warning-dos-attacks
+// not using RegExp or a function for origin
+// avoid DoS attacks https://github.com/fastify/fastify-cors#warning-dos-attacks
 await app.register(cors);
 await app.register(helmet);
 await app.register(rateLimit, {
@@ -59,28 +59,8 @@ await app.register(swaggerUi, {
   transformSpecificationClone: true,
 });
 
-
-app.get("/", (request, reply) => {
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-  const baseUrl = `${protocol}://${request.headers.host}`;
-  const routes = [
-    `${baseUrl}/words`,
-    `${baseUrl}/books`,
-    `${baseUrl}/movies`,
-    `${baseUrl}/series`,
-    `${baseUrl}/music`,
-    `${baseUrl}/feeds`,
-    `${baseUrl}/prompts`,
-  ];
-
-  reply.send({
-    repo: "https://github.com/tianheg/api/",
-    doc: `${baseUrl}/doc`,
-    tech: "https://fastify.dev/",
-    deploy: "https://vercel.com/",
-    routes: routes,
-  });
-});
+/// routes
+registerRoutes(app);
 
 if (process.env.NODE_ENV === "development") {
   /**
@@ -90,7 +70,6 @@ if (process.env.NODE_ENV === "development") {
    */
   const start = async () => {
     try {
-      registerRoutes(app);
       await app.listen({ port: 3000 });
     } catch (err) {
       app.log.error(err);
