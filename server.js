@@ -5,10 +5,12 @@ import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
-
-// logger
 import pino from "pino";
 import pretty from "pino-pretty";
+
+import registerRoutes from "./routes.js";
+
+// logger
 const stream = pretty({
   translateTime: "SYS:HH:MM:ss Z",
   messageFormat: "{msg} {req.method} {req.url}",
@@ -57,71 +59,6 @@ await app.register(swaggerUi, {
   transformSpecificationClone: true,
 });
 
-// routes
-import booksData from "./data/books.js";
-import feedsData from "./data/feeds.js";
-import moviesData from "./data/movies.js";
-import musicData from "./data/music.js";
-import promptsData from "./data/prompts.js";
-import seriesData from "./data/series.js";
-import wordsData from "./data/words.js";
-
-/**
- * Function that paginates data based on the given page and limit.
- *
- * @param {Array} data - The array of data to be paginated.
- * @param {number} page - The current page number.
- * @param {number} limit - The limit of items per page.
- * @return {Object} An object containing paginated data, current page, limit, total data count, total pages.
- */
-function getPaginatedData(data, searchTerm, page, limit) {
-  // Filter data if searchTerm is provided
-  const filteredData = searchTerm
-    ? data.filter((item) =>
-      JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase()),
-    )
-    : data;
-
-  // Calculate pagination as before
-  const startIndex = (page - 1) * limit;
-  const endIndex = Math.min(startIndex + limit, filteredData.length);
-  const paginatedData = filteredData.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(filteredData.length / limit);
-
-  return {
-    page,
-    limit,
-    total: filteredData.length,
-    totalPages,
-    data: paginatedData,
-  };
-}
-
-const paginationSchema = {
-  querystring: {
-    type: "object",
-    properties: {
-      page: { type: "integer", minimum: 1, default: 1 },
-      limit: { type: "integer", minimum: 1, maximum: 10000, default: 1000 },
-      search: { type: "string", default: "" },
-    },
-  },
-};
-
-/**
- * A function that creates a route for the given path, utilizing pagination schema.
- *
- * @param {string} path - The path for the route.
- * @param {Array} data - The data to be paginated.
- * @param {Object} opts - The options object containing the schema.
- */
-async function createRoute(path, data, opts) {
-  app.get(path, { schema: opts.schema }, async (request, reply) => {
-    const { page, limit, search } = request.query;
-    const paginatedData = await getPaginatedData(data, search, page, limit);
-    return reply.send(paginatedData);
-  });
-}
 
 app.get("/", (request, reply) => {
   const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
@@ -145,14 +82,6 @@ app.get("/", (request, reply) => {
   });
 });
 
-createRoute("/books", booksData, { schema: paginationSchema });
-createRoute("/feeds", feedsData, { schema: paginationSchema });
-createRoute("/movies", moviesData, { schema: paginationSchema });
-createRoute("/music", musicData, { schema: paginationSchema });
-createRoute("/prompts", promptsData, { schema: paginationSchema });
-createRoute("/series", seriesData, { schema: paginationSchema });
-createRoute("/words", wordsData, { schema: paginationSchema });
-
 if (process.env.NODE_ENV === "development") {
   /**
    * A function that asynchronously starts the application listening on port 3000.
@@ -161,6 +90,7 @@ if (process.env.NODE_ENV === "development") {
    */
   const start = async () => {
     try {
+      registerRoutes(app);
       await app.listen({ port: 3000 });
     } catch (err) {
       app.log.error(err);
