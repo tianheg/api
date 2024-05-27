@@ -13,6 +13,7 @@
 - routes files merged into main server.js
 - add page, limit, search ability
 - added security measures
+- refactor code structure([src](https://github.com/tianheg/api/tree/2b12cb2e3c382428a2af11761c52b9baa478a8c2))
 
 ## Problems
 
@@ -36,6 +37,10 @@ async function createRoute(path, data, opts) {
   });
 }
 ```
+
+### With [current code](https://github.com/tianheg/api/tree/51d185ab530c624d54e812d304a910c1f2e55376), home page title is `http://127.0.0.1:3000`, not `https://api.tianheg.org/`(SOLVED)
+
+Explicitly set baseUrl to https://api.tianheg.org
 
 ## Refer
 
