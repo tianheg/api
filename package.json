@@ -4,7 +4,11 @@
   "type": "module",
   "devDependencies": {
     "@biomejs/biome": "^1.7.1",
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "pino-pretty": "^11.1.0",
+    "tap": "^19.0.2",
+    "cheerio": "^1.0.0-rc.12",
+    "pino": "^9.0.0"
   },
   "dependencies": {
     "@fastify/autoload": "^5.8.0",
@@ -15,13 +19,11 @@
     "@fastify/swagger": "^8.14.0",
     "@fastify/swagger-ui": "^3.0.0",
     "@fastify/under-pressure": "^8.3.0",
-    "cheerio": "^1.0.0-rc.12",
-    "fastify": "^4.26.2",
-    "pino": "^9.0.0",
-    "pino-pretty": "^11.0.0"
+    "fastify": "^4.26.2"
   },
   "scripts": {
     "dev": "export NODE_ENV=development && nodemon .",
+    "test": "tap *.test.js",
     "lint": "biome check --apply ."
   }
 }
