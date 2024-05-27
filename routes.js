@@ -9,8 +9,7 @@ import wordsData from "./data/words.js";
 
 export default async function registerRoutes(app) {
   app.get("/", (request, reply) => {
-    const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-    const baseUrl = `${protocol}://${request.headers.host}`;
+    const baseUrl = "https://api.tianheg.org";
     const routes = [
       `${baseUrl}/words`,
       `${baseUrl}/books`,
