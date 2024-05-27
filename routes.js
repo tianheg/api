@@ -11,13 +11,13 @@ export default async function registerRoutes(app) {
   app.get("/", (request, reply) => {
     const baseUrl = "https://api.tianheg.org";
     const routes = [
-      `${baseUrl}/words`,
       `${baseUrl}/books`,
-      `${baseUrl}/movies`,
-      `${baseUrl}/series`,
-      `${baseUrl}/music`,
       `${baseUrl}/feeds`,
+      `${baseUrl}/movies`,
+      `${baseUrl}/music`,
       `${baseUrl}/prompts`,
+      `${baseUrl}/series`,
+      `${baseUrl}/words`,
     ];
 
     reply.send({
