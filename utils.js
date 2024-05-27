@@ -6,7 +6,7 @@
  * @param {number} limit - The limit of items per page.
  * @return {Object} An object containing paginated data, current page, limit, total data count, total pages.
  */
-function getPaginatedData(data, searchTerm, page, limit) {
+export function getPaginatedData(data, searchTerm, page, limit) {
   // Filter data if searchTerm is provided
   const filteredData = searchTerm
     ? data.filter((item) =>
