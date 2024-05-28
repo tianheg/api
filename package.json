@@ -23,7 +23,7 @@
   },
   "scripts": {
     "dev": "export NODE_ENV=development && nodemon .",
-    "test": "tap *.test.js",
+    "test": "tap --bail --timeout=5000 *.test.js",
     "lint": "biome check --apply ."
   }
 }
