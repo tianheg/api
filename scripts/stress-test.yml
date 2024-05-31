@@ -1,0 +1,20 @@
+# https://www.artillery.io
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 30
+      arrivalRate: 10
+      name: Warm up
+    - duration: 60
+      arrivalRate: 100
+      rampTo: 500
+      name: Ramp up load
+    - duration: 120
+      arrivalRate: 500
+      name: Sustained load
+
+scenarios:
+  - name: GET endpoint
+    flow:
+      - get:
+          url: "/words"
