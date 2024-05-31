@@ -20,7 +20,7 @@ tap.test("getPaginatedData", async (t) => {
         { id: 1, name: "John" },
         { id: 2, name: "Jane" },
         { id: 3, name: "Bob" },
-      ]
+      ],
     });
   });
 
@@ -32,9 +32,7 @@ tap.test("getPaginatedData", async (t) => {
       limit: 1,
       total: 2,
       totalPages: 2,
-      data: [
-        { id: 2, name: "Jane" },
-      ],
+      data: [{ id: 2, name: "Jane" }],
     });
   });
 

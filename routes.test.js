@@ -1,5 +1,5 @@
-import tap from "tap";
 import Fastify from "fastify";
+import tap from "tap";
 import registerRoutes from "./routes.js";
 
 tap.test("routes.js", async (t) => {

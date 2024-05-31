@@ -10,8 +10,8 @@ export function getPaginatedData(data, searchTerm, page, limit) {
   // Filter data if searchTerm is provided
   const filteredData = searchTerm
     ? data.filter((item) =>
-      JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase()),
-    )
+        JSON.stringify(item).toLowerCase().includes(searchTerm.toLowerCase()),
+      )
     : data;
 
   // Calculate pagination as before
@@ -30,9 +30,9 @@ export function getPaginatedData(data, searchTerm, page, limit) {
 }
 
 export const paginationSchema = {
-  description: 'GET data',
-  tags: ['personal'],
-  summary: '',
+  description: "GET data",
+  tags: ["personal"],
+  summary: "",
   // params: {
   //   type: 'object',
   //   properties: {

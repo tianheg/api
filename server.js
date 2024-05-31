@@ -1,10 +1,10 @@
-import Fastify from "fastify";
 import compress from "@fastify/compress";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
+import Fastify from "fastify";
 import pino from "pino";
 import pretty from "pino-pretty";
 
@@ -39,9 +39,9 @@ await app.register(rateLimit, {
 await app.register(swagger, {
   openapi: {
     info: {
-      title: 'tianheg\'s API',
-      description: 'Recording things in my life',
-      version: '1.0.0',
+      title: "tianheg's API",
+      description: "Recording things in my life",
+      version: "1.0.0",
     },
     // components: {
     //   securitySchemes: {
@@ -60,7 +60,7 @@ await app.register(swaggerUI, {
     docExpansion: "list",
     deepLinking: false,
   },
-  validatorUrl: 'https://validator.swagger.io/validator'
+  validatorUrl: "https://validator.swagger.io/validator",
 });
 
 /// routes
