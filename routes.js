@@ -1,4 +1,3 @@
-import { createRoute, paginationSchema } from "./utils.js";
 import booksData from "./data/books.js";
 import feedsData from "./data/feeds.js";
 import moviesData from "./data/movies.js";
@@ -6,6 +5,7 @@ import musicData from "./data/music.js";
 import promptsData from "./data/prompts.js";
 import seriesData from "./data/series.js";
 import wordsData from "./data/words.js";
+import { createRoute, paginationSchema } from "./utils.js";
 
 export default async function registerRoutes(app) {
   app.get("/", (request, reply) => {
