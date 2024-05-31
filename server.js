@@ -60,8 +60,6 @@ await app.register(swaggerUI, {
     docExpansion: "list",
     deepLinking: false,
   },
-  staticCSP: true,
-  transformStaticCSP: (header) => header,
   validatorUrl: 'https://validator.swagger.io/validator'
 });
 
