@@ -4,7 +4,7 @@ import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import swagger from "@fastify/swagger";
-import swaggerUi from "@fastify/swagger-ui";
+import swaggerUI from "@fastify/swagger-ui";
 import pino from "pino";
 import pretty from "pino-pretty";
 
@@ -36,27 +36,33 @@ await app.register(rateLimit, {
   max: 100,
   timeWindow: "1 minute",
 });
-await app.register(swagger);
-await app.register(swaggerUi, {
+await app.register(swagger, {
+  openapi: {
+    info: {
+      title: 'tianheg\'s API',
+      description: 'Recording things in my life',
+      version: '1.0.0',
+    },
+    // components: {
+    //   securitySchemes: {
+    //     bearerAuth: {
+    //       type: 'http',
+    //       scheme: 'bearer',
+    //       bearerFormat: 'JWT',
+    //     },
+    //   },
+    // },
+  },
+});
+await app.register(swaggerUI, {
   routePrefix: "/doc",
   uiConfig: {
-    docExpansion: "full",
+    docExpansion: "list",
     deepLinking: false,
-  },
-  uiHooks: {
-    onRequest: (request, reply, next) => {
-      next();
-    },
-    preHandler: (request, reply, next) => {
-      next();
-    },
   },
   staticCSP: true,
   transformStaticCSP: (header) => header,
-  transformSpecification: (swaggerObject, request, reply) => {
-    return swaggerObject;
-  },
-  transformSpecificationClone: true,
+  validatorUrl: 'https://validator.swagger.io/validator'
 });
 
 /// routes
