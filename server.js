@@ -60,7 +60,6 @@ await app.register(swaggerUI, {
     docExpansion: "list",
     deepLinking: false,
   },
-  validatorUrl: "https://validator.swagger.io/validator",
 });
 
 /// routes
