@@ -18,6 +18,7 @@ tap.test("routes.js", async (t) => {
       `${baseUrl}/feeds`,
       `${baseUrl}/movies`,
       `${baseUrl}/music`,
+      `${baseUrl}/musicals`,
       `${baseUrl}/prompts`,
       `${baseUrl}/series`,
       `${baseUrl}/words`,
@@ -67,6 +68,16 @@ tap.test("routes.js", async (t) => {
     const response = await app.inject({
       method: "GET",
       url: "/music",
+    });
+
+    t.equal(response.statusCode, 200);
+    t.type(response.body, String);
+  });
+
+  t.test("GET /musicals", async (t) => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/musicals",
     });
 
     t.equal(response.statusCode, 200);
