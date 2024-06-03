@@ -16,8 +16,8 @@ fetch(url)
       const linkHref = $(element).attr("href");
 
       const linkData = {
-        text: linkText,
-        href: `https://read.tianheg.org${linkHref}`,
+        name: linkText,
+        url: `https://read.tianheg.org${linkHref}`,
       };
 
       jsonArr.push(linkData);
