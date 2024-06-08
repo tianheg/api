@@ -24,5 +24,5 @@ export default [
   {
     name: "三体（Netflix）S1",
     review: "改变很多，依旧喜欢",
-  }
+  },
 ];

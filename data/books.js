@@ -1,5 +1,9 @@
 export default [
   {
+    "name": "Techno Feudalism",
+    "url": "https://read.tianheg.org/techno-feudalism"
+  },
+  {
     "name": "永生的操练",
     "url": "https://read.tianheg.org/divine-comedy-comment-by-canxue"
   },
@@ -22,6 +26,10 @@ export default [
   {
     "name": "追忆似水年华",
     "url": "https://read.tianheg.org/in-search-of-lost-time"
+  },
+  {
+    "name": "Eloquent JavaScript",
+    "url": "https://read.tianheg.org/eloquent-javascript"
   },
   {
     "name": "RESTful Best Practices",
