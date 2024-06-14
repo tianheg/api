@@ -1,5 +1,8 @@
 export default [
   {
+    content: "In the end, it's about what you want to be, not what you want to have. When you sign up to run a marathon, you don't want a taxi to take you to the finish line."
+  },
+  {
     content: "做一个清醒的人，在保证自己和家人生活的情况下，不再过度追求财富",
   },
   {
