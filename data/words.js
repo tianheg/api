@@ -1,4 +1,7 @@
 export default [
+    {
+        content: "\"There's no thought crimes and no thought heroisms\" is honestly such a good piece of life advice. You could be having the most fucked up problematic thoughts 24/7 but if you treat people with kindness, the good you do is the only thing that matters. But if you have only the purest thoughts and all the correct beliefs, it doesn't matter one bit if you spend most of your time being an asshole to people."
+    },
   {
     content: "In the end, it's about what you want to be, not what you want to have. When you sign up to run a marathon, you don't want a taxi to take you to the finish line."
   },
