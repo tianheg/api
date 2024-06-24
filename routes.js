@@ -31,6 +31,19 @@ export default async function registerRoutes(app) {
     });
   });
 
+  app.get("/calc", (request, reply) => {
+    const client = app.pg.connect();
+
+    console.log(client);
+    // const sumResult = client.query < { sum } > "SELECT 2 + 2 as sum";
+
+    // client.release();
+
+    // return {
+    //   sum: sumResult.rows,
+    // };
+  });
+
   createRoute(app, "/books", booksData, { schema: paginationSchema });
   createRoute(app, "/feeds", feedsData, { schema: paginationSchema });
   createRoute(app, "/movies", moviesData, { schema: paginationSchema });

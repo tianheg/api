@@ -4,9 +4,13 @@ import helmet from "@fastify/helmet";
 import rateLimit from "@fastify/rate-limit";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
+import postgres from "@fastify/postgres";
 import Fastify from "fastify";
 import pino from "pino";
 import pretty from "pino-pretty";
+
+import * as dotenv from "dotenv";
+dotenv.config();
 
 import registerRoutes from "./routes.js";
 
@@ -60,6 +64,11 @@ await app.register(swaggerUI, {
     docExpansion: "list",
     deepLinking: false,
   },
+});
+
+// database
+await app.register(postgres, {
+  connectionString: process.env.POSTGRES_URL,
 });
 
 /// routes
