@@ -1,0 +1,24 @@
+name: json2db
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v1
+
+      - name: Build
+        run: |
+          bun install
+          bun run scripts/jsonToDb.js
+        env:
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
