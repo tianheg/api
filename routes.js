@@ -1,14 +1,17 @@
-import booksData from "./data/books.js";
-import feedsData from "./data/feeds.js";
-import moviesData from "./data/movies.js";
-import musicData from "./data/music.js";
-import musicalsData from "./data/musicals.js";
-import promptsData from "./data/prompts.js";
-import seriesData from "./data/series.js";
-import wordsData from "./data/words.js";
 import { createRoute, paginationSchema } from "./utils.js";
 
 export default async function registerRoutes(app) {
+  const client = await app.pg.connect();
+
+  const booksData = await client.query("SELECT * FROM books");
+  const feedsData = await client.query("SELECT * FROM feeds");
+  const moviesData = await client.query("SELECT * FROM movies");
+  const musicData = await client.query("SELECT * FROM music");
+  const musicalsData = await client.query("SELECT * FROM musicals");
+  const promptsData = await client.query("SELECT * FROM prompts");
+  const seriesData = await client.query("SELECT * FROM series");
+  const wordsData = await client.query("SELECT * FROM words");
+
   app.get("/", (request, reply) => {
     const baseUrl = "https://api.tianheg.org";
     const routes = [
@@ -31,25 +34,55 @@ export default async function registerRoutes(app) {
     });
   });
 
-  app.get("/calc", (request, reply) => {
-    const client = app.pg.connect();
+  console.log(booksData.rows.map((r) => r.json_data));
+  createRoute(
+    app,
+    "/books",
+    booksData.rows.map((r) => r.json_data),
+    { schema: paginationSchema },
+  );
+  createRoute(
+    app,
+    "/feeds",
+    feedsData.rows.map((r) => r.json_data),
+    { schema: paginationSchema },
+  );
+  createRoute(
+    app,
+    "/movies",
+    moviesData.rows.map((r) => r.json_data),
+    { schema: paginationSchema },
+  );
+  createRoute(
+    app,
+    "/music",
+    musicData.rows.map((r) => r.json_data),
+    { schema: paginationSchema },
+  );
+  createRoute(
+    app,
+    "/musicals",
+    musicalsData.rows.map((r) => r.json_data),
+    { schema: paginationSchema },
+  );
+  createRoute(
+    app,
+    "/prompts",
+    promptsData.rows.map((r) => r.json_data),
+    { schema: paginationSchema },
+  );
+  createRoute(
+    app,
+    "/series",
+    seriesData.rows.map((r) => r.json_data),
+    { schema: paginationSchema },
+  );
+  createRoute(
+    app,
+    "/words",
+    wordsData.rows.map((r) => r.json_data),
+    { schema: paginationSchema },
+  );
 
-    console.log(client);
-    // const sumResult = client.query < { sum } > "SELECT 2 + 2 as sum";
-
-    // client.release();
-
-    // return {
-    //   sum: sumResult.rows,
-    // };
-  });
-
-  createRoute(app, "/books", booksData, { schema: paginationSchema });
-  createRoute(app, "/feeds", feedsData, { schema: paginationSchema });
-  createRoute(app, "/movies", moviesData, { schema: paginationSchema });
-  createRoute(app, "/music", musicData, { schema: paginationSchema });
-  createRoute(app, "/musicals", musicalsData, { schema: paginationSchema });
-  createRoute(app, "/prompts", promptsData, { schema: paginationSchema });
-  createRoute(app, "/series", seriesData, { schema: paginationSchema });
-  createRoute(app, "/words", wordsData, { schema: paginationSchema });
+  client.release();
 }
