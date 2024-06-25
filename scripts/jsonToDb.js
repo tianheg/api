@@ -42,17 +42,28 @@ async function uploadJsonDataFromFile(client, relativePath, tableName) {
       await client.query(query);
     }
 
-    console.log(`Data from ${relativePath} inserted successfully into ${tableName}`);
+    console.log(
+      `Data from ${relativePath} inserted successfully into ${tableName}`,
+    );
   } catch (err) {
     console.error(`Error uploading data from file ${relativePath}:`, err);
   }
 }
 
 async function uploadAllFiles(client) {
-  const files = ["books.js", "feeds.js", "movies.js", "music.js", "musicals.js", "prompts.js", "series.js", "words.js"];
+  const files = [
+    "books.js",
+    "feeds.js",
+    "movies.js",
+    "music.js",
+    "musicals.js",
+    "prompts.js",
+    "series.js",
+    "words.js",
+  ];
 
   for (const file of files) {
-    const tableName = file.replace('.js', ''); // Remove '.js' to form the table name
+    const tableName = file.replace(".js", ""); // Remove '.js' to form the table name
     await uploadJsonDataFromFile(client, `data/${file}`, tableName);
   }
 }

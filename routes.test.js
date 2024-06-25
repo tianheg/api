@@ -3,7 +3,22 @@ import tap from "tap";
 import registerRoutes from "./routes.js";
 
 tap.test("routes.js", async (t) => {
+  const mockClient = {
+    query: () => {
+      return {
+        rows: [
+          {
+            json_data: "test",
+          },
+        ],
+      };
+    },
+    release: () => {},
+  };
   const app = Fastify();
+  app.decorate("pg", {
+    connect: async () => mockClient,
+  });
   await registerRoutes(app);
 
   t.test("GET /", async (t) => {
@@ -114,5 +129,5 @@ tap.test("routes.js", async (t) => {
     t.type(response.body, String);
   });
 
-  t.end();
+  t.teardown(() => app.close());
 });

@@ -1,10 +1,10 @@
 import compress from "@fastify/compress";
 import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
+import postgres from "@fastify/postgres";
 import rateLimit from "@fastify/rate-limit";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
-import postgres from "@fastify/postgres";
 import Fastify from "fastify";
 import pino from "pino";
 import pretty from "pino-pretty";
@@ -72,7 +72,7 @@ await app.register(postgres, {
 });
 
 /// routes
-registerRoutes(app);
+await registerRoutes(app);
 
 if (process.env.NODE_ENV === "development") {
   /**
