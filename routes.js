@@ -34,7 +34,6 @@ export default async function registerRoutes(app) {
     });
   });
 
-  console.log(booksData.rows.map((r) => r.json_data));
   createRoute(
     app,
     "/books",
