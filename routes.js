@@ -8,7 +8,6 @@ export default async function registerRoutes(app) {
   const moviesData = await client.query("SELECT * FROM movies");
   const musicData = await client.query("SELECT * FROM music");
   const musicalsData = await client.query("SELECT * FROM musicals");
-  const promptsData = await client.query("SELECT * FROM prompts");
   const seriesData = await client.query("SELECT * FROM series");
   const wordsData = await client.query("SELECT * FROM words");
 
@@ -34,54 +33,15 @@ export default async function registerRoutes(app) {
     });
   });
 
-  createRoute(
-    app,
-    "/books",
-    booksData.rows.map((r) => r.json_data),
-    { schema: paginationSchema },
-  );
-  createRoute(
-    app,
-    "/feeds",
-    feedsData.rows.map((r) => r.json_data),
-    { schema: paginationSchema },
-  );
-  createRoute(
-    app,
-    "/movies",
-    moviesData.rows.map((r) => r.json_data),
-    { schema: paginationSchema },
-  );
-  createRoute(
-    app,
-    "/music",
-    musicData.rows.map((r) => r.json_data),
-    { schema: paginationSchema },
-  );
-  createRoute(
-    app,
-    "/musicals",
-    musicalsData.rows.map((r) => r.json_data),
-    { schema: paginationSchema },
-  );
-  createRoute(
-    app,
-    "/prompts",
-    promptsData.rows.map((r) => r.json_data),
-    { schema: paginationSchema },
-  );
-  createRoute(
-    app,
-    "/series",
-    seriesData.rows.map((r) => r.json_data),
-    { schema: paginationSchema },
-  );
-  createRoute(
-    app,
-    "/words",
-    wordsData.rows.map((r) => r.json_data),
-    { schema: paginationSchema },
-  );
+  createRoute(app, "/books", booksData.rows, { schema: paginationSchema });
+  createRoute(app, "/feeds", feedsData.rows, { schema: paginationSchema });
+  createRoute(app, "/movies", moviesData.rows, { schema: paginationSchema });
+  createRoute(app, "/music", musicData.rows, { schema: paginationSchema });
+  createRoute(app, "/musicals", musicalsData.rows, {
+    schema: paginationSchema,
+  });
+  createRoute(app, "/series", seriesData.rows, { schema: paginationSchema });
+  createRoute(app, "/words", wordsData.rows, { schema: paginationSchema });
 
   client.release();
 }
