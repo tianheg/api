@@ -15,10 +15,27 @@
 - refactor code structure([src](https://github.com/tianheg/api/tree/2b12cb2e3c382428a2af11761c52b9baa478a8c2))
 - add test
 - try pressure test with [Artillery](https://www.artillery.io/docs)
+- json data to PostgreSQL DB
+
+## PostgreSQL Database(by [Supabase](https://supabase.com/))
+
+The data will only be updated after redeployment? Maybe this is the problem fo Vercel.
+
+Refer:
+
+1. [PostgreSQL](https://www.postgresql.org/)
+
+## SQLite Database
+
+Refer:
+
+1. https://turso.tech/
 
 ## Problems
 
-### jsonToDb 数据太多上传超时
+### jsonToDb too much data timeout(SOLVED)
+
+Use GitHub action
 
 ### Swagger UI cannot display endpoints(SOLVED)
 
