@@ -7,6 +7,16 @@
  * @return {Object} An object containing paginated data, current page, limit, total data count, total pages.
  */
 export function getPaginatedData(data, searchTerm, page, limit) {
+  if (!Array.isArray(data)) {
+    console.error("Invalid data type for pagination:", typeof data);
+    return {
+      page,
+      limit,
+      total: 0,
+      totalPages: 0,
+      data: [],
+    };
+  }
   // Filter data if searchTerm is provided
   const filteredData = searchTerm
     ? data.filter((item) =>
@@ -75,9 +85,11 @@ export const paginationSchema = {
  * @param {Array} data - The data to be paginated.
  * @param {Object} opts - The options object containing the schema.
  */
-export async function createRoute(app, path, data, opts) {
+export async function createRoute(app, path, fetchData, opts) {
   app.get(path, { schema: opts.schema }, async (request, reply) => {
     const { page, limit, search } = request.query;
+
+    const data = await fetchData();
     const paginatedData = await getPaginatedData(data, search, page, limit);
     return reply.send(paginatedData);
   });

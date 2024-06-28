@@ -1,5 +1,6 @@
 import compress from "@fastify/compress";
 import cors from "@fastify/cors";
+import formbody from "@fastify/formbody";
 import helmet from "@fastify/helmet";
 import postgres from "@fastify/postgres";
 import rateLimit from "@fastify/rate-limit";
@@ -35,6 +36,7 @@ await app.register(compress, { encodings: ["gzip"] });
 // not using RegExp or a function for origin
 // avoid DoS attacks https://github.com/fastify/fastify-cors#warning-dos-attacks
 await app.register(cors);
+await app.register(formbody);
 await app.register(helmet);
 await app.register(rateLimit, {
   max: 100,
@@ -83,8 +85,8 @@ if (process.env.NODE_ENV === "development") {
   const start = async () => {
     try {
       await app.listen({ port: 3000 });
-    } catch (err) {
-      app.log.error(err);
+    } catch (error) {
+      app.log.error(error);
       process.exit(1);
     }
   };
