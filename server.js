@@ -2,6 +2,7 @@ import compress from "@fastify/compress";
 import cors from "@fastify/cors";
 import formbody from "@fastify/formbody";
 import helmet from "@fastify/helmet";
+import jwt from "@fastify/jwt";
 import postgres from "@fastify/postgres";
 import rateLimit from "@fastify/rate-limit";
 import swagger from "@fastify/swagger";
@@ -38,6 +39,17 @@ await app.register(compress, { encodings: ["gzip"] });
 await app.register(cors);
 await app.register(formbody);
 await app.register(helmet);
+await app.register(jwt, {
+  secret: process.env.JWT_SECRET,
+})
+app.decorate("authenticate", async (request, reply) => {
+  try {
+    await request.jwtVerify();
+  } catch (err) {
+    reply.send(err);
+  }
+});
+
 await app.register(rateLimit, {
   max: 100,
   timeWindow: "1 minute",
