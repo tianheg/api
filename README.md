@@ -1,4 +1,6 @@
-# api
+# api(JSON based)
+
+---
 
 ## TODO
 
