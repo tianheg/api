@@ -11,7 +11,7 @@ interface Book {
 async function getData() {
   const res = await fetch("http://localhost:3000/books");
   if (!res.ok) {
-    throw new Error("Failed to fetch data");
+    throw new Error(" Failed to fetch data");
   }
   return res.json();
 }
