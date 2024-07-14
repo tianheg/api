@@ -1,5 +1,7 @@
 # api
 
+[CHANGELOG](./CHANGELOG.md)
+
 ## TODO
 
 - 把 data/movies.js 中的 series 条目放到 data/series.js 中
