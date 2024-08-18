@@ -1,0 +1,32 @@
+# generate backup github action
+
+name: Backup PG 
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: backup
+        run: |
+          sudo apt-get update
+          sudo apt-get install postgresql-client
+          DATE=`date +%Y-%m-%d`
+          FILENAME=backup-$DATE
+          pg_dump -U ${{ secrets.POSTGRES_USER }} -h ${{ secrets.POSTGRES_HOST }} -p ${{ secrets.POSTGRES_PORT }} -W -F t ${{ secrets.POSTGRES_DB }} > data/$FILENAME
+      
+      - name: Commit files
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "backup PG db" -a || true
+      - name: Push changes
+        uses: tianheg/github-actions@push
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
