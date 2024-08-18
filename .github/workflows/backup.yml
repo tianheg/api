@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
+  push:
 
 jobs:
   backup:
@@ -16,7 +17,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install postgresql-client
-          DATE=`date +%Y-%m-%d`
+          DATE=$(date +%Y-%m-%d)
           FILENAME=backup-$DATE
           pg_dump -U ${{ secrets.POSTGRES_USER }} -h ${{ secrets.POSTGRES_HOST }} -p ${{ secrets.POSTGRES_PORT }} -W -F t ${{ secrets.POSTGRES_DB }} > data/$FILENAME
       
