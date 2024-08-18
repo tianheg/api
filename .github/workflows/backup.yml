@@ -1,5 +1,3 @@
-# generate backup github action
-
 name: Backup PG 
 
 on:
@@ -13,14 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: backup
-        run: |
-          sudo apt-get update
-          sudo apt-get install postgresql-client
-          DATE=$(date +%Y-%m-%d)
-          FILENAME=backup-$DATE
-          pg_dump -U ${{ secrets.POSTGRES_USER }} -h ${{ secrets.POSTGRES_HOST }} -p ${{ secrets.POSTGRES_PORT }} -W -F t ${{ secrets.POSTGRES_DB }} > data/$FILENAME
-      
+
+      - name: Postgres Dump Backup
+        uses: tj-actions/pg-dump@v3
+        with:
+          database_url: "postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB }}"
+          postgresql_version: "16"
+          path: "data/backup-$(date +%Y-%m-%d).sql"
+          options: "-O"
+ 
       - name: Commit files
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
