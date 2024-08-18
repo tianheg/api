@@ -3,8 +3,7 @@ name: Backup PG
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
-  push:
+    - cron: '0 0 * * MON'
 
 jobs:
   backup:
@@ -24,7 +23,8 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit -m "backup PG db" -a || true
+          git add --all
+          git commit -m "backup PG db" || true
       - name: Push changes
         uses: tianheg/github-actions@push
         with:
