@@ -16,7 +16,6 @@ jobs:
         with:
           database_url: "postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB }}"
           postgresql_version: "16"
-          path: "data"
           options: "-O"
  
       - name: Commit files
