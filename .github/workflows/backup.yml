@@ -12,11 +12,11 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Postgres Dump Backup
-        uses: tj-actions/pg-dump@v3
+        uses: tianheg/pg-dump@main
         with:
           database_url: "postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@${{ secrets.POSTGRES_HOST }}:${{ secrets.POSTGRES_PORT }}/${{ secrets.POSTGRES_DB }}"
           postgresql_version: "16"
-          path: "data/backup-`$(date +%Y-%m-%d)`.sql"
+          path: "data"
           options: "-O"
  
       - name: Commit files
