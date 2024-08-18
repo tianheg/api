@@ -24,10 +24,12 @@
     "@fastify/swagger-ui": "^4.0.0",
     "@fastify/under-pressure": "^8.5.0",
     "fastify": "^4.28.0",
+    "fastify-cli": "^6.3.0",
     "pg": "^8.12.0"
   },
   "scripts": {
     "dev": "export NODE_ENV=development && nodemon .",
+    "start": "nodemon .",
     "test": "tap --bail --timeout=5000 *.test.js",
     "lint": "biome check --write ."
   }
