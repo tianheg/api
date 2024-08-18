@@ -4,10 +4,8 @@
 
 ## TODO
 
-- 把 data/movies.js 中的 series 条目放到 data/series.js 中
-- 把 https://neodb.social/users/tianheg/ 中标记的内容放到 api 中
-- add https://github.com/SkeLLLa/fastify-metrics
-- read https://www.mock-server.com/
+- 把 data/movies.js 中的 series 条目放到 data/series.js 中（这是个大工程啊）
+- 把 https://neodb.social/users/tianheg/ 中标记的内容放到 api 中(只剩唱片没转移了)
 
 ## DONE
 
@@ -19,9 +17,11 @@
 - try pressure test with [Artillery](https://www.artillery.io/docs)
 - json data to PostgreSQL DB
 
-## PostgreSQL Database(by [Supabase](https://supabase.com/))
+## PostgreSQL Database(by [Railway](https://railway.app/))
 
-The data will only be updated after redeployment? Maybe this is the problem fo Vercel.
+> Abandon Supabase because of the auto-paused free project policy
+
+~The data will only be updated after redeployment? Maybe this is the problem of Vercel.~
 
 Refer:
 
