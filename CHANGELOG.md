@@ -1,5 +1,6 @@
 # Changelog
 
+## 2024-08-18 Supabase to Railway, add backup([bbb80ee](https://github.com/tianheg/api/commit/bbb80ee))
 ## 2024-06-28 add auth([`0e1c52e`](https://github.com/tianheg/api/commit/0e1c52e))
 ## 2024-06-28 add add frontend/nextjs([`1f86af3`](https://github.com/tianheg/api/commit/1f86af3))
 ## 2024-06-24 use Postgres(Supabase)([`7deb59c`](https://github.com/tianheg/api/commit/7deb59c))
