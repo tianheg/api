@@ -2,6 +2,12 @@
 
 [CHANGELOG](./CHANGELOG.md)
 
+## Ideas
+
+如果说博客还有些想向他人展示的欲望的话，那么这个API则纯粹是为了自己纵览自己的输入而做的东西。
+
+做UI的目的是看起来更方便，编辑啊什么的。
+
 ## TODO
 
 - 把 data/movies.js 中的 series 条目放到 data/series.js 中（这是个大工程啊）
