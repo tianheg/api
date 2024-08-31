@@ -1,4 +1,4 @@
-import app from "../server.js";
+import app from "../app.js";
 
 export default async (req, res) => {
   await app.ready();
