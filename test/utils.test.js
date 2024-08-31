@@ -1,5 +1,5 @@
 import tap from "tap";
-import { getPaginatedData } from "./utils.js";
+import { getPaginatedData } from "../routes/utils.js";
 
 tap.test("getPaginatedData", async (t) => {
   const data = [

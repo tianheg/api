@@ -14,7 +14,7 @@ import pretty from "pino-pretty";
 import * as dotenv from "dotenv";
 dotenv.config();
 
-import registerRoutes from "./routes.js";
+import registerRoutes from "./routes/routes.js";
 
 // logger
 const stream = pretty({

@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "main": "server.js",
+  "main": "app.js",
   "type": "module",
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
@@ -8,8 +8,7 @@
     "dotenv": "^16.4.5",
     "nodemon": "^3.1.4",
     "pino": "^9.3.2",
-    "pino-pretty": "^11.2.2",
-    "tap": "^20.0.3"
+    "pino-pretty": "^11.2.2"
   },
   "dependencies": {
     "@fastify/autoload": "^5.10.0",
