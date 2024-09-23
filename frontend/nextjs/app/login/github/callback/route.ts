@@ -32,7 +32,7 @@ export async function GET(request: Request): Promise<Response> {
 			sql: "SELECT * FROM user WHERE github_id = ?",
 			args: [githubUser.id]
 		});
-		const existingUser = existingUserResult.rows[0] as DatabaseUser | undefined;
+		const existingUser = existingUserResult.rows[0] as unknown as DatabaseUser | undefined;
 
 		if (existingUser) {
 			console.log("Existing user found:", existingUser);
