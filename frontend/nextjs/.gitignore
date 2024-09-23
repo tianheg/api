@@ -1,6 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 main.db
+bun.lockb
 
 # dependencies
 /node_modules
