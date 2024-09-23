@@ -8,6 +8,10 @@
 
 做UI的目的是看起来更方便，编辑啊什么的。
 
+example:
+
+https://github.com/avanelli/fastify-realworld-example-app/blob/main/lib/routes/users/index.js
+https://github.com/fastify/fluent-json-schema
 ## TODO
 
 - 把 data/movies.js 中的 series 条目放到 data/series.js 中（这是个大工程啊）
