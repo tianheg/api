@@ -12,6 +12,7 @@ export async function GET(request: Request): Promise<Response> {
 	const state = url.searchParams.get("state");
 	const storedState = cookies().get("github_oauth_state")?.value ?? null;
 	if (!code || !state || !storedState || state !== storedState) {
+		console.error("State mismatch or missing parameters");
 		return new Response(null, {
 			status: 400
 		});
@@ -25,14 +26,19 @@ export async function GET(request: Request): Promise<Response> {
 			}
 		});
 		const githubUser: GitHubUser = await githubUserResponse.json();
-		const existingUser = db.prepare("SELECT * FROM user WHERE github_id = ?").get(githubUser.id) as
-			| DatabaseUser
-			| undefined;
+		console.log("GitHub User:", githubUser);
+
+		const existingUserResult = await db.execute({
+			sql: "SELECT * FROM user WHERE github_id = ?",
+			args: [githubUser.id]
+		});
+		const existingUser = existingUserResult.rows[0] as DatabaseUser | undefined;
 
 		if (existingUser) {
+			console.log("Existing user found:", existingUser);
 			const session = await lucia.createSession(existingUser.id, {});
 			const sessionCookie = lucia.createSessionCookie(session.id);
-			cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+				cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
 			return new Response(null, {
 				status: 302,
 				headers: {
@@ -42,11 +48,12 @@ export async function GET(request: Request): Promise<Response> {
 		}
 
 		const userId = generateId(15);
-		db.prepare("INSERT INTO user (id, github_id, username) VALUES (?, ?, ?)").run(
-			userId,
-			githubUser.id,
-			githubUser.login
-		);
+		await db.execute({
+			sql: "INSERT INTO user (id, github_id, username) VALUES (?, ?, ?)",
+			args: [userId, githubUser.id, githubUser.login]
+		});
+		console.log("New user inserted:", { userId, githubId: githubUser.id, username: githubUser.login });
+
 		const session = await lucia.createSession(userId, {});
 		const sessionCookie = lucia.createSessionCookie(session.id);
 		cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
@@ -57,6 +64,7 @@ export async function GET(request: Request): Promise<Response> {
 			}
 		});
 	} catch (e) {
+		console.error("Error during GitHub OAuth callback:", e);
 		if (e instanceof OAuth2RequestError && e.message === "bad_verification_code") {
 			// invalid code
 			return new Response(null, {
