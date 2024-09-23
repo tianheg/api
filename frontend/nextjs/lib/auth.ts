@@ -1,5 +1,5 @@
 import { Lucia } from "lucia";
-import { BetterSqlite3Adapter } from "@lucia-auth/adapter-sqlite";
+import { LibSQLAdapter } from "@lucia-auth/adapter-sqlite";
 import { db } from "./db";
 import { cookies } from "next/headers";
 import { cache } from "react";
@@ -11,7 +11,7 @@ import type { DatabaseUser } from "./db";
 // import { webcrypto } from "crypto";
 // globalThis.crypto = webcrypto as Crypto;
 
-const adapter = new BetterSqlite3Adapter(db, {
+const adapter = new LibSQLAdapter(db, {
 	user: "user",
 	session: "session"
 });
