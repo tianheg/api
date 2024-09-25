@@ -2,7 +2,7 @@ import { lucia, validateRequest } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import Link from "next/link";
-
+import { IconLogout } from "@tabler/icons-react";
 export default async function Page() {
 	const { user } = await validateRequest();
 	if (!user) {
@@ -12,6 +12,7 @@ export default async function Page() {
 		<div className="min-h-screen relative">
 			<form action={logout} className="absolute top-4 right-4">
 				<button type="submit" className="btn btn-error btn-sm">
+					<IconLogout className="mr-2" />
 					Logout
 				</button>
 			</form>
