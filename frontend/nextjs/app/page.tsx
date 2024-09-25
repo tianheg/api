@@ -12,15 +12,14 @@ export default async function Page() {
 		<div className="min-h-screen relative">
 			<form action={logout} className="absolute top-4 right-4">
 				<button type="submit" className="btn btn-error btn-sm">
-					Sign out
+					Logout
 				</button>
 			</form>
 			<div className="hero min-h-screen">
 				<div className="hero-content text-center">
 					<div className="max-w-md">
 						<h1 className="text-5xl font-bold mb-4">Hi, {user.username}!</h1>
-						<p className="text-lg">Your user ID is {user.id}.</p>
-						{/* Add lists here */}
+						<p className="text-lg">Your user ID is {user.id}.</p>						
 						<div className="mt-8">
 							<h2 className="text-3xl font-bold mb-4">精神食粮</h2>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
