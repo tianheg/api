@@ -1,10 +1,11 @@
+import { verifyRequestOrigin } from "lucia";
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 // Define the paths that do not require authentication
 const publicPaths = ['/login', '/login/github', '/login/github/callback'];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow requests to public paths
@@ -13,7 +14,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Get the session cookie
-  const sessionCookie = request.cookies.get('auth_session'); // Adjust the cookie name if different
+  const sessionCookie = request.cookies.get('auth_session');
 
   if (!sessionCookie) {
     // Redirect to login if not authenticated
@@ -22,9 +23,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Optionally, you can verify the session token here
-  // However, since Middleware runs on Edge runtime, integrating Lucia validation here is not straightforward
-  // It's recommended to handle detailed session validation in server components or API routes
+  // CSRF protection
+  if (request.method === 'GET') { 
+    return NextResponse.next();
+  }
+  const orginHeader = request.headers.get('Origin');
+  const hostHeader = request.headers.get('Host');
+  if (!orginHeader || !hostHeader || !verifyRequestOrigin(orginHeader, [hostHeader])) {
+    return new NextResponse(null, { status: 403 });
+  }
 
   return NextResponse.next();
 }
