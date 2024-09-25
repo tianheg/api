@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Get the session cookie
-  const sessionCookie = request.cookies.get('lucia_token'); // Adjust the cookie name if different
+  const sessionCookie = request.cookies.get('auth_session'); // Adjust the cookie name if different
 
   if (!sessionCookie) {
     // Redirect to login if not authenticated
