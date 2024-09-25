@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import { IconLogout } from "@tabler/icons-react";
 
 interface Item {
   id: string;
@@ -39,7 +40,7 @@ const ItemList: React.FC<ItemListProps> = ({ items, element }) => {
         onClick={handleLogout}
         className="flex items-center mb-4 px-4 py-2 bg-red-500 text-white rounded absolute top-4 right-4"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        <IconLogout className="mr-2" />
         Logout
       </button>
 
