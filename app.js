@@ -26,9 +26,9 @@ const stream = pretty({
   // [15:32:27 UTC] [32mINFO[39m (10): [36mincoming request GET /[39m
   //[15:32:27 UTC] [32mINFO[39m (10): [36mrequest completed  [39m
 });
-const logger = pino({ level: "info" }, stream);
+const loggerInstance = pino({ level: "info" }, stream);
 
-const app = Fastify({ logger });
+const app = Fastify({ loggerInstance });
 
 /// plugins
 await app.register(compress, { encodings: ["gzip"] });
