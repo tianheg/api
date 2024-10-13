@@ -1,6 +1,6 @@
 import { getPaginatedData, paginationSchema } from "../utils.js";
 
-export default async function words(app) {
+export default function words(app, opts, done) {
   app.get(
     "/words",
     {
@@ -24,4 +24,6 @@ export default async function words(app) {
         return reply.status(500).send(error);
     }}
   )
+
+  done();
 }
