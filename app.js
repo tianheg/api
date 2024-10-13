@@ -32,7 +32,7 @@ const envSchema = {
   required: ["POSTGRES_URL", "JWT_SECRET"],
   properties: {
     POSTGRES_URL: { type: "string" },
-    JWT_SECRET: { type: "string" },
+    JWT_SECRET: { type: "strving" },
     NODE_ENV: { type: "string", default: "development" },
   },
 };
@@ -60,16 +60,12 @@ await app.register(import("./routes/series/routes.js"));
 await app.register(import("./routes/words/routes.js"));
 
 // start server
-if (process.env.NODE_ENV === "development") {
-  const start = async () => {
-    try {
-      await app.listen({ port: 3000 });
-    } catch (error) {
-      app.log.error(error);
-      process.exit(1);
-    }
-  };
-  start();
-}
-
-export default app;
+const start = async () => {
+  try {
+    await app.listen({ host: "::", port: 3000 });
+  } catch (error) {
+    app.log.error(error);
+    process.exit(1);
+  }
+};
+start();
