@@ -65,11 +65,11 @@ const start = async () => {
     await app.listen(
       app.secrets.NODE_ENV === "development"
         ? { host: "localhost", port: 3000 }
-        : { host: "::", port: 3000 }
+        : { host: "::", port: 3000 },
     );
   } catch (error) {
     app.log.error(error);
-    process.exit(1);
+    throw error;
   }
 };
 start();
