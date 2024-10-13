@@ -15,7 +15,7 @@ export default function home(app, opts, done) {
         },
       },
     },
-    (request, reply) => {
+    () => {
       const baseUrl =
         process.env.NODE_ENV === "development"
           ? "http://localhost:3000"
