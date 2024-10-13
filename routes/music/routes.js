@@ -1,6 +1,6 @@
 import { getPaginatedData, paginationSchema } from "../utils.js";
 
-export default async function music(app) {
+export default function music(app, opts, done) {
   app.get(
     "/music",
     {
@@ -24,4 +24,6 @@ export default async function music(app) {
         return reply.status(500).send(error);
     }}
   )
+
+  done();
 }

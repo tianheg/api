@@ -1,7 +1,6 @@
 import { getPaginatedData, paginationSchema } from "../utils.js";
 
-export default async function feeds(app) {
-  // GET all feeds
+export default function feeds(app, opts, done) {
   app.get(
     "/feeds",
     {
@@ -25,4 +24,6 @@ export default async function feeds(app) {
         return reply.status(500).send(error);
     }}
   )
+
+  done();
 }

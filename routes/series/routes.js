@@ -1,6 +1,6 @@
 import { getPaginatedData, paginationSchema } from "../utils.js";
 
-export default async function series(app) {
+export default function series(app, opts, done) { 
   app.get(
     "/series",
     {
@@ -24,4 +24,6 @@ export default async function series(app) {
         return reply.status(500).send(error);
     }}
   )
+
+  done();
 }

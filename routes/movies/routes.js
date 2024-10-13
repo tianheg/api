@@ -1,6 +1,6 @@
 import { getPaginatedData, paginationSchema } from "../utils.js";
 
-export default async function movies(app) {
+export default function movies(app, opts, done) {
   app.get(
     "/movies",
     {
@@ -13,7 +13,7 @@ export default async function movies(app) {
       const client = await app.pg.connect();
       try {
         const feedsData = await client.query("SELECT * FROM movies");
-        const paginatedData = await getPaginatedData(
+        const paginatedData = getPaginatedData(
           feedsData.rows,
           search,
           page,
@@ -24,4 +24,6 @@ export default async function movies(app) {
         return reply.status(500).send(error);
     }}
   )
+
+  done();
 }

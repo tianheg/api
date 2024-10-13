@@ -1,7 +1,6 @@
 import { getPaginatedData, paginationSchema } from "../utils.js";
 
-export default async function books(app) {
-  // GET all books
+export default function books(app, opts, done) {
   app.get(
     "/books",
     {
@@ -23,10 +22,10 @@ export default async function books(app) {
         return paginatedData;
       } catch (error) {
         reply.status(500).send(error);
-    }}
-  )
+      }
+    },
+  );
 
-  // POST a new book
   app.post(
     "/books",
     {
@@ -56,7 +55,6 @@ export default async function books(app) {
     },
   );
 
-  // PUT/PATCH to update a book
   app.put(
     "/books/:id",
     {
@@ -64,7 +62,6 @@ export default async function books(app) {
     },
     async (request, reply) => {
       const client = await app.pg.connect();
-      // Implement update book logic
       const { id } = request.params;
       const { name, url } = request.body;
       if (!name || !url) {
@@ -85,7 +82,6 @@ export default async function books(app) {
     },
   );
 
-  // DELETE a book
   app.delete(
     "/books/:id",
     {
@@ -93,7 +89,6 @@ export default async function books(app) {
     },
     async (request, reply) => {
       const client = await app.pg.connect();
-      // Implement delete book logic
       const { id } = request.params;
       try {
         await client.query("DELETE FROM books WHERE id = $1 RETURNING *", [id]);
@@ -102,7 +97,6 @@ export default async function books(app) {
           return;
         }
 
-        // Send back the details of the deleted book.
         return `Book with id ${id} deleted successfully: ${result.rows[0]}`; // result.rows[0];
       } catch (error) {
         reply.status(500).send(error);
@@ -111,4 +105,6 @@ export default async function books(app) {
       }
     },
   );
+
+  done();
 }

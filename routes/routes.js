@@ -1,6 +1,6 @@
 import S from "fluent-json-schema";
 
-export default async function home(app, opts) {
+export default function home(app, opts, done) {
   app.get(
     "/",
     {
@@ -39,4 +39,6 @@ export default async function home(app, opts) {
       };
     },
   );
+
+  done();
 }
