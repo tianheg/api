@@ -1,7 +1,7 @@
 import  fp from "fastify-plugin";
 import underPressure from "@fastify/under-pressure";
 
-export default fp(async (app, opts) => {
+export default fp(async (app, _) => {
   await app.register(underPressure, {
     maxRequests: 100,
     maxRequestsPerMinute: 100,

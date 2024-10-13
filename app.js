@@ -18,7 +18,7 @@ const loggerInstance = pino({ level: "info" }, stream);
 
 const app = Fastify({ loggerInstance });
 
-app.decorate("authenticate", async (request, reply) => {
+app.decorate("authenticate", async (request, _) => {
   try {
     await request.jwtVerify();
   } catch (err) {
