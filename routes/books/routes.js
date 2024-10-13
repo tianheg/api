@@ -1,16 +1,17 @@
-import { getPaginatedData, paginationSchema } from "./utils.js";
+import { getPaginatedData, paginationSchema } from "../utils.js";
 
-export default async function registerBooksRoutes(app) {
+export default async function books(app) {
   // GET all books
   app.get(
     "/books",
     {
-      schema: paginationSchema,
+      schema: {
+        querystring: paginationSchema,
+      },
     },
     async (request, reply) => {
       const { page, limit, search } = request.query;
       const client = await app.pg.connect();
-
       try {
         const booksData = await client.query("SELECT * FROM books");
         const paginatedData = await getPaginatedData(
@@ -19,32 +20,11 @@ export default async function registerBooksRoutes(app) {
           page,
           limit,
         );
-        return paginatedData
+        return paginatedData;
       } catch (error) {
         reply.status(500).send(error);
-      } finally {
-        client.release();
-      }
-    },
-  );
-
-  // GET a single book
-  app.get("/books/:id", 
-    {
-      schema: paginationSchema
-    }
-    ,async (request, reply) => {
-    const client = await app.pg.connect();
-    const { id } = request.params;
-    const { rows } = await client.query("SELECT * FROM books WHERE id = $1", [
-      id,
-    ]);
-    if (rows.length === 0) {
-      reply.status(404).send("Book not found");
-    } else {
-      reply.send(rows[0]);
-    }
-  });
+    }}
+  )
 
   // POST a new book
   app.post(
@@ -52,25 +32,7 @@ export default async function registerBooksRoutes(app) {
     {
       preValidation: app.authenticate,
       schema: {
-        body: {
-          type: "object",
-          required: ["name", "url"],
-          properties: {
-            name: { type: "string" },
-            url: { type: "string" },
-          },
-        },
-        response: {
-          200: {
-            description: "Successful response",
-            type: "object",
-            properties: {
-              id: { type: "integer" },
-              name: { type: "string" },
-              url: { type: "string" },
-            },
-          },
-        },
+        paginationSchema,
       },
     },
     async (request, reply) => {
@@ -126,7 +88,6 @@ export default async function registerBooksRoutes(app) {
   // DELETE a book
   app.delete(
     "/books/:id",
-
     {
       preValidation: app.authenticate,
     },
