@@ -1,5 +1,6 @@
 # Changelog
 
+## 2024-10-13 Change routes strucure([1db5c68](https://github.com/tianheg/api/commit/1db5c68))
 ## 2024-10-08 New way organize plugins and routes([76a64c9](https://github.com/tianheg/api/commit/76a64c9))
 ## 2024-08-18 Supabase to Railway, add backup([bbb80ee](https://github.com/tianheg/api/commit/bbb80ee))
 ## 2024-06-28 add auth([`0e1c52e`](https://github.com/tianheg/api/commit/0e1c52e))

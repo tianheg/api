@@ -47,7 +47,7 @@ export default async function books(app) {
           "INSERT INTO books (name, url) VALUES ($1, $2) RETURNing *",
           [name, url],
         );
-        reply.send(response.rows[0]);
+        return response.rows[0];
       } catch (error) {
         reply.status(500).send(error);
       } finally {
@@ -76,7 +76,7 @@ export default async function books(app) {
           "UPDATE books SET name = $1, url = $2 WHERE id = $3 RETURNing *",
           [name, url, id],
         );
-        reply.send(response.rows[0]);
+        return response.rows[0];
       } catch (error) {
         reply.status(500).send(error);
       } finally {

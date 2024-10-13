@@ -21,7 +21,7 @@ export default async function movies(app) {
         );
         return paginatedData;
       } catch (error) {
-        reply.status(500).send(error);
+        return reply.status(500).send(error);
     }}
   )
 }
