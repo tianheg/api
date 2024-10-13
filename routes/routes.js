@@ -35,7 +35,7 @@ export default function home(app, opts, done) {
         doc: `${baseUrl}/doc`,
         tech: "https://fastify.dev/",
         deploy: "https://vercel.com/",
-        routes: routes,
+        routes,
       };
     },
   );

@@ -21,7 +21,7 @@ export default function books(app, opts, done) {
         );
         return paginatedData;
       } catch (error) {
-        reply.status(500).send(error);
+        return reply.status(500).send(error);
       }
     },
   );
