@@ -3,6 +3,6 @@ import jwt from "@fastify/jwt";
 
 export default fp(async (app, opts) => {
   await app.register(jwt, {
-    secret: process.env.JWT_SECRET,
+    secret: app.secrets.JWT_SECRET,
   });
 });

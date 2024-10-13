@@ -1,15 +1,10 @@
 import Fastify from "fastify";
-import Autoload from "@fastify/autoload";
+import AutoLoad from "@fastify/autoload";
+import Env from "@fastify/env";
+
 import pino from "pino";
 import pretty from "pino-pretty";
-import { dirname,join } from "node:path";
-import { fileURLToPath } from "node:url";
-import registerRoutes from "./routes/routes.js";
-import registerBooksRoutes from "./routes/booksRoutes.js";
-
-import * as dotenv from "dotenv";
-dotenv.config();
-
+import { join } from "desm";
 
 // logger
 const stream = pretty({
@@ -31,20 +26,38 @@ app.decorate("authenticate", async (request, reply) => {
   }
 });
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-await app.register(Autoload, {
-  dir: join(__dirname, "plugins"),
+// env
+const envSchema = {
+  type: "object",
+  required: ["POSTGRES_URL", "JWT_SECRET"],
+  properties: {
+    POSTGRES_URL: { type: "string" },
+    JWT_SECRET: { type: "string" },
+    NODE_ENV: { type: "string", default: "development" },
+  },
+};
+await app.register(Env, {
+  confKey: "secrets",
+  schema: envSchema,
+  dotenv: true,
+});
+
+await app.register(AutoLoad, {
+  dir: join(import.meta.url, "plugins"),
   dirNameRoutePrefix: false,
   ignorePattern: /.*.no-load\.js/,
   indexPattern: /^no$/i,
 });
 
-// routes
-await registerRoutes(app);
-
-// books routes
-await registerBooksRoutes(app);
+// register routes
+await app.register(import("./routes/routes.js"));
+await app.register(import("./routes/books/routes.js"));
+await app.register(import("./routes/feeds/routes.js"));
+await app.register(import("./routes/movies/routes.js"));
+await app.register(import("./routes/music/routes.js"));
+await app.register(import("./routes/musicals/routes.js"));
+await app.register(import("./routes/series/routes.js"));
+await app.register(import("./routes/words/routes.js"));
 
 // start server
 if (process.env.NODE_ENV === "development") {

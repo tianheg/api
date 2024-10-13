@@ -21,7 +21,8 @@ export default fp(async (app, opts) => {
     },
   });
   await app.register(swaggerUI, {
-    routePrefix: process.env.NODE_ENV === "development" ? "/doc" : undefined,
+    routePrefix: "/doc",
+    exposeRoute: process.env.NODE_ENV !== "production",
     uiConfig: {
       docExpansion: "list",
       deepLinking: false,
