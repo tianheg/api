@@ -34,7 +34,7 @@ export default function home(app, opts, done) {
         repo: "https://github.com/tianheg/api/",
         doc: `${baseUrl}/doc`,
         tech: "https://fastify.dev/",
-        deploy: "https://vercel.com/",
+        deploy: "https://railway.app/",
         routes,
       };
     },
