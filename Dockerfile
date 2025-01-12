@@ -5,16 +5,16 @@ FROM node:22-slim
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
+COPY package.json /app
 
 # Install dependencies
 RUN npm install
 
 # Copy app source code
-COPY . .
+COPY . /appc
 
 # Expose the port your Fastify app runs on
 EXPOSE 1234
 
 # Start the application
-CMD ["node", "app.js"]
+CMD npx pm2 start process.yml && tail -f /dev/null
