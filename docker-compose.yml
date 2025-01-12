@@ -6,7 +6,6 @@ services:
     environment:
       - POSTGRES_URL=postgres://user:password@db:5432/dbname
       - JWT_SECRET=4321
-      - NODE_ENV=development
     depends_on:
       - db
 
