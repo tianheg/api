@@ -1,5 +1,8 @@
 # Use Node.js LTS (Long Term Support) version
-FROM node:22-slim
+FROM node:20-slim
+
+# Install PostgreSQL client
+RUN apt-get update && apt-get install -y postgresql-client
 
 # Create app directory
 WORKDIR /app
