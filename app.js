@@ -64,8 +64,8 @@ const start = async () => {
   try {
     await app.listen(
       app.secrets.NODE_ENV === "development"
-        ? { host: "localhost", port: 3000 }
-        : { host: "::", port: 3000 },
+        ? { host: "localhost", port: 1234 }
+        : { host: "::", port: 1234 },
     );
   } catch (error) {
     app.log.error(error);
