@@ -4,7 +4,8 @@ services:
     ports:
       - "3001:3000"
     environment:
-      - DATABASE_URL=postgres://user:password@db:5432/dbname
+      - POSTGRES_URL=postgres://user:password@db:5432/dbname
+      - JWT_SECRET=4321
       - NODE_ENV=development
     depends_on:
       - db
