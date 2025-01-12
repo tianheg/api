@@ -62,11 +62,7 @@ await app.register(import("./routes/words/routes.js"));
 // start server
 const start = async () => {
   try {
-    await app.listen(
-      app.secrets.NODE_ENV === "development"
-        ? { host: "localhost", port: 1234 }
-        : { host: "::", port: 1234 },
-    );
+    await app.listen({ host: "0.0.0.0", port: 1234 });
   } catch (error) {
     app.log.error(error);
     throw error;
