@@ -16,31 +16,6 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: fuzzystrmatch; Type: EXTENSION; Schema: -; Owner: -
---
-
-CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA public;
-
-
---
--- Name: EXTENSION fuzzystrmatch; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION fuzzystrmatch IS 'determine similarities and distance between strings';
-
-
---
--- Name: hello_world(); Type: FUNCTION; Schema: public; Owner: -
---
-
-CREATE FUNCTION public.hello_world() RETURNS text
-    LANGUAGE sql
-    AS $$
-  select 'hello world';
-$$;
-
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
