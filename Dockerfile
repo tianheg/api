@@ -17,4 +17,4 @@ COPY . /app
 EXPOSE 1234
 
 # Start the application
-CMD npx pm2 start process.yml && tail -f /dev/null
+CMD ["node", "app.js"]
