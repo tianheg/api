@@ -11,7 +11,7 @@ COPY package.json /app
 RUN npm install
 
 # Copy app source code
-COPY . /appc
+COPY . /app
 
 # Expose the port your Fastify app runs on
 EXPOSE 1234
