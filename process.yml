@@ -1,5 +1,5 @@
 # process.yml
 apps:
-- script: index.js
+- script: app.js
   instances: 4
   exec_mode: cluster
