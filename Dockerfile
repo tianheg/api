@@ -1,8 +1,5 @@
 # Use Node.js LTS (Long Term Support) version
-FROM node:20-slim
-
-# Install PostgreSQL client
-RUN apt-get update && apt-get install -y postgresql-client
+FROM node:22-slim
 
 # Create app directory
 WORKDIR /app
@@ -17,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose the port your Fastify app runs on
-EXPOSE 3000
+EXPOSE 1234
 
 # Start the application
 CMD ["npm", "start"]
