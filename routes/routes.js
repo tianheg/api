@@ -32,9 +32,9 @@ export default function home(app, opts, done) {
 
       return {
         repo: "https://github.com/tianheg/api/",
-        doc: `${baseUrl}/doc`,
+        doc: process.env.NODE_ENV === "development" ? `${baseUrl}/doc` : "",
         tech: "https://fastify.dev/",
-        deploy: "https://railway.app/",
+        deploy: "https://dokploy.com/",
         routes,
       };
     },
