@@ -32,3 +32,16 @@ export const paginationSchema = S.object()
   .prop("limit", S.integer().default(10))
   .prop("search", S.string().default(""))
   .required(["page", "limit", "search"]);
+
+export async function runQuery(query, params) {
+  const client = await this.pg.connect();
+
+  try {
+    const { rows } = await client.query(query, params);
+    return rows;
+  } catch (error) {
+    return error;
+  } finally {
+    client.release();
+  }
+}
