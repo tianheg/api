@@ -1752,13 +1752,5 @@ ALTER TABLE ONLY public.words
 ALTER TABLE public.books ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: supabase_realtime; Type: PUBLICATION; Schema: -; Owner: -
---
-
-CREATE PUBLICATION supabase_realtime WITH (publish = 'insert, update, delete, truncate');
-
-
---
 -- PostgreSQL database dump complete
 --
-
