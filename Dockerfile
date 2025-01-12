@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 1234
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["node", "app.js"]
