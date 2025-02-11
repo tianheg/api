@@ -62,7 +62,7 @@ await app.register(import("./routes/words/routes.js"));
 // start server
 const start = async () => {
   try {
-    await app.listen({ host: "0.0.0.0", port: 1234 });
+    await app.listen({ host: "0.0.0.0", port: 3000 });
   } catch (error) {
     app.log.error(error);
     throw error;
