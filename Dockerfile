@@ -14,7 +14,7 @@ RUN npm install
 COPY . /app
 
 # Expose the port your Fastify app runs on
-EXPOSE 1234
+EXPOSE 3000
 
 # Start the application
 CMD ["node", "app.js"]
