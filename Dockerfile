@@ -1,20 +1,17 @@
-# Use Node.js LTS (Long Term Support) version
-FROM node:22-slim
-
-# Create app directory
+# Build stage
+FROM node:22-slim AS builder
 WORKDIR /app
+COPY package*.json ./
+RUN npm ci --omit=dev
+COPY . .
 
-# Copy package files
-COPY package.json /app
+# Production stage
+FROM node:22-slim
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app .
 
-# Install dependencies
-RUN npm install
-
-# Copy app source code
-COPY . /app
-
-# Expose the port your Fastify app runs on
+USER node
 EXPOSE 3000
-
-# Start the application
+ENV NODE_ENV=production
 CMD ["node", "app.js"]
