@@ -27,7 +27,7 @@
     "fastify": "^5.2.1",
     "fastify-plugin": "^5.0.1",
     "fluent-json-schema": "^5.0.0",
-    "pg": "^8.13.1"
+    "pg": "^8.13.3"
   },
   "scripts": {
     "dev": "nodemon .",
