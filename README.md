@@ -2,6 +2,8 @@
 
 [CHANGELOG](./CHANGELOG.md)
 
+问题：部署在Railway上，默认端口为什么是8080？需要添加PORT环境变量才能换成3000，这是为什么？
+
 TODO:
 
 - not public expose this API
