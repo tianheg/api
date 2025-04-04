@@ -2,6 +2,11 @@
 
 [CHANGELOG](./CHANGELOG.md)
 
+TODO:
+
+- not public expose this API
+- Use Vue.js/Nuxt.js write web site
+
 ## Ideas
 
 如果说博客还有些想向他人展示的欲望的话，那么这个API则纯粹是为了自己纵览自己的输入而做的东西。
@@ -11,7 +16,9 @@
 example:
 
 https://github.com/avanelli/fastify-realworld-example-app/blob/main/lib/routes/users/index.js
+
 https://github.com/fastify/fluent-json-schema
+
 ## TODO
 
 - 把 data/movies.js 中的 series 条目放到 data/series.js 中（这是个大工程啊）
@@ -78,3 +85,4 @@ Explicitly set baseUrl to https://api.tianheg.org
 
 - https://github.com/fedeperin/potterapi
 - https://github.com/fadhlimulyana20/fastify-docker-simple
+- https://github.com/fastify/demo

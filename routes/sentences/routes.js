@@ -1,15 +1,12 @@
 import { getPaginatedData, paginationSchema } from "../utils.js";
 
-export default function series(app, opts, done) {
+export default function words(app, opts, done) {
   // Define schemas for validation
-  const seriesSchema = {
+  const sentenceSchema = {
     type: 'object',
-    required: ['name', 'review', 'date'],
+    required: ['content'],
     properties: {
-      name: { type: 'string' },
-      url: { type: 'string', format: 'uri' }, // Add URL as optional field
-      review: { type: 'string' },
-      date: { type: 'string', format: 'date' }
+      content: { type: 'string' }
     }
   };
 
@@ -22,78 +19,78 @@ export default function series(app, opts, done) {
   };
 
   // Handler functions
-  async function getSeriesList(request, reply) {
+  async function getWords(request, reply) {
     const { page, limit, search } = request.query;
     const client = await app.pg.connect();
     try {
-      const seriesData = await client.query("SELECT * FROM series");
+      const wordsData = await client.query("SELECT * FROM words");
       return await getPaginatedData(
-        seriesData.rows,
+        wordsData.rows,
         search,
         page,
         limit,
       );
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to retrieve series' });
+      return reply.status(500).send({ error: 'Failed to retrieve words' });
     } finally {
       client.release();
     }
   }
 
-  async function createSeries(request, reply) {
-    const { name, url, review, date } = request.body;
+  async function createWord(request, reply) {
+    const { content } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "INSERT INTO series (name, url, review, date) VALUES ($1, $2, $3, $4) RETURNING *",
-        [name, url || null, review, date]
+        "INSERT INTO words (content) VALUES ($1) RETURNING *",
+        [content]
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to create series' });
+      return reply.status(500).send({ error: 'Failed to create word' });
     } finally {
       client.release();
     }
   }
 
-  async function updateSeries(request, reply) {
+  async function updateWord(request, reply) {
     const { id } = request.params;
-    const { name, url, review, date } = request.body;
+    const { content } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "UPDATE series SET name = $1, url = $2, review = $3, date = $4 WHERE id = $5 RETURNING *",
-        [name, url || null, review, date, id]
+        "UPDATE words SET content = $1 WHERE id = $2 RETURNING *",
+        [content, id]
       );
       if (result.rowCount === 0) {
-        return reply.status(404).send({ message: "Series not found" });
+        return reply.status(404).send({ message: "Word not found" });
       }
       return reply.send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to update series' });
+      return reply.status(500).send({ error: 'Failed to update word' });
     } finally {
       client.release();
     }
   }
 
-  async function deleteSeries(request, reply) {
+  async function deleteWord(request, reply) {
     const { id } = request.params;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "DELETE FROM series WHERE id = $1 RETURNING *",
+        "DELETE FROM words WHERE id = $1 RETURNING *",
         [id]
       );
       if (result.rowCount === 0) {
-        return reply.status(404).send({ message: "Series not found" });
+        return reply.status(404).send({ message: "Word not found" });
       }
-      return reply.send({ message: "Series deleted successfully" });
+      return reply.send({ message: "Word deleted successfully" });
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to delete series' });
+      return reply.status(500).send({ error: 'Failed to delete word' });
     } finally {
       client.release();
     }
@@ -101,44 +98,44 @@ export default function series(app, opts, done) {
 
   // Route definitions
   app.get(
-    "/series",
+    "/words",
     {
       schema: {
         querystring: paginationSchema
       }
     },
-    getSeriesList
+    getWords
   );
 
   app.post(
-    "/series",
+    "/words",
     {
       schema: {
-        body: seriesSchema
+        body: sentenceSchema
       }
     },
-    createSeries
+    createWord
   );
 
   app.put(
-    "/series/:id",
+    "/words/:id",
     {
       schema: {
         params: paramsSchema,
-        body: seriesSchema
+        body: sentenceSchema
       }
     },
-    updateSeries
+    updateWord
   );
 
   app.delete(
-    "/series/:id",
+    "/words/:id",
     {
       schema: {
         params: paramsSchema
       }
     },
-    deleteSeries
+    deleteWord
   );
 
   done();

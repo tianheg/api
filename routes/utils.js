@@ -29,7 +29,7 @@ export function getPaginatedData(data, searchTerm, page, limit) {
 
 export const paginationSchema = S.object()
   .prop("page", S.integer().default(1))
-  .prop("limit", S.integer().default(10))
+  .prop("limit", S.integer().default(10000))
   .prop("search", S.string().default(""))
   .required(["page", "limit", "search"]);
 
