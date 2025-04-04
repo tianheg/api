@@ -6,8 +6,5 @@ import cors from "@fastify/cors";
 
 export default fp(async (app, _) => {
   // Apply CORS globally to all routes
-  await app.register(cors, {
-    origin: "https://lifebook.tianheg.org",
-    methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
-  });
+  await app.register(cors);
 });
