@@ -5,9 +5,9 @@ import cors from "@fastify/cors";
 // avoid DoS attacks https://github.com/fastify/fastify-cors#warning-dos-attacks
 
 export default fp(async (app, _) => {
+  // Apply CORS globally to all routes
   await app.register(cors, {
     origin: "https://lifebook.tianheg.org",
     methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS"],
-    credentials: true
   });
 });
