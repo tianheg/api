@@ -39,6 +39,7 @@ const createLogger = () => {
  * Authentication middleware
  */
 const createAuthenticator = (app) => {
+  // Decorate with authenticate method but don't apply globally
   app.decorate("authenticate", async (request, reply) => {
     try {
       await request.jwtVerify();
@@ -93,7 +94,7 @@ const buildApp = async () => {
   });
 
   // Setup authentication
-  createAuthenticator(app);
+  //createAuthenticator(app);
 
   // Register plugins
   await app.register(AutoLoad, {
