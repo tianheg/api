@@ -115,7 +115,7 @@ const buildApp = async () => {
  */
 const startServer = async (app) => {
   try {
-    const port = Number.parseInt(app.secrets.PORT || "3000", 10);
+    const port = app.secrets.PORT || "3000";
     const isDev = app.secrets.NODE_ENV === "development";
     const host = isDev ? "127.0.0.1" : "0.0.0.0";
     
