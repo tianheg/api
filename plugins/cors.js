@@ -14,6 +14,7 @@ export default fp(async (app, _) => {
       // Check if origin is allowed
       const allowedOrigins = [
         'https://lifebook.tianheg.org',
+        'https://api.tianheg.org',  // Add the API domain itself
         'http://localhost:5173'  // For local development
       ];
       
