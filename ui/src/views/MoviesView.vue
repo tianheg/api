@@ -17,15 +17,13 @@ const currentMovie = ref(null);
 // Form models
 const newMovie = reactive({
   name: "",
-  review: "",
-  date: new Date().toISOString().substring(0, 10)
+  review: ""
 });
 
 const editedMovie = reactive({
   id: null,
   name: "",
-  review: "",
-  date: ""
+  review: ""
 });
 
 // Fetch all movies
@@ -63,8 +61,7 @@ const createMovie = async () => {
 
     Object.assign(newMovie, {
       name: "",
-      review: "",
-      date: new Date().toISOString().substr(0, 10)
+      review: ""
     });
     showAddForm.value = false;
     fetchMovies();
@@ -79,7 +76,6 @@ const startEdit = (movie) => {
   editedMovie.id = movie.id;
   editedMovie.name = movie.name;
   editedMovie.review = movie.review || "";
-  editedMovie.date = movie.date || new Date().toISOString().substr(0, 10);
   showEditForm.value = true;
   currentMovie.value = movie;
 };
@@ -94,8 +90,7 @@ const updateMovie = async () => {
       },
       body: JSON.stringify({
         name: editedMovie.name,
-        review: editedMovie.review,
-        date: editedMovie.date
+        review: editedMovie.review
       }),
     };
 
@@ -189,13 +184,6 @@ onMounted(fetchMovies);
                 placeholder="Movie review"></textarea>
             </div>
 
-            <div class="form-control mb-4">
-              <label class="label" for="date">
-                <span class="label-text">Date</span>
-              </label>
-              <input type="date" id="date" v-model="newMovie.date" required class="input input-bordered" />
-            </div>
-
             <div class="flex justify-end gap-2 mt-4">
               <button type="button" class="btn" @click="cancelForm">Cancel</button>
               <button type="submit" class="btn btn-primary">Save Movie</button>
@@ -224,13 +212,6 @@ onMounted(fetchMovies);
                 placeholder="Movie review"></textarea>
             </div>
 
-            <div class="form-control mb-4">
-              <label class="label" for="editDate">
-                <span class="label-text">Date</span>
-              </label>
-              <input type="date" id="editDate" v-model="editedMovie.date" required class="input input-bordered" />
-            </div>
-
             <div class="flex justify-end gap-2 mt-4">
               <button type="button" class="btn" @click="cancelForm">Cancel</button>
               <button type="submit" class="btn btn-primary">Update Movie</button>
@@ -246,7 +227,6 @@ onMounted(fetchMovies);
             <tr>
               <th>Name</th>
               <th>Review</th>
-              <th>Date</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -254,7 +234,6 @@ onMounted(fetchMovies);
             <tr v-for="movie in movies" :key="movie.id">
               <td>{{ movie.name }}</td>
               <td>{{ movie.review }}</td>
-              <td>{{ movie.date }}</td>
               <td>
                 <div class="flex gap-2">
                   <button class="btn btn-sm btn-info" @click="startEdit(movie)">Edit</button>

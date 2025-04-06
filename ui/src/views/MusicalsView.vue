@@ -17,13 +17,13 @@ const currentMusical = ref(null);
 // Form models
 const newMusical = reactive({
   name: "",
-  url: "",
+  review: "",
 });
 
 const editedMusical = reactive({
   id: null,
   name: "",
-  url: "",
+  review: "",
 });
 
 // Fetch all musicals
@@ -60,7 +60,7 @@ const createMusical = async () => {
     if (!response.ok) throw new Error("Failed to create musical");
 
     // Reset form and refresh musicals
-    Object.assign(newMusical, { name: "", url: "" });
+    Object.assign(newMusical, { name: "", review: "" });
     showAddForm.value = false;
     fetchMusicals();
   } catch (err) {
@@ -73,7 +73,7 @@ const createMusical = async () => {
 const startEdit = (item) => {
   editedMusical.id = item.id;
   editedMusical.name = item.name;
-  editedMusical.url = item.url || "";
+  editedMusical.review = item.review || "";
   showEditForm.value = true;
   currentMusical.value = item;
 };
@@ -88,7 +88,7 @@ const updateMusical = async () => {
       },
       body: JSON.stringify({
         name: editedMusical.name,
-        url: editedMusical.url,
+        review: editedMusical.review,
       }),
     };
 
@@ -180,17 +180,16 @@ onMounted(fetchMusicals);
             </div>
             
             <div class="form-control mb-4">
-              <label class="label" for="url">
-                <span class="label-text">URL</span>
+              <label class="label" for="review">
+                <span class="label-text">Review</span>
               </label>
-              <input 
-                type="url" 
-                id="url" 
-                v-model="newMusical.url"
+              <textarea 
+                id="review" 
+                v-model="newMusical.review"
                 required
-                class="input input-bordered"
-                placeholder="https://"
-              />
+                class="textarea textarea-bordered"
+                placeholder="Write your review here..."
+              ></textarea>
             </div>
             
             <div class="flex justify-end gap-2 mt-4">
@@ -220,17 +219,16 @@ onMounted(fetchMusicals);
             </div>
             
             <div class="form-control mb-4">
-              <label class="label" for="editUrl">
-                <span class="label-text">URL</span>
+              <label class="label" for="editReview">
+                <span class="label-text">Review</span>
               </label>
-              <input 
-                type="url" 
-                id="editUrl" 
-                v-model="editedMusical.url"
+              <textarea 
+                id="editReview" 
+                v-model="editedMusical.review"
                 required
-                class="input input-bordered"
-                placeholder="https://"
-              />
+                class="textarea textarea-bordered"
+                placeholder="Write your review here..."
+              ></textarea>
             </div>
             
             <div class="flex justify-end gap-2 mt-4">
@@ -247,16 +245,14 @@ onMounted(fetchMusicals);
           <thead>
             <tr>
               <th>Name</th>
-              <th>URL</th>
+              <th>Review</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="item in musicals" :key="item.id">
               <td>{{ item.name }}</td>
-              <td>
-                <a :href="item.url" target="_blank" rel="noopener noreferrer" class="link link-primary">{{ item.url }}</a>
-              </td>
+              <td>{{ item.review }}</td>
               <td>
                 <div class="flex gap-2">
                   <button class="btn btn-sm btn-info" @click="startEdit(item)">Edit</button>

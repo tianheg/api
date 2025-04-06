@@ -7,8 +7,7 @@ export default function series(app, opts, done) {
     required: ['name'],
     properties: {
       name: { type: 'string' },
-      review: { type: 'string' },
-      date: { type: 'string' }
+      review: { type: 'string' }
     }
   };
 
@@ -41,12 +40,12 @@ export default function series(app, opts, done) {
   }
 
   async function createSeries(request, reply) {
-    const { name, review, date } = request.body;
+    const { name, review } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "INSERT INTO series (name, review, date) VALUES ($1, $2, $3) RETURNING *",
-        [name, review, date]
+        "INSERT INTO series (name, review) VALUES ($1, $2) RETURNING *",
+        [name, review]
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
@@ -59,12 +58,12 @@ export default function series(app, opts, done) {
 
   async function updateSeries(request, reply) {
     const { id } = request.params;
-    const { name, review, date } = request.body;
+    const { name, review } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "UPDATE series SET name = $1, review = $2, date = $3 WHERE id = $4 RETURNING *",
-        [name, review, date, id]
+        "UPDATE series SET name = $1, review = $2 WHERE id = $3 RETURNING *",
+        [name, review, id]
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Series not found" });

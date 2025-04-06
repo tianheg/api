@@ -4,10 +4,10 @@ export default function musicals(app, opts, done) {
   // Define schemas for validation
   const musicalSchema = {
     type: 'object',
-    required: ['name', 'url'],
+    required: ['name', 'review'],
     properties: {
       name: { type: 'string' },
-      url: { type: 'string', format: 'uri' }
+      review: { type: 'string' }
     }
   };
 
@@ -40,12 +40,12 @@ export default function musicals(app, opts, done) {
   }
 
   async function createMusical(request, reply) {
-    const { name, url } = request.body;
+    const { name, review } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "INSERT INTO musicals (name, url) VALUES ($1, $2) RETURNING *",
-        [name, url]
+        "INSERT INTO musicals (name, review) VALUES ($1, $2) RETURNING *",
+        [name, review]
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
@@ -58,12 +58,12 @@ export default function musicals(app, opts, done) {
 
   async function updateMusical(request, reply) {
     const { id } = request.params;
-    const { name, url } = request.body;
+    const { name, review } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "UPDATE musicals SET name = $1, url = $2 WHERE id = $3 RETURNING *",
-        [name, url, id]
+        "UPDATE musicals SET name = $1, review = $2 WHERE id = $3 RETURNING *",
+        [name, review, id]
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Musical not found" });

@@ -17,15 +17,13 @@ const currentSeries = ref(null);
 // Form models
 const newSeries = reactive({
   name: "",
-  review: "",
-  date: new Date().toISOString().split('T')[0] // Initialize with today's date
+  review: ""
 });
 
 const editedSeries = reactive({
   id: null,
   name: "",
-  review: "",
-  date: ""
+  review: ""
 });
 
 // Fetch all series
@@ -62,7 +60,7 @@ const createSeries = async () => {
     if (!response.ok) throw new Error("Failed to create series");
 
     // Reset form and refresh series
-    Object.assign(newSeries, { name: "", review: "", date: new Date().toISOString().split('T')[0] });
+    Object.assign(newSeries, { name: "", review: "" });
     showAddForm.value = false;
     fetchSeries();
   } catch (err) {
@@ -76,7 +74,6 @@ const startEdit = (item) => {
   editedSeries.id = item.id;
   editedSeries.name = item.name;
   editedSeries.review = item.review;
-  editedSeries.date = item.date;
   showEditForm.value = true;
   currentSeries.value = item;
 };
@@ -91,8 +88,7 @@ const updateSeries = async () => {
       },
       body: JSON.stringify({
         name: editedSeries.name,
-        review: editedSeries.review,
-        date: editedSeries.date
+        review: editedSeries.review
       }),
     };
 
@@ -196,19 +192,6 @@ onMounted(fetchSeries);
               ></textarea>
             </div>
             
-            <div class="form-control mb-4">
-              <label class="label" for="date">
-                <span class="label-text">Date</span>
-              </label>
-              <input 
-                type="date" 
-                id="date" 
-                v-model="newSeries.date"
-                required
-                class="input input-bordered"
-              />
-            </div>
-            
             <div class="flex justify-end gap-2 mt-4">
               <button type="button" class="btn" @click="cancelForm">Cancel</button>
               <button type="submit" class="btn btn-primary">Save Series</button>
@@ -248,19 +231,6 @@ onMounted(fetchSeries);
               ></textarea>
             </div>
             
-            <div class="form-control mb-4">
-              <label class="label" for="editDate">
-                <span class="label-text">Date</span>
-              </label>
-              <input 
-                type="date" 
-                id="editDate" 
-                v-model="editedSeries.date"
-                required
-                class="input input-bordered"
-              />
-            </div>
-            
             <div class="flex justify-end gap-2 mt-4">
               <button type="button" class="btn" @click="cancelForm">Cancel</button>
               <button type="submit" class="btn btn-primary">Update Series</button>
@@ -276,7 +246,6 @@ onMounted(fetchSeries);
             <tr>
               <th>Name</th>
               <th>Review</th>
-              <th>Date</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -284,7 +253,6 @@ onMounted(fetchSeries);
             <tr v-for="item in series" :key="item.id">
               <td>{{ item.name }}</td>
               <td>{{ item.review }}</td>
-              <td>{{ new Date(item.date).toLocaleDateString() }}</td>
               <td>
                 <div class="flex gap-2">
                   <button class="btn btn-sm btn-info" @click="startEdit(item)">Edit</button>
