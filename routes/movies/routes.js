@@ -4,13 +4,11 @@ export default function movies(app, opts, done) {
   // Define schemas for validation
   const movieSchema = {
     type: 'object',
-    required: ['name', 'review', 'date'], // Remove url from required fields
+    required: ['name'],
     properties: {
       name: { type: 'string' },
-      url: { type: 'string', format: 'uri' }, // Still validate as URI if provided
       review: { type: 'string' },
-      date: { type: 'string', format: 'date' },
-      csrfToken: { type: 'string' } // Add CSRF token to schema
+      date: { type: 'string', format: 'date' }
     }
   };
 
@@ -43,12 +41,12 @@ export default function movies(app, opts, done) {
   }
 
   async function createMovie(request, reply) {
-    const { name, url, review, date } = request.body;
+    const { name, review, date } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "INSERT INTO movies (name, url, review, date) VALUES ($1, $2, $3, $4) RETURNING *",
-        [name, url || null, review, date] // Allow null URL
+        "INSERT INTO movies (name, review, date) VALUES ($1, $2, $3) RETURNING *",
+        [name, review, date]
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
@@ -61,12 +59,12 @@ export default function movies(app, opts, done) {
 
   async function updateMovie(request, reply) {
     const { id } = request.params;
-    const { name, url, review, date } = request.body;
+    const { name, review, date } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "UPDATE movies SET name = $1, url = $2, review = $3, date = $4 WHERE id = $5 RETURNING *",
-        [name, url || null, review, date, id] // Allow null URL
+        "UPDATE movies SET name = $1, review = $2, date = $3 WHERE id = $4 RETURNING *",
+        [name, review, date, id]
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Movie not found" });
@@ -114,7 +112,6 @@ export default function movies(app, opts, done) {
   app.post(
     "/movies",
     {
-      preHandler: app.csrfProtect,
       schema: {
         body: movieSchema
       }
@@ -125,7 +122,6 @@ export default function movies(app, opts, done) {
   app.put(
     "/movies/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: movieSchema
@@ -137,7 +133,6 @@ export default function movies(app, opts, done) {
   app.delete(
     "/movies/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }

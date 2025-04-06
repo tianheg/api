@@ -6,21 +6,16 @@ export default async function (app) {
   app.post('/auth/magic-link', {
     schema: {
       body: S.object()
-        .prop('email', S.string().format('email').required())
-        .prop('csrfToken', S.string()),  // Add CSRF token to schema
+        .prop('email', S.string().format('email').required()),
       response: {
         200: S.object()
           .prop('success', S.boolean())
           .prop('message', S.string()),
         400: S.object()
           .prop('error', S.string())
-          .prop('message', S.string()),
-        403: S.object()  // Add 403 response for CSRF errors
-          .prop('error', S.string())
           .prop('message', S.string())
       }
-    },
-    // Add CSRF protection
+    }
   }, async (request, reply) => {
     const { email } = request.body;
 
@@ -70,22 +65,16 @@ export default async function (app) {
   app.post('/auth/verify', {
     schema: {
       body: S.object()
-        .prop('token', S.string().required())
-        .prop('csrfToken', S.string()),  // Add CSRF token to schema
+        .prop('token', S.string().required()),
       response: {
         200: S.object()
           .prop('token', S.string())
-          .prop('user', S.object().prop('email', S.string()))
-          .prop('csrfToken', S.string()),  // Add CSRF token to response
+          .prop('user', S.object().prop('email', S.string())),
         401: S.object()
-          .prop('error', S.string())
-          .prop('message', S.string()),
-        403: S.object()  // Add 403 response for CSRF errors
           .prop('error', S.string())
           .prop('message', S.string())
       }
-    },
-     // Add CSRF protection
+    }
   }, async (request, reply) => {
     const { token } = request.body;
 
@@ -130,13 +119,9 @@ export default async function (app) {
         { expiresIn: '7d' } // Token expires in 7 days
       );
 
-      // Generate a new CSRF token for the authenticated session
-      const csrfToken = await reply.generateCsrf();
-
       return {
         token: jwtToken,
-        user: { email },
-        csrfToken: csrfToken  // Return the new CSRF token with the JWT
+        user: { email }
       };
     } catch (error) {
       app.log.error(error);
@@ -158,30 +143,21 @@ export default async function (app) {
   // Logout endpoint
   app.post('/auth/logout', {
     schema: {
-      body: S.object()
-        .prop('csrfToken', S.string()),
       response: {
         200: S.object()
           .prop('success', S.boolean())
-          .prop('message', S.string()),
-        403: S.object()
-          .prop('error', S.string())
           .prop('message', S.string())
       }
     },
-    preHandler: [app.authenticate,]
+    preHandler: [app.authenticate]
   }, async (request, reply) => {
     try {
       // In a more advanced implementation, you could store the token in a blacklist
       // or have a dedicated revocation mechanism
       
-      // Generate a new CSRF token to invalidate the old one
-      const newCsrfToken = await reply.generateCsrf();
-      
       return {
         success: true,
-        message: 'Successfully logged out',
-        csrfToken: newCsrfToken
+        message: 'Successfully logged out'
       };
     } catch (error) {
       app.log.error(error);

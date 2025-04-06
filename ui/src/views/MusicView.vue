@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -48,14 +47,13 @@ const fetchMusic = async () => {
 // Create a new music
 const createMusic = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newMusic),
-    });
+    };
 
     const response = await fetch(`${API_URL}/music`, requestOptions);
 
@@ -83,8 +81,7 @@ const startEdit = (music) => {
 // Update a music
 const updateMusic = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -93,7 +90,7 @@ const updateMusic = async () => {
         name: editedMusic.name,
         url: editedMusic.url,
       }),
-    });
+    };
 
     const response = await fetch(`${API_URL}/music/${editedMusic.id}`, requestOptions);
 
@@ -114,10 +111,9 @@ const deleteMusic = async (id) => {
   if (!confirm("Are you sure you want to delete this music?")) return;
 
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "DELETE",
-    });
+    };
 
     const response = await fetch(`${API_URL}/music/${id}`, requestOptions);
 

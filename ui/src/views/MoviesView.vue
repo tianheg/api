@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -50,14 +49,13 @@ const fetchMovies = async () => {
 // Create a new movie
 const createMovie = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newMovie),
-    });
+    };
 
     const response = await fetch(`${API_URL}/movies`, requestOptions);
 
@@ -89,8 +87,7 @@ const startEdit = (movie) => {
 // Update a movie
 const updateMovie = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -100,7 +97,7 @@ const updateMovie = async () => {
         review: editedMovie.review,
         date: editedMovie.date
       }),
-    });
+    };
 
     const response = await fetch(`${API_URL}/movies/${editedMovie.id}`, requestOptions);
 
@@ -120,10 +117,9 @@ const deleteMovie = async (id) => {
   if (!confirm("Are you sure you want to delete this movie?")) return;
 
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "DELETE",
-    });
+    };
 
     const response = await fetch(`${API_URL}/movies/${id}`, requestOptions);
 

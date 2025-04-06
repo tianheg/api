@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -50,14 +49,13 @@ const fetchSeries = async () => {
 // Create a new series
 const createSeries = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newSeries),
-    });
+    };
 
     const response = await fetch(`${API_URL}/series`, requestOptions);
 
@@ -86,8 +84,7 @@ const startEdit = (item) => {
 // Update a series
 const updateSeries = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -97,7 +94,7 @@ const updateSeries = async () => {
         review: editedSeries.review,
         date: editedSeries.date
       }),
-    });
+    };
 
     const response = await fetch(`${API_URL}/series/${editedSeries.id}`, requestOptions);
 
@@ -118,10 +115,9 @@ const deleteSeries = async (id) => {
   if (!confirm("Are you sure you want to delete this series?")) return;
 
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "DELETE",
-    });
+    };
 
     const response = await fetch(`${API_URL}/series/${id}`, requestOptions);
 

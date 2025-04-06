@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -48,14 +47,13 @@ const fetchBooks = async () => {
 // Create a new book
 const createBook = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newBook),
-    });
+    };
 
     const response = await fetch(`${API_URL}/books`, requestOptions);
 
@@ -83,8 +81,7 @@ const startEdit = (book) => {
 // Update a book
 const updateBook = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -93,7 +90,7 @@ const updateBook = async () => {
         name: editedBook.name,
         url: editedBook.url,
       }),
-    });
+    };
 
     const response = await fetch(`${API_URL}/books/${editedBook.id}`, requestOptions);
 
@@ -114,10 +111,9 @@ const deleteBook = async (id) => {
   if (!confirm("Are you sure you want to delete this book?")) return;
 
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "DELETE",
-    });
+    };
 
     const response = await fetch(`${API_URL}/books/${id}`, requestOptions);
 

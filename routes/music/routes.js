@@ -4,11 +4,10 @@ export default function music(app, opts, done) {
   // Define schemas for validation
   const musicSchema = {
     type: 'object',
-    required: ['name', 'url'],
+    required: ['name'],
     properties: {
       name: { type: 'string' },
-      url: { type: 'string', format: 'uri' },
-      csrfToken: { type: 'string' } // Add CSRF token to schema
+      url: { type: 'string', format: 'uri' }
     }
   };
 
@@ -112,7 +111,6 @@ export default function music(app, opts, done) {
   app.post(
     "/music",
     {
-      preHandler: app.csrfProtect,
       schema: {
         body: musicSchema
       }
@@ -123,7 +121,6 @@ export default function music(app, opts, done) {
   app.put(
     "/music/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: musicSchema
@@ -135,7 +132,6 @@ export default function music(app, opts, done) {
   app.delete(
     "/music/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }

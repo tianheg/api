@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -52,14 +51,13 @@ const fetchFeeds = async () => {
 // Create a new feed
 const createFeed = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newFeed),
-    });
+    };
 
     const response = await fetch(`${API_URL}/feeds`, requestOptions);
 
@@ -88,8 +86,7 @@ const startEdit = (feed) => {
 // Update a feed
 const updateFeed = async () => {
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -100,7 +97,7 @@ const updateFeed = async () => {
         description: editedFeed.description,
         rss: editedFeed.rss,
       }),
-    });
+    };
 
     const response = await fetch(`${API_URL}/feeds/${editedFeed.id}`, requestOptions);
 
@@ -120,10 +117,9 @@ const deleteFeed = async (id) => {
   if (!confirm("Are you sure you want to delete this feed?")) return;
 
   try {
-    // Prepare request with CSRF token
-    const requestOptions = await csrfService.addTokenToRequest({
+    const requestOptions = {
       method: "DELETE",
-    });
+    };
 
     const response = await fetch(`${API_URL}/feeds/${id}`, requestOptions);
 

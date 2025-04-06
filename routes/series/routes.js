@@ -4,13 +4,11 @@ export default function series(app, opts, done) {
   // Define schemas for validation
   const seriesSchema = {
     type: 'object',
-    required: ['name', 'review', 'date'],
+    required: ['name'],
     properties: {
       name: { type: 'string' },
-      url: { type: 'string', format: 'uri' }, // Add URL as optional field
       review: { type: 'string' },
-      date: { type: 'string', format: 'date' },
-      csrfToken: { type: 'string' } // Add CSRF token to schema
+      date: { type: 'string' }
     }
   };
 
@@ -43,12 +41,12 @@ export default function series(app, opts, done) {
   }
 
   async function createSeries(request, reply) {
-    const { name, url, review, date } = request.body;
+    const { name, review, date } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "INSERT INTO series (name, url, review, date) VALUES ($1, $2, $3, $4) RETURNING *",
-        [name, url || null, review, date]
+        "INSERT INTO series (name, review, date) VALUES ($1, $2, $3) RETURNING *",
+        [name, review, date]
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
@@ -61,12 +59,12 @@ export default function series(app, opts, done) {
 
   async function updateSeries(request, reply) {
     const { id } = request.params;
-    const { name, url, review, date } = request.body;
+    const { name, review, date } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "UPDATE series SET name = $1, url = $2, review = $3, date = $4 WHERE id = $5 RETURNING *",
-        [name, url || null, review, date, id]
+        "UPDATE series SET name = $1, review = $2, date = $3 WHERE id = $4 RETURNING *",
+        [name, review, date, id]
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Series not found" });
@@ -114,7 +112,6 @@ export default function series(app, opts, done) {
   app.post(
     "/series",
     {
-      preHandler: app.csrfProtect,
       schema: {
         body: seriesSchema
       }
@@ -125,7 +122,6 @@ export default function series(app, opts, done) {
   app.put(
     "/series/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: seriesSchema
@@ -137,7 +133,6 @@ export default function series(app, opts, done) {
   app.delete(
     "/series/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }

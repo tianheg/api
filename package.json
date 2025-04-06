@@ -12,9 +12,7 @@
   "dependencies": {
     "@fastify/autoload": "^6.3.0",
     "@fastify/compress": "^8.0.1",
-    "@fastify/cookie": "^11.0.2",
     "@fastify/cors": "^10.1.0",
-    "@fastify/csrf-protection": "^7.1.0",
     "@fastify/env": "^5.0.2",
     "@fastify/formbody": "^8.0.2",
     "@fastify/helmet": "^13.0.1",
@@ -34,7 +32,6 @@
   },
   "scripts": {
     "dev": "nodemon .",
-    "test": "tap --bail --timeout=5000 *.test.js",
     "lint": "biome check --write .",
     "start": "node app.js"
   },

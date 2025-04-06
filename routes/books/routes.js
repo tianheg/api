@@ -7,8 +7,7 @@ export default function books(app, opts, done) {
     required: ['name', 'url'],
     properties: {
       name: { type: 'string' },
-      url: { type: 'string', format: 'uri' },
-      csrfToken: { type: 'string' } // Add CSRF token to schema
+      url: { type: 'string', format: 'uri' }
     }
   };
 
@@ -112,7 +111,6 @@ export default function books(app, opts, done) {
   app.post(
     "/books",
     {
-      preHandler: app.csrfProtect,
       schema: {
         body: bookSchema
       }
@@ -123,7 +121,6 @@ export default function books(app, opts, done) {
   app.put(
     "/books/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: bookSchema
@@ -135,7 +132,6 @@ export default function books(app, opts, done) {
   app.delete(
     "/books/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }

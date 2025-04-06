@@ -1,13 +1,12 @@
 import { getPaginatedData, paginationSchema } from "../utils.js";
 
-export default function words(app, opts, done) {
+export default function sentences(app, opts, done) {
   // Define schemas for validation
   const sentenceSchema = {
     type: 'object',
     required: ['content'],
     properties: {
-      content: { type: 'string' },
-      csrfToken: { type: 'string' } // Add CSRF token to schema
+      content: { type: 'string' }
     }
   };
 
@@ -20,78 +19,78 @@ export default function words(app, opts, done) {
   };
 
   // Handler functions
-  async function getWords(request, reply) {
+  async function getSentences(request, reply) {
     const { page, limit, search } = request.query;
     const client = await app.pg.connect();
     try {
-      const wordsData = await client.query("SELECT * FROM words");
+      const sentencesData = await client.query("SELECT * FROM sentences");
       return await getPaginatedData(
-        wordsData.rows,
+        sentencesData.rows,
         search,
         page,
         limit,
       );
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to retrieve words' });
+      return reply.status(500).send({ error: 'Failed to retrieve sentences' });
     } finally {
       client.release();
     }
   }
 
-  async function createWord(request, reply) {
+  async function createSentence(request, reply) {
     const { content } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "INSERT INTO words (content) VALUES ($1) RETURNING *",
+        "INSERT INTO sentences (content) VALUES ($1) RETURNING *",
         [content]
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to create word' });
+      return reply.status(500).send({ error: 'Failed to create sentence' });
     } finally {
       client.release();
     }
   }
 
-  async function updateWord(request, reply) {
+  async function updateSentence(request, reply) {
     const { id } = request.params;
     const { content } = request.body;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "UPDATE words SET content = $1 WHERE id = $2 RETURNING *",
+        "UPDATE sentences SET content = $1 WHERE id = $2 RETURNING *",
         [content, id]
       );
       if (result.rowCount === 0) {
-        return reply.status(404).send({ message: "Word not found" });
+        return reply.status(404).send({ message: "Sentence not found" });
       }
       return reply.send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to update word' });
+      return reply.status(500).send({ error: 'Failed to update sentence' });
     } finally {
       client.release();
     }
   }
 
-  async function deleteWord(request, reply) {
+  async function deleteSentence(request, reply) {
     const { id } = request.params;
     const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "DELETE FROM words WHERE id = $1 RETURNING *",
+        "DELETE FROM sentences WHERE id = $1 RETURNING *",
         [id]
       );
       if (result.rowCount === 0) {
-        return reply.status(404).send({ message: "Word not found" });
+        return reply.status(404).send({ message: "Sentence not found" });
       }
-      return reply.send({ message: "Word deleted successfully" });
+      return reply.send({ message: "Sentence deleted successfully" });
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to delete word' });
+      return reply.status(500).send({ error: 'Failed to delete sentence' });
     } finally {
       client.release();
     }
@@ -99,47 +98,44 @@ export default function words(app, opts, done) {
 
   // Route definitions
   app.get(
-    "/words",
+    "/sentences",
     {
       schema: {
         querystring: paginationSchema
       }
     },
-    getWords
+    getSentences
   );
 
   app.post(
-    "/words",
+    "/sentences",
     {
-      preHandler: app.csrfProtect,
       schema: {
         body: sentenceSchema
       }
     },
-    createWord
+    createSentence
   );
 
   app.put(
-    "/words/:id",
+    "/sentences/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: sentenceSchema
       }
     },
-    updateWord
+    updateSentence
   );
 
   app.delete(
-    "/words/:id",
+    "/sentences/:id",
     {
-      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }
     },
-    deleteWord
+    deleteSentence
   );
 
   done();
