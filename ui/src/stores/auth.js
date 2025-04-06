@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
   const token = ref(localStorage.getItem('token') || null);
@@ -28,7 +30,7 @@ export const useAuthStore = defineStore('auth', () => {
   // Fetch a CSRF token
   const fetchCsrfToken = async () => {
     try {
-      const response = await fetch('/api/csrf/token');
+      const response = await fetch(`${API_URL}/csrf/token`);
       if (!response.ok) {
         throw new Error('Failed to fetch CSRF token');
       }
@@ -53,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
         await fetchCsrfToken();
       }
 
-      const response = await fetch('/api/auth/magic-link', {
+      const response = await fetch(`${API_URL}/auth/magic-link`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +98,7 @@ export const useAuthStore = defineStore('auth', () => {
         await fetchCsrfToken();
       }
       
-      const response = await fetch('/api/auth/verify', {
+      const response = await fetch(`${API_URL}/auth/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -138,16 +140,62 @@ export const useAuthStore = defineStore('auth', () => {
   };
 
   // Logout user
-  const logout = () => {
-    user.value = null;
-    token.value = null;
-    csrfToken.value = null;
-    localStorage.removeItem('token');
-    localStorage.removeItem('csrfToken');
+  const logout = async () => {
+    try {
+      if (token.value) {
+        // Call the backend logout API if we have a token
+        const response = await fetch(`${API_URL}/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token.value}`,
+            'X-CSRF-Token': csrfToken.value
+          },
+          body: JSON.stringify({ 
+            csrfToken: csrfToken.value
+          })
+        });
+        
+        if (!response.ok) {
+          console.error('Logout failed on server:', await response.text());
+        }
+      }
+    } catch (err) {
+      console.error('Error during logout:', err);
+    } finally {
+      // Always clear local state regardless of server response
+      user.value = null;
+      token.value = null;
+      csrfToken.value = null;
+      localStorage.removeItem('token');
+      localStorage.removeItem('csrfToken');
+    }
   };
 
   // Check if user is authenticated
-  const isAuthenticated = () => !!token.value;
+  const isAuthenticated = () => {
+    if (!token.value) return false;
+
+    try {
+      const base64Url = token.value.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(window.atob(base64));
+
+      // Check if the token is expired
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (payload.exp && payload.exp < currentTime) {
+        // Token is expired, clear it
+        logout();
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      // Invalid token format
+      logout();
+      return false;
+    }
+  };
 
   return {
     user,

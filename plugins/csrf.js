@@ -1,8 +1,14 @@
-// filepath: /mnt/disk/MAIN/api/plugins/csrf.js
 import fp from "fastify-plugin";
 import csrfProtection from "@fastify/csrf-protection";
+import cookie from '@fastify/cookie';
 
 export default fp(async (app, _) => {
+  // Register cookie plugin before CSRF protection
+  await app.register(cookie, {
+    secret: app.secrets.COOKIE_SECRET || 'fallback-dev-only', // Use environment variable
+    parseOptions: {},
+  });
+
   await app.register(csrfProtection, {
     // Use sessionPlugin to store CSRF secret in session cookie
     sessionPlugin: '@fastify/cookie',

@@ -78,7 +78,7 @@ router.beforeEach((to, from, next) => {
   
   // Routes that require authentication
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!authStore.isAuthenticated) {
+    if (!authStore.isAuthenticated()) {
       next({ name: 'login', query: { redirect: to.fullPath } });
     } else {
       next();
@@ -86,7 +86,7 @@ router.beforeEach((to, from, next) => {
   }
   // Routes that are only accessible for guests
   else if (to.matched.some(record => record.meta.guestOnly)) {
-    if (authStore.isAuthenticated) {
+    if (authStore.isAuthenticated()) {
       next({ name: 'home' });
     } else {
       next();

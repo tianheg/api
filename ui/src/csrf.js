@@ -1,5 +1,4 @@
-// filepath: /mnt/disk/MAIN/api/ui/src/services/csrf.js
-import { useAuthStore } from './stores/auth';
+import { useAuthStore } from '@/stores/auth';
 
 export const csrfService = {
   async getToken() {

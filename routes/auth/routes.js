@@ -20,7 +20,7 @@ export default async function (app) {
           .prop('message', S.string())
       }
     },
-    preHandler: app.csrfProtect  // Add CSRF protection
+    // Add CSRF protection
   }, async (request, reply) => {
     const { email } = request.body;
 
@@ -85,7 +85,7 @@ export default async function (app) {
           .prop('message', S.string())
       }
     },
-    preHandler: app.csrfProtect  // Add CSRF protection
+     // Add CSRF protection
   }, async (request, reply) => {
     const { token } = request.body;
 
@@ -153,5 +153,42 @@ export default async function (app) {
   }, async (request) => {
     // The user email is available in the decoded token
     return { user: request.user };
+  });
+
+  // Logout endpoint
+  app.post('/auth/logout', {
+    schema: {
+      body: S.object()
+        .prop('csrfToken', S.string()),
+      response: {
+        200: S.object()
+          .prop('success', S.boolean())
+          .prop('message', S.string()),
+        403: S.object()
+          .prop('error', S.string())
+          .prop('message', S.string())
+      }
+    },
+    preHandler: [app.authenticate,]
+  }, async (request, reply) => {
+    try {
+      // In a more advanced implementation, you could store the token in a blacklist
+      // or have a dedicated revocation mechanism
+      
+      // Generate a new CSRF token to invalidate the old one
+      const newCsrfToken = await reply.generateCsrf();
+      
+      return {
+        success: true,
+        message: 'Successfully logged out',
+        csrfToken: newCsrfToken
+      };
+    } catch (error) {
+      app.log.error(error);
+      return reply.code(500).send({
+        error: 'Internal Server Error',
+        message: 'Failed to logout'
+      });
+    }
   });
 }

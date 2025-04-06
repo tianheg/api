@@ -20,6 +20,7 @@ const envSchema = {
     JWT_SECRET: { type: "string" },
     NODE_ENV: { type: "string", default: "development" },
     PORT: { type: "string", default: "3000" },
+    COOKIE_SECRET: { type: "string" },
     // Email configuration
     EMAIL_SMTP_HOST: { type: "string" },
     EMAIL_SMTP_PORT: { type: "string" },

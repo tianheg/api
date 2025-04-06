@@ -2,16 +2,18 @@
 import { RouterLink, RouterView } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { computed } from "vue";
+import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
-const isAuthenticated = computed(() => authStore.isAuthenticated);
+const isAuthenticated = computed(() => authStore.isAuthenticated());
 const user = computed(() => authStore.user);
-
-const logout = () => {
-  authStore.logout();
-  // Redirect to home or login page after logout
-  window.location.href = '/';
+const logout = authStore.logout;
+const router = useRouter();
+const logoutAndRedirect = () => {
+  logout();
+  router.push('/login');
 };
+
 </script>
 
 <template>
@@ -50,7 +52,7 @@ const logout = () => {
                   {{ user?.email || 'Account' }}
                 </label>
                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                  <li><button @click="logout">Logout</button></li>
+                  <li><button @click="logoutAndRedirect">Logout</button></li>
                 </ul>
               </div>
             </template>
