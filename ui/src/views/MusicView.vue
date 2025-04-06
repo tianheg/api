@@ -92,7 +92,10 @@ const updateMusic = async () => {
       }),
     };
 
-    const response = await fetch(`${API_URL}/music/${editedMusic.id}`, requestOptions);
+    const response = await fetch(
+      `${API_URL}/music/${editedMusic.id}`,
+      requestOptions,
+    );
 
     if (!response.ok) throw new Error("Failed to update music");
 

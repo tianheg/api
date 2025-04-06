@@ -3,20 +3,20 @@ import { getPaginatedData, paginationSchema } from "../utils.js";
 export default function series(app, opts, done) {
   // Define schemas for validation
   const seriesSchema = {
-    type: 'object',
-    required: ['name'],
+    type: "object",
+    required: ["name"],
     properties: {
-      name: { type: 'string' },
-      review: { type: 'string' }
-    }
+      name: { type: "string" },
+      review: { type: "string" },
+    },
   };
 
   const paramsSchema = {
-    type: 'object',
-    required: ['id'],
+    type: "object",
+    required: ["id"],
     properties: {
-      id: { type: 'integer' }
-    }
+      id: { type: "integer" },
+    },
   };
 
   // Handler functions
@@ -25,15 +25,10 @@ export default function series(app, opts, done) {
     const client = await app.pg.connect();
     try {
       const seriesData = await client.query("SELECT * FROM series");
-      return await getPaginatedData(
-        seriesData.rows,
-        search,
-        page,
-        limit,
-      );
+      return await getPaginatedData(seriesData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to retrieve series' });
+      return reply.status(500).send({ error: "Failed to retrieve series" });
     } finally {
       client.release();
     }
@@ -45,12 +40,12 @@ export default function series(app, opts, done) {
     try {
       const result = await client.query(
         "INSERT INTO series (name, review) VALUES ($1, $2) RETURNING *",
-        [name, review]
+        [name, review],
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to create series' });
+      return reply.status(500).send({ error: "Failed to create series" });
     } finally {
       client.release();
     }
@@ -63,7 +58,7 @@ export default function series(app, opts, done) {
     try {
       const result = await client.query(
         "UPDATE series SET name = $1, review = $2 WHERE id = $3 RETURNING *",
-        [name, review, id]
+        [name, review, id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Series not found" });
@@ -71,7 +66,7 @@ export default function series(app, opts, done) {
       return reply.send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to update series' });
+      return reply.status(500).send({ error: "Failed to update series" });
     } finally {
       client.release();
     }
@@ -83,7 +78,7 @@ export default function series(app, opts, done) {
     try {
       const result = await client.query(
         "DELETE FROM series WHERE id = $1 RETURNING *",
-        [id]
+        [id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Series not found" });
@@ -91,7 +86,7 @@ export default function series(app, opts, done) {
       return reply.send({ message: "Series deleted successfully" });
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to delete series' });
+      return reply.status(500).send({ error: "Failed to delete series" });
     } finally {
       client.release();
     }
@@ -102,20 +97,20 @@ export default function series(app, opts, done) {
     "/series",
     {
       schema: {
-        querystring: paginationSchema
-      }
+        querystring: paginationSchema,
+      },
     },
-    getSeriesList
+    getSeriesList,
   );
 
   app.post(
     "/series",
     {
       schema: {
-        body: seriesSchema
-      }
+        body: seriesSchema,
+      },
     },
-    createSeries
+    createSeries,
   );
 
   app.put(
@@ -123,20 +118,20 @@ export default function series(app, opts, done) {
     {
       schema: {
         params: paramsSchema,
-        body: seriesSchema
-      }
+        body: seriesSchema,
+      },
     },
-    updateSeries
+    updateSeries,
   );
 
   app.delete(
     "/series/:id",
     {
       schema: {
-        params: paramsSchema
-      }
+        params: paramsSchema,
+      },
     },
-    deleteSeries
+    deleteSeries,
   );
 
   done();

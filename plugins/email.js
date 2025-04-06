@@ -1,27 +1,27 @@
-import fp from 'fastify-plugin';
-import nodemailer from 'nodemailer';
+import fp from "fastify-plugin";
+import nodemailer from "nodemailer";
 
 export default fp(async (app, _) => {
   // Get email configuration from environment variables using updated variable names
-  const { 
+  const {
     EMAIL_SMTP_HOST,
-    EMAIL_SMTP_PORT, 
-    EMAIL_SMTP_USER, 
-    EMAIL_SMTP_PASS, 
-    EMAIL_FROM 
+    EMAIL_SMTP_PORT,
+    EMAIL_SMTP_USER,
+    EMAIL_SMTP_PASS,
+    EMAIL_FROM,
   } = app.secrets;
-  
+
   // Create a testing account if credentials not provided
   let testAccount = null;
   let transporter;
-  
+
   if (!EMAIL_SMTP_HOST || !EMAIL_SMTP_USER) {
     // Create testing account for development
-    app.log.info('No SMTP credentials found, creating test account');
+    app.log.info("No SMTP credentials found, creating test account");
     testAccount = await nodemailer.createTestAccount();
-    
+
     transporter = nodemailer.createTransport({
-      host: 'smtp.ethereal.email',
+      host: "smtp.ethereal.email",
       port: 587,
       secure: false,
       auth: {
@@ -29,28 +29,28 @@ export default fp(async (app, _) => {
         pass: testAccount.pass,
       },
     });
-    
+
     app.log.info(`Test email account created: ${testAccount.user}`);
   } else {
     // Use configured SMTP server
     transporter = nodemailer.createTransport({
       host: EMAIL_SMTP_HOST,
       port: EMAIL_SMTP_PORT || 587,
-      secure: EMAIL_SMTP_PORT === '465',
+      secure: EMAIL_SMTP_PORT === "465",
       auth: {
         user: EMAIL_SMTP_USER,
         pass: EMAIL_SMTP_PASS,
       },
     });
   }
-  
+
   // Add email service to fastify instance
-  app.decorate('email', {
+  app.decorate("email", {
     async sendMagicLink(to, magicLink) {
       const info = await transporter.sendMail({
         from: EMAIL_FROM || '"Magic Link Service" <noreply@example.com>',
         to,
-        subject: 'Your Magic Login Link',
+        subject: "Your Magic Login Link",
         text: `Click this link to log in: ${magicLink}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -69,13 +69,13 @@ export default fp(async (app, _) => {
           </div>
         `,
       });
-      
+
       // For ethereal test accounts, provide the preview URL
       if (testAccount) {
         app.log.info(`Preview URL: ${nodemailer.getTestMessageUrl(info)}`);
       }
-      
+
       return info;
-    }
+    },
   });
 });

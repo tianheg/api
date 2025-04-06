@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from "@/stores/auth";
+import { onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
@@ -14,20 +14,20 @@ onMounted(async () => {
   try {
     // Get token from URL and validate it
     const token = route.query.token;
-    
-    if (!token || typeof token !== 'string') {
-      error.value = 'Invalid or missing verification token';
+
+    if (!token || typeof token !== "string") {
+      error.value = "Invalid or missing verification token";
       verifying.value = false;
       return;
     }
-    
+
     // Call the verify endpoint with the string token
     await authStore.verifyMagicLink(token);
 
-    router.push('/');
+    router.push("/");
   } catch (err) {
-    console.error('Verification error:', err);
-    error.value = err.message || 'Failed to verify magic link';
+    console.error("Verification error:", err);
+    error.value = err.message || "Failed to verify magic link";
     verifying.value = false;
   }
 });

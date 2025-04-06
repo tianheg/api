@@ -17,13 +17,13 @@ const currentMovie = ref(null);
 // Form models
 const newMovie = reactive({
   name: "",
-  review: ""
+  review: "",
 });
 
 const editedMovie = reactive({
   id: null,
   name: "",
-  review: ""
+  review: "",
 });
 
 // Fetch all movies
@@ -61,7 +61,7 @@ const createMovie = async () => {
 
     Object.assign(newMovie, {
       name: "",
-      review: ""
+      review: "",
     });
     showAddForm.value = false;
     fetchMovies();
@@ -90,11 +90,14 @@ const updateMovie = async () => {
       },
       body: JSON.stringify({
         name: editedMovie.name,
-        review: editedMovie.review
+        review: editedMovie.review,
       }),
     };
 
-    const response = await fetch(`${API_URL}/movies/${editedMovie.id}`, requestOptions);
+    const response = await fetch(
+      `${API_URL}/movies/${editedMovie.id}`,
+      requestOptions,
+    );
 
     if (!response.ok) throw new Error("Failed to update movie");
 

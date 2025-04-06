@@ -1,12 +1,12 @@
-import Fastify from "fastify";
-import AutoLoad from "@fastify/autoload";
-import Env from "@fastify/env";
-import pino from "pino";
-import pretty from "pino-pretty";
-import { join } from "desm";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import AutoLoad from "@fastify/autoload";
+import Env from "@fastify/env";
+import { join } from "desm";
+import Fastify from "fastify";
+import pino from "pino";
+import pretty from "pino-pretty";
 
 /**
  * Configuration
@@ -61,23 +61,29 @@ const createAuthenticator = (app) => {
  * Route registration
  */
 const registerRoutes = async (app) => {
-  const routesDir = path.join(path.dirname(fileURLToPath(import.meta.url)), "routes");
-  
+  const routesDir = path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    "routes",
+  );
+
   // Register main routes file
   await app.register(import("./routes/routes.js"));
-  
+
   // Dynamically register all subdirectory route files
-  const subdirs = fs.readdirSync(routesDir, { withFileTypes: true })
-    .filter(dirent => dirent.isDirectory())
-    .map(dirent => dirent.name);
-    
+  const subdirs = fs
+    .readdirSync(routesDir, { withFileTypes: true })
+    .filter((dirent) => dirent.isDirectory())
+    .map((dirent) => dirent.name);
+
   for (const dir of subdirs) {
     const routeFile = `./routes/${dir}/routes.js`;
     try {
       await app.register(import(routeFile));
       app.log.info(`Registered routes from ${routeFile}`);
     } catch (error) {
-      app.log.error(`Failed to register routes from ${routeFile}: ${error.message}`);
+      app.log.error(
+        `Failed to register routes from ${routeFile}: ${error.message}`,
+      );
     }
   }
 };
@@ -88,9 +94,9 @@ const registerRoutes = async (app) => {
 const buildApp = async () => {
   // Initialize Fastify with logger
   const loggerInstance = createLogger();
-  const app = Fastify({ 
+  const app = Fastify({
     loggerInstance,
-    trustProxy: true
+    trustProxy: true,
   });
 
   // Register environment variables
@@ -125,10 +131,12 @@ const startServer = async (app) => {
     const port = app.secrets.PORT || "3000";
     const isDev = app.secrets.NODE_ENV === "development";
     const host = isDev ? "127.0.0.1" : "0.0.0.0";
-    
+
     await app.listen({ host, port });
-    
-    app.log.info(`Server running in ${app.secrets.NODE_ENV} mode on http://${host}:${port}`);
+
+    app.log.info(
+      `Server running in ${app.secrets.NODE_ENV} mode on http://${host}:${port}`,
+    );
   } catch (error) {
     app.log.error(`Error starting server: ${error.message}`);
     process.exit(1);

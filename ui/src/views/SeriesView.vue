@@ -17,13 +17,13 @@ const currentSeries = ref(null);
 // Form models
 const newSeries = reactive({
   name: "",
-  review: ""
+  review: "",
 });
 
 const editedSeries = reactive({
   id: null,
   name: "",
-  review: ""
+  review: "",
 });
 
 // Fetch all series
@@ -88,11 +88,14 @@ const updateSeries = async () => {
       },
       body: JSON.stringify({
         name: editedSeries.name,
-        review: editedSeries.review
+        review: editedSeries.review,
       }),
     };
 
-    const response = await fetch(`${API_URL}/series/${editedSeries.id}`, requestOptions);
+    const response = await fetch(
+      `${API_URL}/series/${editedSeries.id}`,
+      requestOptions,
+    );
 
     if (!response.ok) throw new Error("Failed to update series");
 

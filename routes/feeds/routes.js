@@ -3,22 +3,22 @@ import { getPaginatedData, paginationSchema } from "../utils.js";
 export default function feeds(app, opts, done) {
   // Define schemas for validation
   const feedSchema = {
-    type: 'object',
-    required: ['title', 'url', 'rss'],
+    type: "object",
+    required: ["title", "url", "rss"],
     properties: {
-      title: { type: 'string' },
-      url: { type: 'string', format: 'uri' },
-      description: { type: 'string' },
-      rss: { type: 'string', format: 'uri' }
-    }
+      title: { type: "string" },
+      url: { type: "string", format: "uri" },
+      description: { type: "string" },
+      rss: { type: "string", format: "uri" },
+    },
   };
 
   const paramsSchema = {
-    type: 'object',
-    required: ['id'],
+    type: "object",
+    required: ["id"],
     properties: {
-      id: { type: 'integer' }
-    }
+      id: { type: "integer" },
+    },
   };
 
   // Handler functions
@@ -27,15 +27,10 @@ export default function feeds(app, opts, done) {
     const client = await app.pg.connect();
     try {
       const feedsData = await client.query("SELECT * FROM feeds");
-      return await getPaginatedData(
-        feedsData.rows,
-        search,
-        page,
-        limit,
-      );
+      return await getPaginatedData(feedsData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to retrieve feeds' });
+      return reply.status(500).send({ error: "Failed to retrieve feeds" });
     } finally {
       client.release();
     }
@@ -47,12 +42,12 @@ export default function feeds(app, opts, done) {
     try {
       const result = await client.query(
         "INSERT INTO feeds (title, url, description, rss) VALUES ($1, $2, $3, $4) RETURNING *",
-        [title, url, description, rss]
+        [title, url, description, rss],
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to create feed' });
+      return reply.status(500).send({ error: "Failed to create feed" });
     } finally {
       client.release();
     }
@@ -65,7 +60,7 @@ export default function feeds(app, opts, done) {
     try {
       const result = await client.query(
         "UPDATE feeds SET title = $1, url = $2, description = $3, rss = $4 WHERE id = $5 RETURNING *",
-        [title, url, description, rss, id]
+        [title, url, description, rss, id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Feed not found" });
@@ -73,7 +68,7 @@ export default function feeds(app, opts, done) {
       return reply.send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to update feed' });
+      return reply.status(500).send({ error: "Failed to update feed" });
     } finally {
       client.release();
     }
@@ -85,7 +80,7 @@ export default function feeds(app, opts, done) {
     try {
       const result = await client.query(
         "DELETE FROM feeds WHERE id = $1 RETURNING *",
-        [id]
+        [id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Feed not found" });
@@ -93,7 +88,7 @@ export default function feeds(app, opts, done) {
       return reply.send({ message: "Feed deleted successfully" });
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to delete feed' });
+      return reply.status(500).send({ error: "Failed to delete feed" });
     } finally {
       client.release();
     }
@@ -104,20 +99,20 @@ export default function feeds(app, opts, done) {
     "/feeds",
     {
       schema: {
-        querystring: paginationSchema
-      }
+        querystring: paginationSchema,
+      },
     },
-    getFeeds
+    getFeeds,
   );
 
   app.post(
     "/feeds",
     {
       schema: {
-        body: feedSchema
-      }
+        body: feedSchema,
+      },
     },
-    createFeed
+    createFeed,
   );
 
   app.put(
@@ -125,20 +120,20 @@ export default function feeds(app, opts, done) {
     {
       schema: {
         params: paramsSchema,
-        body: feedSchema
-      }
+        body: feedSchema,
+      },
     },
-    updateFeed
+    updateFeed,
   );
 
   app.delete(
     "/feeds/:id",
     {
       schema: {
-        params: paramsSchema
-      }
+        params: paramsSchema,
+      },
     },
-    deleteFeed
+    deleteFeed,
   );
 
   done();

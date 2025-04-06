@@ -92,7 +92,10 @@ const updateBook = async () => {
       }),
     };
 
-    const response = await fetch(`${API_URL}/books/${editedBook.id}`, requestOptions);
+    const response = await fetch(
+      `${API_URL}/books/${editedBook.id}`,
+      requestOptions,
+    );
 
     if (!response.ok) throw new Error("Failed to update book");
 

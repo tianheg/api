@@ -1,8 +1,8 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 import { computed } from "vue";
-import { useRouter } from 'vue-router';
+import { RouterLink, RouterView } from "vue-router";
+import { useRouter } from "vue-router";
 
 const authStore = useAuthStore();
 const isAuthenticated = computed(() => authStore.isAuthenticated());
@@ -11,9 +11,8 @@ const logout = authStore.logout;
 const router = useRouter();
 const logoutAndRedirect = () => {
   logout();
-  router.push('/login');
+  router.push("/login");
 };
-
 </script>
 
 <template>

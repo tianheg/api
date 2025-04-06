@@ -87,7 +87,10 @@ const updateSentence = async () => {
       }),
     };
 
-    const response = await fetch(`${API_URL}/sentences/${editedSentence.id}`, requestOptions);
+    const response = await fetch(
+      `${API_URL}/sentences/${editedSentence.id}`,
+      requestOptions,
+    );
 
     if (!response.ok) throw new Error("Failed to update sentence");
 

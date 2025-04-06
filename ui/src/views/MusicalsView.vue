@@ -92,7 +92,10 @@ const updateMusical = async () => {
       }),
     };
 
-    const response = await fetch(`${API_URL}/musicals/${editedMusical.id}`, requestOptions);
+    const response = await fetch(
+      `${API_URL}/musicals/${editedMusical.id}`,
+      requestOptions,
+    );
 
     if (!response.ok) throw new Error("Failed to update musical");
 

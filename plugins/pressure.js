@@ -1,5 +1,5 @@
-import  fp from "fastify-plugin";
 import underPressure from "@fastify/under-pressure";
+import fp from "fastify-plugin";
 
 export default fp(async (app, _) => {
   await app.register(underPressure, {
@@ -12,6 +12,6 @@ export default fp(async (app, _) => {
         message: "Too many requests",
         retryAfter: options.retryAfter,
       });
-    }
+    },
   });
-})
+});

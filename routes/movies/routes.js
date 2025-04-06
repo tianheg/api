@@ -3,20 +3,20 @@ import { getPaginatedData, paginationSchema } from "../utils.js";
 export default function movies(app, opts, done) {
   // Define schemas for validation
   const movieSchema = {
-    type: 'object',
-    required: ['name'],
+    type: "object",
+    required: ["name"],
     properties: {
-      name: { type: 'string' },
-      review: { type: 'string' }
-    }
+      name: { type: "string" },
+      review: { type: "string" },
+    },
   };
 
   const paramsSchema = {
-    type: 'object',
-    required: ['id'],
+    type: "object",
+    required: ["id"],
     properties: {
-      id: { type: 'integer' }
-    }
+      id: { type: "integer" },
+    },
   };
 
   // Handler functions
@@ -25,15 +25,10 @@ export default function movies(app, opts, done) {
     const client = await app.pg.connect();
     try {
       const moviesData = await client.query("SELECT * FROM movies");
-      return getPaginatedData(
-        moviesData.rows,
-        search,
-        page,
-        limit,
-      );
+      return getPaginatedData(moviesData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to retrieve movies' });
+      return reply.status(500).send({ error: "Failed to retrieve movies" });
     } finally {
       client.release();
     }
@@ -45,12 +40,12 @@ export default function movies(app, opts, done) {
     try {
       const result = await client.query(
         "INSERT INTO movies (name, review) VALUES ($1, $2) RETURNING *",
-        [name, review]
+        [name, review],
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to create movie' });
+      return reply.status(500).send({ error: "Failed to create movie" });
     } finally {
       client.release();
     }
@@ -63,7 +58,7 @@ export default function movies(app, opts, done) {
     try {
       const result = await client.query(
         "UPDATE movies SET name = $1, review = $2 WHERE id = $3 RETURNING *",
-        [name, review, id]
+        [name, review, id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Movie not found" });
@@ -71,7 +66,7 @@ export default function movies(app, opts, done) {
       return reply.send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to update movie' });
+      return reply.status(500).send({ error: "Failed to update movie" });
     } finally {
       client.release();
     }
@@ -83,7 +78,7 @@ export default function movies(app, opts, done) {
     try {
       const result = await client.query(
         "DELETE FROM movies WHERE id = $1 RETURNING *",
-        [id]
+        [id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Movie not found" });
@@ -91,7 +86,7 @@ export default function movies(app, opts, done) {
       return reply.send({ message: "Movie deleted successfully" });
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to delete movie' });
+      return reply.status(500).send({ error: "Failed to delete movie" });
     } finally {
       client.release();
     }
@@ -102,20 +97,20 @@ export default function movies(app, opts, done) {
     "/movies",
     {
       schema: {
-        querystring: paginationSchema
-      }
+        querystring: paginationSchema,
+      },
     },
-    getMovies
+    getMovies,
   );
 
   app.post(
     "/movies",
     {
       schema: {
-        body: movieSchema
-      }
+        body: movieSchema,
+      },
     },
-    createMovie
+    createMovie,
   );
 
   app.put(
@@ -123,20 +118,20 @@ export default function movies(app, opts, done) {
     {
       schema: {
         params: paramsSchema,
-        body: movieSchema
-      }
+        body: movieSchema,
+      },
     },
-    updateMovie
+    updateMovie,
   );
 
   app.delete(
     "/movies/:id",
     {
       schema: {
-        params: paramsSchema
-      }
+        params: paramsSchema,
+      },
     },
-    deleteMovie
+    deleteMovie,
   );
 
   done();

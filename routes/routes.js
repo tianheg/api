@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import S from "fluent-json-schema";
 
 export default function home(app, opts, done) {
@@ -20,23 +23,33 @@ export default function home(app, opts, done) {
         process.env.NODE_ENV === "development"
           ? "http://localhost:3000"
           : "https://api.tianheg.org";
-      const routes = [
-        `${baseUrl}/books`,
-        `${baseUrl}/feeds`,
-        `${baseUrl}/movies`,
-        `${baseUrl}/music`,
-        `${baseUrl}/musicals`,
-        `${baseUrl}/series`,
-        `${baseUrl}/words`,
-      ];
 
-      return {
+      const routesDir = path.dirname(fileURLToPath(import.meta.url));
+      const routeFiles = fs
+        .readdirSync(routesDir)
+        .filter(
+          (file) =>
+            !file.endsWith(".js") &&
+            file !== "routes.js" &&
+            !file.includes("auth"),
+        )
+        .map((file) => path.parse(file).name);
+
+      const routes = routeFiles.map((route) =>
+        route === "index" ? baseUrl : `${baseUrl}/${route}`,
+      );
+
+      const response = {
         repo: "https://github.com/tianheg/api/",
-        doc: process.env.NODE_ENV === "development" ? `${baseUrl}/doc` : "",
         tech: "https://fastify.dev/",
-        deploy: "https://dokploy.com/",
         routes,
       };
+
+      if (process.env.NODE_ENV === "development") {
+        response.doc = `${baseUrl}/doc`;
+      }
+
+      return response;
     },
   );
 

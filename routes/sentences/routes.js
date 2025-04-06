@@ -3,19 +3,19 @@ import { getPaginatedData, paginationSchema } from "../utils.js";
 export default function sentences(app, opts, done) {
   // Define schemas for validation
   const sentenceSchema = {
-    type: 'object',
-    required: ['content'],
+    type: "object",
+    required: ["content"],
     properties: {
-      content: { type: 'string' }
-    }
+      content: { type: "string" },
+    },
   };
 
   const paramsSchema = {
-    type: 'object',
-    required: ['id'],
+    type: "object",
+    required: ["id"],
     properties: {
-      id: { type: 'integer' }
-    }
+      id: { type: "integer" },
+    },
   };
 
   // Handler functions
@@ -24,15 +24,10 @@ export default function sentences(app, opts, done) {
     const client = await app.pg.connect();
     try {
       const sentencesData = await client.query("SELECT * FROM sentences");
-      return await getPaginatedData(
-        sentencesData.rows,
-        search,
-        page,
-        limit,
-      );
+      return await getPaginatedData(sentencesData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to retrieve sentences' });
+      return reply.status(500).send({ error: "Failed to retrieve sentences" });
     } finally {
       client.release();
     }
@@ -44,12 +39,12 @@ export default function sentences(app, opts, done) {
     try {
       const result = await client.query(
         "INSERT INTO sentences (content) VALUES ($1) RETURNING *",
-        [content]
+        [content],
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to create sentence' });
+      return reply.status(500).send({ error: "Failed to create sentence" });
     } finally {
       client.release();
     }
@@ -62,7 +57,7 @@ export default function sentences(app, opts, done) {
     try {
       const result = await client.query(
         "UPDATE sentences SET content = $1 WHERE id = $2 RETURNING *",
-        [content, id]
+        [content, id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Sentence not found" });
@@ -70,7 +65,7 @@ export default function sentences(app, opts, done) {
       return reply.send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to update sentence' });
+      return reply.status(500).send({ error: "Failed to update sentence" });
     } finally {
       client.release();
     }
@@ -82,7 +77,7 @@ export default function sentences(app, opts, done) {
     try {
       const result = await client.query(
         "DELETE FROM sentences WHERE id = $1 RETURNING *",
-        [id]
+        [id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Sentence not found" });
@@ -90,7 +85,7 @@ export default function sentences(app, opts, done) {
       return reply.send({ message: "Sentence deleted successfully" });
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to delete sentence' });
+      return reply.status(500).send({ error: "Failed to delete sentence" });
     } finally {
       client.release();
     }
@@ -101,20 +96,20 @@ export default function sentences(app, opts, done) {
     "/sentences",
     {
       schema: {
-        querystring: paginationSchema
-      }
+        querystring: paginationSchema,
+      },
     },
-    getSentences
+    getSentences,
   );
 
   app.post(
     "/sentences",
     {
       schema: {
-        body: sentenceSchema
-      }
+        body: sentenceSchema,
+      },
     },
-    createSentence
+    createSentence,
   );
 
   app.put(
@@ -122,20 +117,20 @@ export default function sentences(app, opts, done) {
     {
       schema: {
         params: paramsSchema,
-        body: sentenceSchema
-      }
+        body: sentenceSchema,
+      },
     },
-    updateSentence
+    updateSentence,
   );
 
   app.delete(
     "/sentences/:id",
     {
       schema: {
-        params: paramsSchema
-      }
+        params: paramsSchema,
+      },
     },
-    deleteSentence
+    deleteSentence,
   );
 
   done();

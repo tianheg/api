@@ -1,11 +1,11 @@
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-export const useAuthStore = defineStore('auth', () => {
+export const useAuthStore = defineStore("auth", () => {
   const user = ref(null);
-  const token = ref(localStorage.getItem('token') || null);
+  const token = ref(localStorage.getItem("token") || null);
   const loading = ref(false);
   const error = ref(null);
 
@@ -13,14 +13,14 @@ export const useAuthStore = defineStore('auth', () => {
   if (token.value) {
     try {
       // Try to parse the user from the token
-      const base64Url = token.value.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const base64Url = token.value.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const payload = JSON.parse(window.atob(base64));
       user.value = { email: payload.email };
     } catch (err) {
       // Invalid token format
       token.value = null;
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
     }
   }
 
@@ -28,27 +28,27 @@ export const useAuthStore = defineStore('auth', () => {
   const requestMagicLink = async (email) => {
     loading.value = true;
     error.value = null;
-    
+
     try {
       const response = await fetch(`${API_URL}/auth/magic-link`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          email
-        })
+        body: JSON.stringify({
+          email,
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to send magic link');
+        throw new Error(errorData.message || "Failed to send magic link");
       }
 
       const data = await response.json();
       return data;
     } catch (err) {
-      error.value = err.message || 'Failed to send magic link';
+      error.value = err.message || "Failed to send magic link";
       throw err;
     } finally {
       loading.value = false;
@@ -59,40 +59,40 @@ export const useAuthStore = defineStore('auth', () => {
   const verifyMagicLink = async (magicToken) => {
     loading.value = true;
     error.value = null;
-    
+
     try {
       // Make sure token is a string
-      if (typeof magicToken !== 'string') {
-        throw new Error('Invalid token format');
+      if (typeof magicToken !== "string") {
+        throw new Error("Invalid token format");
       }
-      
+
       const response = await fetch(`${API_URL}/auth/verify`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          token: magicToken
-        })
+        body: JSON.stringify({
+          token: magicToken,
+        }),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to verify magic link');
+        throw new Error(errorData.message || "Failed to verify magic link");
       }
-      
+
       const data = await response.json();
-      
+
       // Store token and user info
       token.value = data.token;
       user.value = data.user;
-      
+
       // Save token to localStorage
-      localStorage.setItem('token', token.value);
-      
+      localStorage.setItem("token", token.value);
+
       return data;
     } catch (err) {
-      error.value = err.message || 'Failed to verify magic link';
+      error.value = err.message || "Failed to verify magic link";
       throw err;
     } finally {
       loading.value = false;
@@ -105,24 +105,24 @@ export const useAuthStore = defineStore('auth', () => {
       if (token.value) {
         // Call the backend logout API if we have a token
         const response = await fetch(`${API_URL}/auth/logout`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token.value}`
-          }
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token.value}`,
+          },
         });
-        
+
         if (!response.ok) {
-          console.error('Logout failed on server:', await response.text());
+          console.error("Logout failed on server:", await response.text());
         }
       }
     } catch (err) {
-      console.error('Error during logout:', err);
+      console.error("Error during logout:", err);
     } finally {
       // Always clear local state regardless of server response
       user.value = null;
       token.value = null;
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
     }
   };
 
@@ -131,8 +131,8 @@ export const useAuthStore = defineStore('auth', () => {
     if (!token.value) return false;
 
     try {
-      const base64Url = token.value.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const base64Url = token.value.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
       const payload = JSON.parse(window.atob(base64));
 
       // Check if the token is expired
@@ -159,6 +159,6 @@ export const useAuthStore = defineStore('auth', () => {
     requestMagicLink,
     verifyMagicLink,
     logout,
-    isAuthenticated
+    isAuthenticated,
   };
 });

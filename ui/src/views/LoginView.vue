@@ -1,9 +1,9 @@
 <script setup>
-import { ref } from 'vue';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from "@/stores/auth";
+import { ref } from "vue";
 
 const authStore = useAuthStore();
-const email = ref('');
+const email = ref("");
 const linkSent = ref(false);
 
 const requestLink = async () => {

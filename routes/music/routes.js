@@ -3,20 +3,20 @@ import { getPaginatedData, paginationSchema } from "../utils.js";
 export default function music(app, opts, done) {
   // Define schemas for validation
   const musicSchema = {
-    type: 'object',
-    required: ['name'],
+    type: "object",
+    required: ["name"],
     properties: {
-      name: { type: 'string' },
-      url: { type: 'string', format: 'uri' }
-    }
+      name: { type: "string" },
+      url: { type: "string", format: "uri" },
+    },
   };
 
   const paramsSchema = {
-    type: 'object',
-    required: ['id'],
+    type: "object",
+    required: ["id"],
     properties: {
-      id: { type: 'integer' }
-    }
+      id: { type: "integer" },
+    },
   };
 
   // Handler functions
@@ -25,15 +25,10 @@ export default function music(app, opts, done) {
     const client = await app.pg.connect();
     try {
       const musicData = await client.query("SELECT * FROM music");
-      return await getPaginatedData(
-        musicData.rows,
-        search,
-        page,
-        limit,
-      );
+      return await getPaginatedData(musicData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to retrieve music' });
+      return reply.status(500).send({ error: "Failed to retrieve music" });
     } finally {
       client.release();
     }
@@ -45,12 +40,12 @@ export default function music(app, opts, done) {
     try {
       const result = await client.query(
         "INSERT INTO music (name, url) VALUES ($1, $2) RETURNING *",
-        [name, url]
+        [name, url],
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to create music' });
+      return reply.status(500).send({ error: "Failed to create music" });
     } finally {
       client.release();
     }
@@ -63,7 +58,7 @@ export default function music(app, opts, done) {
     try {
       const result = await client.query(
         "UPDATE music SET name = $1, url = $2 WHERE id = $3 RETURNING *",
-        [name, url, id]
+        [name, url, id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Music not found" });
@@ -71,7 +66,7 @@ export default function music(app, opts, done) {
       return reply.send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to update music' });
+      return reply.status(500).send({ error: "Failed to update music" });
     } finally {
       client.release();
     }
@@ -83,7 +78,7 @@ export default function music(app, opts, done) {
     try {
       const result = await client.query(
         "DELETE FROM music WHERE id = $1 RETURNING *",
-        [id]
+        [id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Music not found" });
@@ -91,7 +86,7 @@ export default function music(app, opts, done) {
       return reply.send({ message: "Music deleted successfully" });
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to delete music' });
+      return reply.status(500).send({ error: "Failed to delete music" });
     } finally {
       client.release();
     }
@@ -102,20 +97,20 @@ export default function music(app, opts, done) {
     "/music",
     {
       schema: {
-        querystring: paginationSchema
-      }
+        querystring: paginationSchema,
+      },
     },
-    getMusicList
+    getMusicList,
   );
 
   app.post(
     "/music",
     {
       schema: {
-        body: musicSchema
-      }
+        body: musicSchema,
+      },
     },
-    createMusic
+    createMusic,
   );
 
   app.put(
@@ -123,20 +118,20 @@ export default function music(app, opts, done) {
     {
       schema: {
         params: paramsSchema,
-        body: musicSchema
-      }
+        body: musicSchema,
+      },
     },
-    updateMusic
+    updateMusic,
   );
 
   app.delete(
     "/music/:id",
     {
       schema: {
-        params: paramsSchema
-      }
+        params: paramsSchema,
+      },
     },
-    deleteMusic
+    deleteMusic,
   );
 
   done();

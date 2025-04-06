@@ -3,20 +3,20 @@ import { getPaginatedData, paginationSchema } from "../utils.js";
 export default function books(app, opts, done) {
   // Define schemas for validation
   const bookSchema = {
-    type: 'object',
-    required: ['name', 'url'],
+    type: "object",
+    required: ["name", "url"],
     properties: {
-      name: { type: 'string' },
-      url: { type: 'string', format: 'uri' }
-    }
+      name: { type: "string" },
+      url: { type: "string", format: "uri" },
+    },
   };
 
   const paramsSchema = {
-    type: 'object',
-    required: ['id'],
+    type: "object",
+    required: ["id"],
     properties: {
-      id: { type: 'integer' }
-    }
+      id: { type: "integer" },
+    },
   };
 
   // Handler functions
@@ -25,15 +25,10 @@ export default function books(app, opts, done) {
     const client = await app.pg.connect();
     try {
       const booksData = await client.query("SELECT * FROM books");
-      return await getPaginatedData(
-        booksData.rows,
-        search,
-        page,
-        limit,
-      );
+      return await getPaginatedData(booksData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to retrieve books' });
+      return reply.status(500).send({ error: "Failed to retrieve books" });
     } finally {
       client.release();
     }
@@ -45,12 +40,12 @@ export default function books(app, opts, done) {
     try {
       const result = await client.query(
         "INSERT INTO books (name, url) VALUES ($1, $2) RETURNING *",
-        [name, url]
+        [name, url],
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to create book' });
+      return reply.status(500).send({ error: "Failed to create book" });
     } finally {
       client.release();
     }
@@ -63,7 +58,7 @@ export default function books(app, opts, done) {
     try {
       const result = await client.query(
         "UPDATE books SET name = $1, url = $2 WHERE id = $3 RETURNING *",
-        [name, url, id]
+        [name, url, id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Book not found" });
@@ -71,7 +66,7 @@ export default function books(app, opts, done) {
       return reply.send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to update book' });
+      return reply.status(500).send({ error: "Failed to update book" });
     } finally {
       client.release();
     }
@@ -83,7 +78,7 @@ export default function books(app, opts, done) {
     try {
       const result = await client.query(
         "DELETE FROM books WHERE id = $1 RETURNING *",
-        [id]
+        [id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Book not found" });
@@ -91,7 +86,7 @@ export default function books(app, opts, done) {
       return reply.send({ message: "Book deleted successfully" });
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to delete book' });
+      return reply.status(500).send({ error: "Failed to delete book" });
     } finally {
       client.release();
     }
@@ -102,20 +97,20 @@ export default function books(app, opts, done) {
     "/books",
     {
       schema: {
-        querystring: paginationSchema
-      }
+        querystring: paginationSchema,
+      },
     },
-    getBooks
+    getBooks,
   );
 
   app.post(
     "/books",
     {
       schema: {
-        body: bookSchema
-      }
+        body: bookSchema,
+      },
     },
-    createBook
+    createBook,
   );
 
   app.put(
@@ -123,20 +118,20 @@ export default function books(app, opts, done) {
     {
       schema: {
         params: paramsSchema,
-        body: bookSchema
-      }
+        body: bookSchema,
+      },
     },
-    updateBook
+    updateBook,
   );
 
   app.delete(
     "/books/:id",
     {
       schema: {
-        params: paramsSchema
-      }
+        params: paramsSchema,
+      },
     },
-    deleteBook
+    deleteBook,
   );
 
   done();

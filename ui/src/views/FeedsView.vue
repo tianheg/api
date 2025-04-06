@@ -99,7 +99,10 @@ const updateFeed = async () => {
       }),
     };
 
-    const response = await fetch(`${API_URL}/feeds/${editedFeed.id}`, requestOptions);
+    const response = await fetch(
+      `${API_URL}/feeds/${editedFeed.id}`,
+      requestOptions,
+    );
 
     if (!response.ok) throw new Error("Failed to update feed");
 

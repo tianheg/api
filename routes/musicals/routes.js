@@ -3,20 +3,20 @@ import { getPaginatedData, paginationSchema } from "../utils.js";
 export default function musicals(app, opts, done) {
   // Define schemas for validation
   const musicalSchema = {
-    type: 'object',
-    required: ['name', 'review'],
+    type: "object",
+    required: ["name", "review"],
     properties: {
-      name: { type: 'string' },
-      review: { type: 'string' }
-    }
+      name: { type: "string" },
+      review: { type: "string" },
+    },
   };
 
   const paramsSchema = {
-    type: 'object',
-    required: ['id'],
+    type: "object",
+    required: ["id"],
     properties: {
-      id: { type: 'integer' }
-    }
+      id: { type: "integer" },
+    },
   };
 
   // Handler functions
@@ -25,15 +25,10 @@ export default function musicals(app, opts, done) {
     const client = await app.pg.connect();
     try {
       const musicalsData = await client.query("SELECT * FROM musicals");
-      return await getPaginatedData(
-        musicalsData.rows,
-        search,
-        page,
-        limit,
-      );
+      return await getPaginatedData(musicalsData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to retrieve musicals' });
+      return reply.status(500).send({ error: "Failed to retrieve musicals" });
     } finally {
       client.release();
     }
@@ -45,12 +40,12 @@ export default function musicals(app, opts, done) {
     try {
       const result = await client.query(
         "INSERT INTO musicals (name, review) VALUES ($1, $2) RETURNING *",
-        [name, review]
+        [name, review],
       );
       return reply.status(201).send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to create musical' });
+      return reply.status(500).send({ error: "Failed to create musical" });
     } finally {
       client.release();
     }
@@ -63,7 +58,7 @@ export default function musicals(app, opts, done) {
     try {
       const result = await client.query(
         "UPDATE musicals SET name = $1, review = $2 WHERE id = $3 RETURNING *",
-        [name, review, id]
+        [name, review, id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Musical not found" });
@@ -71,7 +66,7 @@ export default function musicals(app, opts, done) {
       return reply.send(result.rows[0]);
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to update musical' });
+      return reply.status(500).send({ error: "Failed to update musical" });
     } finally {
       client.release();
     }
@@ -83,7 +78,7 @@ export default function musicals(app, opts, done) {
     try {
       const result = await client.query(
         "DELETE FROM musicals WHERE id = $1 RETURNING *",
-        [id]
+        [id],
       );
       if (result.rowCount === 0) {
         return reply.status(404).send({ message: "Musical not found" });
@@ -91,7 +86,7 @@ export default function musicals(app, opts, done) {
       return reply.send({ message: "Musical deleted successfully" });
     } catch (error) {
       app.log.error(error);
-      return reply.status(500).send({ error: 'Failed to delete musical' });
+      return reply.status(500).send({ error: "Failed to delete musical" });
     } finally {
       client.release();
     }
@@ -102,20 +97,20 @@ export default function musicals(app, opts, done) {
     "/musicals",
     {
       schema: {
-        querystring: paginationSchema
-      }
+        querystring: paginationSchema,
+      },
     },
-    getMusicals
+    getMusicals,
   );
 
   app.post(
     "/musicals",
     {
       schema: {
-        body: musicalSchema
-      }
+        body: musicalSchema,
+      },
     },
-    createMusical
+    createMusical,
   );
 
   app.put(
@@ -123,20 +118,20 @@ export default function musicals(app, opts, done) {
     {
       schema: {
         params: paramsSchema,
-        body: musicalSchema
-      }
+        body: musicalSchema,
+      },
     },
-    updateMusical
+    updateMusical,
   );
 
   app.delete(
     "/musicals/:id",
     {
       schema: {
-        params: paramsSchema
-      }
+        params: paramsSchema,
+      },
     },
-    deleteMusical
+    deleteMusical,
   );
 
   done();
