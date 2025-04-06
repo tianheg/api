@@ -27,12 +27,7 @@ export default fp(async (app, _) => {
         cb(new Error(`CORS not allowed for origin: ${origin}`), false);
       }
     },
-    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With'],
-    exposedHeaders: ['Content-Disposition'],
-    maxAge: 86400, // Cache preflight response for 24 hours
-    preflightContinue: false
+    methods: ['GET', 'PUT', 'POST', 'DELETE'],
   });
   
   // Log when CORS is initialized
