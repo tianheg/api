@@ -22,7 +22,7 @@ const envSchema = {
     PORT: { type: "string", default: "3000" },
     // Email configuration
     EMAIL_SMTP_HOST: { type: "string" },
-    EMAIL_SMTP_PORT: { type: "string", default: "587" },
+    EMAIL_SMTP_PORT: { type: "string" },
     EMAIL_SMTP_USER: { type: "string" },
     EMAIL_SMTP_PASS: { type: "string" },
     EMAIL_FROM: { type: "string" },
