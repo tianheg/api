@@ -2,6 +2,13 @@ import fp from "fastify-plugin";
 import cors from "@fastify/cors";
 
 export default fp(async (app, _) => {
+  // Add a global preHandler for OPTIONS requests
+  app.options('*', (request, reply) => {
+    // This handler will process all OPTIONS requests
+    // and ensure they get the proper CORS headers
+    reply.send();
+  });
+  
   // Apply CORS globally to all routes
   await app.register(cors, {
     origin: (origin, cb) => {
