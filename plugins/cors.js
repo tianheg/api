@@ -1,17 +1,42 @@
 import fp from "fastify-plugin";
 import cors from "@fastify/cors";
 
-// not using RegExp or a function for origin
-// avoid DoS attacks https://github.com/fastify/fastify-cors#warning-dos-attacks
-
 export default fp(async (app, _) => {
   // Apply CORS globally to all routes
   await app.register(cors, {
-    origin: process.env.NODE_ENV === 'production' 
-      ? /^https:\/\/lifebook\.tianheg\.org(\/.*)?$/ 
-      : true, // Allow all origins in development, specific domain in production
-    credentials: true, // Allow cookies and authentication headers
+    origin: (origin, cb) => {
+      // Allow requests with no origin (like mobile apps, curl, etc)
+      if (!origin) {
+        cb(null, true);
+        return;
+      }
+      
+      // Check if origin is allowed
+      const allowedOrigins = [
+        'https://lifebook.tianheg.org',
+        'http://localhost:5173'  // For local development
+      ];
+      
+      // Check if the origin matches any allowed origin
+      const allowed = allowedOrigins.some(allowedOrigin => 
+        origin.startsWith(allowedOrigin)
+      );
+      
+      if (allowed) {
+        cb(null, true);
+      } else {
+        app.log.warn(`CORS blocked request from origin: ${origin}`);
+        cb(new Error(`CORS not allowed for origin: ${origin}`), false);
+      }
+    },
     methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'X-Requested-With'],
+    exposedHeaders: ['Content-Disposition'],
+    maxAge: 86400, // Cache preflight response for 24 hours
+    preflightContinue: false
   });
+  
+  // Log when CORS is initialized
+  app.log.info('CORS plugin registered');
 });
