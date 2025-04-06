@@ -2,13 +2,6 @@ import fp from "fastify-plugin";
 import cors from "@fastify/cors";
 
 export default fp(async (app, _) => {
-  // Add a global preHandler for OPTIONS requests
-  app.options('*', (request, reply) => {
-    // This handler will process all OPTIONS requests
-    // and ensure they get the proper CORS headers
-    reply.send();
-  });
-  
   // Apply CORS globally to all routes
   await app.register(cors, {
     origin: (origin, cb) => {
@@ -25,12 +18,9 @@ export default fp(async (app, _) => {
         'http://localhost:5173'  // For local development
       ];
       
-      // Check if the origin matches any allowed origin
-      const allowed = allowedOrigins.some(allowedOrigin => 
-        origin.startsWith(allowedOrigin)
-      );
-      
-      if (allowed) {
+      // Use exact matching instead of startsWith for more precise control
+      if (allowedOrigins.includes(origin)) {
+        // This will set Access-Control-Allow-Origin to the actual origin
         cb(null, true);
       } else {
         app.log.warn(`CORS blocked request from origin: ${origin}`);
