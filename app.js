@@ -20,6 +20,12 @@ const envSchema = {
     JWT_SECRET: { type: "string" },
     NODE_ENV: { type: "string", default: "development" },
     PORT: { type: "string", default: "3000" },
+    // Email configuration
+    EMAIL_SMTP_HOST: { type: "string" },
+    EMAIL_SMTP_PORT: { type: "string", default: "587" },
+    EMAIL_SMTP_USER: { type: "string" },
+    EMAIL_SMTP_PASS: { type: "string" },
+    EMAIL_FROM: { type: "string" },
   },
 };
 
@@ -94,7 +100,7 @@ const buildApp = async () => {
   });
 
   // Setup authentication
-  //createAuthenticator(app);
+  createAuthenticator(app);
 
   // Register plugins
   await app.register(AutoLoad, {

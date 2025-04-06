@@ -6,5 +6,10 @@ import cors from "@fastify/cors";
 
 export default fp(async (app, _) => {
   // Apply CORS globally to all routes
-  await app.register(cors);
+  await app.register(cors, {
+    origin: true, // Allow all origins in development (in production, set to your specific frontend origin)
+    credentials: true, // Allow cookies and authentication headers
+    methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  });
 });

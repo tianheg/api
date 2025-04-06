@@ -83,6 +83,24 @@ async function createRoute(path, data, opts) {
 
 Explicitly set baseUrl to https://api.tianheg.org
 
+## Authentication API
+
+The API uses a passwordless authentication system with magic links.
+
+### Endpoints
+
+- `POST /auth/magic-link` - Request a magic link to be sent to an email
+  - Request body: `{ "email": "user@example.com" }`
+  - Response: `{ "success": true, "message": "Magic link sent to your email" }`
+
+- `POST /auth/verify` - Verify a magic link token
+  - Request body: `{ "token": "your-token-here" }`
+  - Response: `{ "token": "jwt-token", "user": { "email": "user@example.com" } }`
+
+- `GET /auth/me` - Get current user info (protected route)
+  - Headers: `Authorization: Bearer your-jwt-token`
+  - Response: `{ "user": { "email": "user@example.com" } }`
+
 ## Refer
 
 - https://github.com/fedeperin/potterapi

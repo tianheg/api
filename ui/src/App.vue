@@ -1,5 +1,17 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+import { computed } from "vue";
+
+const authStore = useAuthStore();
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+const user = computed(() => authStore.user);
+
+const logout = () => {
+  authStore.logout();
+  // Redirect to home or login page after logout
+  window.location.href = '/';
+};
 </script>
 
 <template>
@@ -13,17 +25,38 @@ import { RouterLink, RouterView } from "vue-router";
 
         <nav class="navbar bg-base-100 justify-center space-x-4">
           <RouterLink class="btn btn-primary" to="/">Home</RouterLink>
-          <RouterLink class="btn btn-primary" to="/books">Books</RouterLink>
-          <div class="dropdown dropdown-hover">
-            <label tabindex="0" class="btn btn-primary">Others</label>
-            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-              <li><RouterLink to="/feeds">Feeds</RouterLink></li>
-              <li><RouterLink to="/movies">Movies</RouterLink></li>
-              <li><RouterLink to="/music">Music</RouterLink></li>
-              <li><RouterLink to="/musicals">Musicals</RouterLink></li>
-              <li><RouterLink to="/series">Series</RouterLink></li>
-              <li><RouterLink to="/sentences">Sentences</RouterLink></li>
-            </ul>
+          
+          <!-- Show navigation only if authenticated -->
+          <template v-if="isAuthenticated">
+            <RouterLink class="btn btn-primary" to="/books">Books</RouterLink>
+            <div class="dropdown dropdown-hover">
+              <label tabindex="0" class="btn btn-primary">Others</label>
+              <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                <li><RouterLink to="/feeds">Feeds</RouterLink></li>
+                <li><RouterLink to="/movies">Movies</RouterLink></li>
+                <li><RouterLink to="/music">Music</RouterLink></li>
+                <li><RouterLink to="/musicals">Musicals</RouterLink></li>
+                <li><RouterLink to="/series">Series</RouterLink></li>
+                <li><RouterLink to="/sentences">Sentences</RouterLink></li>
+              </ul>
+            </div>
+          </template>
+
+          <!-- Auth buttons -->
+          <div class="ml-auto">
+            <template v-if="isAuthenticated">
+              <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn">
+                  {{ user?.email || 'Account' }}
+                </label>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                  <li><button @click="logout">Logout</button></li>
+                </ul>
+              </div>
+            </template>
+            <template v-else>
+              <RouterLink class="btn btn-secondary" to="/login">Login</RouterLink>
+            </template>
           </div>
         </nav>
       </div>
