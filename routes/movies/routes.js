@@ -9,7 +9,8 @@ export default function movies(app, opts, done) {
       name: { type: 'string' },
       url: { type: 'string', format: 'uri' }, // Still validate as URI if provided
       review: { type: 'string' },
-      date: { type: 'string', format: 'date' }
+      date: { type: 'string', format: 'date' },
+      csrfToken: { type: 'string' } // Add CSRF token to schema
     }
   };
 
@@ -113,6 +114,7 @@ export default function movies(app, opts, done) {
   app.post(
     "/movies",
     {
+      preHandler: app.csrfProtect,
       schema: {
         body: movieSchema
       }
@@ -123,6 +125,7 @@ export default function movies(app, opts, done) {
   app.put(
     "/movies/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: movieSchema
@@ -134,6 +137,7 @@ export default function movies(app, opts, done) {
   app.delete(
     "/movies/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }

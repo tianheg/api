@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
+import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -47,13 +48,16 @@ const fetchBooks = async () => {
 // Create a new book
 const createBook = async () => {
   try {
-    const response = await fetch(`${API_URL}/books`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newBook),
     });
+
+    const response = await fetch(`${API_URL}/books`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to create book");
 
@@ -79,7 +83,8 @@ const startEdit = (book) => {
 // Update a book
 const updateBook = async () => {
   try {
-    const response = await fetch(`${API_URL}/books/${editedBook.id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -89,6 +94,8 @@ const updateBook = async () => {
         url: editedBook.url,
       }),
     });
+
+    const response = await fetch(`${API_URL}/books/${editedBook.id}`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to update book");
 
@@ -107,9 +114,12 @@ const deleteBook = async (id) => {
   if (!confirm("Are you sure you want to delete this book?")) return;
 
   try {
-    const response = await fetch(`${API_URL}/books/${id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "DELETE",
     });
+
+    const response = await fetch(`${API_URL}/books/${id}`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to delete book");
 

@@ -9,7 +9,8 @@ export default function feeds(app, opts, done) {
       title: { type: 'string' },
       url: { type: 'string', format: 'uri' },
       description: { type: 'string' },
-      rss: { type: 'string', format: 'uri' }
+      rss: { type: 'string', format: 'uri' },
+      csrfToken: { type: 'string' } // Add CSRF token to schema
     }
   };
 
@@ -113,6 +114,7 @@ export default function feeds(app, opts, done) {
   app.post(
     "/feeds",
     {
+      preHandler: app.csrfProtect,
       schema: {
         body: feedSchema
       }
@@ -123,6 +125,7 @@ export default function feeds(app, opts, done) {
   app.put(
     "/feeds/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: feedSchema
@@ -134,6 +137,7 @@ export default function feeds(app, opts, done) {
   app.delete(
     "/feeds/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }

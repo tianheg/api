@@ -9,7 +9,8 @@ export default function series(app, opts, done) {
       name: { type: 'string' },
       url: { type: 'string', format: 'uri' }, // Add URL as optional field
       review: { type: 'string' },
-      date: { type: 'string', format: 'date' }
+      date: { type: 'string', format: 'date' },
+      csrfToken: { type: 'string' } // Add CSRF token to schema
     }
   };
 
@@ -113,6 +114,7 @@ export default function series(app, opts, done) {
   app.post(
     "/series",
     {
+      preHandler: app.csrfProtect,
       schema: {
         body: seriesSchema
       }
@@ -123,6 +125,7 @@ export default function series(app, opts, done) {
   app.put(
     "/series/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: seriesSchema
@@ -134,6 +137,7 @@ export default function series(app, opts, done) {
   app.delete(
     "/series/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }

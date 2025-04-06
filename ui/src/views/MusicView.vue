@@ -1,11 +1,12 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
+import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 // Music data and state management
-const music = ref([]);
+const musicList = ref([]);
 const loading = ref(false);
 const error = ref(null);
 
@@ -34,8 +35,8 @@ const fetchMusic = async () => {
     const response = await fetch(`${API_URL}/music`);
     if (!response.ok) throw new Error("Failed to fetch music");
     const data = await response.json();
-    music.value = data.data || []; // Use the data array from the response
-    console.log("Music:", music.value);
+    musicList.value = data.data || []; // Use the data array from the response
+    console.log("Music:", musicList.value);
   } catch (err) {
     console.error("Error fetching music:", err);
     error.value = err.message;
@@ -44,10 +45,11 @@ const fetchMusic = async () => {
   }
 };
 
-// Create a new music entry
+// Create a new music
 const createMusic = async () => {
   try {
-    const response = await fetch(`${API_URL}/music`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -55,31 +57,34 @@ const createMusic = async () => {
       body: JSON.stringify(newMusic),
     });
 
-    if (!response.ok) throw new Error("Failed to create music entry");
+    const response = await fetch(`${API_URL}/music`, requestOptions);
 
-    // Reset form and refresh music list
+    if (!response.ok) throw new Error("Failed to create music");
+
+    // Reset form and refresh music
     Object.assign(newMusic, { name: "", url: "" });
     showAddForm.value = false;
     fetchMusic();
   } catch (err) {
-    console.error("Error creating music entry:", err);
+    console.error("Error creating music:", err);
     error.value = err.message;
   }
 };
 
-// Start editing a music entry
-const startEdit = (item) => {
-  editedMusic.id = item.id;
-  editedMusic.name = item.name;
-  editedMusic.url = item.url || "";
+// Start editing a music
+const startEdit = (music) => {
+  editedMusic.id = music.id;
+  editedMusic.name = music.name;
+  editedMusic.url = music.url || "";
   showEditForm.value = true;
-  currentMusic.value = item;
+  currentMusic.value = music;
 };
 
-// Update a music entry
+// Update a music
 const updateMusic = async () => {
   try {
-    const response = await fetch(`${API_URL}/music/${editedMusic.id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -90,33 +95,38 @@ const updateMusic = async () => {
       }),
     });
 
-    if (!response.ok) throw new Error("Failed to update music entry");
+    const response = await fetch(`${API_URL}/music/${editedMusic.id}`, requestOptions);
 
-    // Reset form and refresh music list
+    if (!response.ok) throw new Error("Failed to update music");
+
+    // Reset form and refresh music
     showEditForm.value = false;
     currentMusic.value = null;
     fetchMusic();
   } catch (err) {
-    console.error("Error updating music entry:", err);
+    console.error("Error updating music:", err);
     error.value = err.message;
   }
 };
 
-// Delete a music entry
+// Delete a music
 const deleteMusic = async (id) => {
-  if (!confirm("Are you sure you want to delete this music entry?")) return;
+  if (!confirm("Are you sure you want to delete this music?")) return;
 
   try {
-    const response = await fetch(`${API_URL}/music/${id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "DELETE",
     });
 
-    if (!response.ok) throw new Error("Failed to delete music entry");
+    const response = await fetch(`${API_URL}/music/${id}`, requestOptions);
 
-    // Refresh music list after delete
+    if (!response.ok) throw new Error("Failed to delete music");
+
+    // Refresh music after delete
     fetchMusic();
   } catch (err) {
-    console.error("Error deleting music entry:", err);
+    console.error("Error deleting music:", err);
     error.value = err.message;
   }
 };
@@ -234,7 +244,7 @@ onMounted(fetchMusic);
       </div>
 
       <!-- Music Table -->
-      <div class="overflow-x-auto" v-if="!loading && music.length && !showAddForm && !showEditForm">
+      <div class="overflow-x-auto" v-if="!loading && musicList.length && !showAddForm && !showEditForm">
         <table class="table table-zebra">
           <thead>
             <tr>
@@ -244,7 +254,7 @@ onMounted(fetchMusic);
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in music" :key="item.id">
+            <tr v-for="item in musicList" :key="item.id">
               <td>{{ item.name }}</td>
               <td>
                 <a v-if="item.url" :href="item.url" target="_blank" rel="noopener noreferrer" class="link link-primary">{{ item.url }}</a>
@@ -262,7 +272,7 @@ onMounted(fetchMusic);
       </div>
       
       <!-- No music message -->
-      <div v-if="!loading && !music.length && !showAddForm && !showEditForm" class="alert alert-info">
+      <div v-if="!loading && !musicList.length && !showAddForm && !showEditForm" class="alert alert-info">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span>No music found. Add some music!</span>
       </div>

@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
+import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -51,13 +52,16 @@ const fetchFeeds = async () => {
 // Create a new feed
 const createFeed = async () => {
   try {
-    const response = await fetch(`${API_URL}/feeds`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newFeed),
     });
+
+    const response = await fetch(`${API_URL}/feeds`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to create feed");
 
@@ -84,7 +88,8 @@ const startEdit = (feed) => {
 // Update a feed
 const updateFeed = async () => {
   try {
-    const response = await fetch(`${API_URL}/feeds/${editedFeed.id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -96,6 +101,8 @@ const updateFeed = async () => {
         rss: editedFeed.rss,
       }),
     });
+
+    const response = await fetch(`${API_URL}/feeds/${editedFeed.id}`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to update feed");
 
@@ -113,9 +120,12 @@ const deleteFeed = async (id) => {
   if (!confirm("Are you sure you want to delete this feed?")) return;
 
   try {
-    const response = await fetch(`${API_URL}/feeds/${id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "DELETE",
     });
+
+    const response = await fetch(`${API_URL}/feeds/${id}`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to delete feed");
 
@@ -144,7 +154,7 @@ onMounted(fetchFeeds);
       
       <!-- Error display -->
       <div v-if="error" class="alert alert-error mb-4">
-        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         <span>{{ error }}</span>
       </div>
 
@@ -327,7 +337,7 @@ onMounted(fetchFeeds);
       
       <!-- No feeds message -->
       <div v-if="!loading && !feeds.length && !showAddForm && !showEditForm" class="alert alert-info">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span>No feeds found. Add some feeds!</span>
       </div>
     </div>

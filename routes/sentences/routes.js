@@ -6,7 +6,8 @@ export default function words(app, opts, done) {
     type: 'object',
     required: ['content'],
     properties: {
-      content: { type: 'string' }
+      content: { type: 'string' },
+      csrfToken: { type: 'string' } // Add CSRF token to schema
     }
   };
 
@@ -110,6 +111,7 @@ export default function words(app, opts, done) {
   app.post(
     "/words",
     {
+      preHandler: app.csrfProtect,
       schema: {
         body: sentenceSchema
       }
@@ -120,6 +122,7 @@ export default function words(app, opts, done) {
   app.put(
     "/words/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: sentenceSchema
@@ -131,6 +134,7 @@ export default function words(app, opts, done) {
   app.delete(
     "/words/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }

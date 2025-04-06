@@ -7,7 +7,8 @@ export default function music(app, opts, done) {
     required: ['name', 'url'],
     properties: {
       name: { type: 'string' },
-      url: { type: 'string', format: 'uri' }
+      url: { type: 'string', format: 'uri' },
+      csrfToken: { type: 'string' } // Add CSRF token to schema
     }
   };
 
@@ -111,6 +112,7 @@ export default function music(app, opts, done) {
   app.post(
     "/music",
     {
+      preHandler: app.csrfProtect,
       schema: {
         body: musicSchema
       }
@@ -121,6 +123,7 @@ export default function music(app, opts, done) {
   app.put(
     "/music/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema,
         body: musicSchema
@@ -132,6 +135,7 @@ export default function music(app, opts, done) {
   app.delete(
     "/music/:id",
     {
+      preHandler: app.csrfProtect,
       schema: {
         params: paramsSchema
       }

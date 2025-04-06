@@ -1,108 +1,153 @@
-# api
+# API Documentation
 
-[CHANGELOG](./CHANGELOG.md)
+## Changelog
 
-问题：部署在Railway上，默认端口为什么是8080？需要添加PORT环境变量才能换成3000，这是为什么？
+### 2024-10-13
+- Changed routes structure ([1db5c68](https://github.com/tianheg/api/commit/1db5c68))
 
-TODO:
+### 2024-10-08
+- Organized plugins and routes ([76a64c9](https://github.com/tianheg/api/commit/76a64c9))
 
-- not public expose this API
-- Use Vue.js/Nuxt.js write web site
+### 2024-08-18
+- Migrated from Supabase to Railway, added backup ([bbb80ee](https://github.com/tianheg/api/commit/bbb80ee))
+
+### 2024-06-28
+- Added authentication ([0e1c52e](https://github.com/tianheg/api/commit/0e1c52e))
+- Added frontend/Next.js ([1f86af3](https://github.com/tianheg/api/commit/1f86af3))
+
+### 2024-06-24
+- Switched to PostgreSQL (Supabase) ([7deb59c](https://github.com/tianheg/api/commit/7deb59c))
+
+### 2024-05-27
+- Added tests ([542a835](https://github.com/tianheg/api/commit/542a835))
+
+### 2024-04-28
+- Added search functionality ([42abefa](https://github.com/tianheg/api/commit/42abefa))
+
+### 2024-04-21
+- Migrated to Fastify ([2264677](https://github.com/tianheg/api/commit/2264677))
+
+### 2024-04-01
+- Initial commit ([1bbdaa9](https://github.com/tianheg/api/commit/1bbdaa9))
+
+---
+
+## Deployment Issue
+
+When deploying on Railway, the default port is 8080. To switch to port 3000, you need to set the `PORT` environment variable. This behavior is due to Railway's default configuration.
+
+---
 
 ## Ideas
 
-如果说博客还有些想向他人展示的欲望的话，那么这个API则纯粹是为了自己纵览自己的输入而做的东西。
+This API is designed for personal use to manage and view data inputs. The UI aims to make editing and viewing more convenient.
 
-做UI的目的是看起来更方便，编辑啊什么的。
+Example references:
+- [Fastify Realworld Example App](https://github.com/avanelli/fastify-realworld-example-app/blob/main/lib/routes/users/index.js)
+- [Fluent JSON Schema](https://github.com/fastify/fluent-json-schema)
 
-example:
-
-https://github.com/avanelli/fastify-realworld-example-app/blob/main/lib/routes/users/index.js
-
-https://github.com/fastify/fluent-json-schema
+---
 
 ## TODO
 
-- 把 data/movies.js 中的 series 条目放到 data/series.js 中（这是个大工程啊）
-- 把 https://neodb.social/users/tianheg/ 中标记的内容放到 api 中(只剩唱片没转移了)
+- Move `series` entries from `data/movies.js` to `data/series.js` (a large task).
+- Transfer marked content from [NeoDB](https://neodb.social/users/tianheg/) to the API (only records remain).
+
+---
 
 ## DONE
 
-- routes files merged into main server.js
-- add page, limit, search ability
-- added security measures
-- refactor code structure([src](https://github.com/tianheg/api/tree/2b12cb2e3c382428a2af11761c52b9baa478a8c2))
-- add test
-- try pressure test with [Artillery](https://www.artillery.io/docs)
-- json data to PostgreSQL DB
+- Merged route files into `server.js`.
+- Added pagination, limit, and search capabilities.
+- Implemented security measures.
+- Refactored code structure ([source](https://github.com/tianheg/api/tree/2b12cb2e3c382428a2af11761c52b9baa478a8c2)).
+- Added tests.
+- Conducted pressure tests with [Artillery](https://www.artillery.io/docs).
+- Migrated JSON data to PostgreSQL DB.
 
-## PostgreSQL Database(by [Railway](https://railway.app/))
+---
 
-> Abandon Supabase because of the auto-paused free project policy
+## Database
 
-~The data will only be updated after redeployment? Maybe this is the problem of Vercel.~
+### PostgreSQL (via Railway)
 
-Refer:
+Supabase was abandoned due to its auto-paused free project policy. Data updates occur only after redeployment, possibly due to Vercel's behavior.
 
-1. [PostgreSQL](https://www.postgresql.org/)
+References:
+- [PostgreSQL](https://www.postgresql.org/)
 
-## SQLite Database
+### SQLite
 
-Refer:
+References:
+- [Turso](https://turso.tech/)
 
-1. https://turso.tech/
+---
 
-## Problems
+## Problems & Solutions
 
-### jsonToDb too much data timeout(SOLVED)
+### Timeout in `jsonToDb` (SOLVED)
 
-Use GitHub action
+Solution: Use GitHub Actions.
 
-### Swagger UI cannot display endpoints(SOLVED)
+### Swagger UI Endpoint Display Issue (SOLVED)
 
-> The bug likely occurs due to the asynchronous nature of the `import()` function used in the `app.register()` calls. When you use `import()` inside `app.register()`, it returns a promise that resolves to the module, and Fastify's `register` method might not be set up to handle promises directly in this manner. This can lead to a race condition where Fastify starts setting up routes before the Swagger plugins are fully registered and configured, resulting in the Swagger UI not being aware of any routes.
+Cause: Asynchronous `import()` in `app.register()` caused a race condition.
 
-### Stream closed prematurely when using async/await(SOLVED)
+### Stream Closed Prematurely (SOLVED)
 
-https://fastify.dev/docs/latest/Reference/Routes/#async-await
+Reference: [Fastify Async/Await](https://fastify.dev/docs/latest/Reference/Routes/#async-await)
 
-server.js:
-
+Code fix:
 ```diff
 async function createRoute(path, data, opts) {
   app.get(path, { schema: opts.schema }, async (request, reply) => {
     const { page, limit, search } = request.query;
-    const paginatedData = await getPaginatedData(data, search, page, limit);
 -   reply.send(paginatedData);
 +   return reply.send(paginatedData);
   });
 }
 ```
 
-### With [current code](https://github.com/tianheg/api/tree/51d185ab530c624d54e812d304a910c1f2e55376), home page title is `http://127.0.0.1:3000`, not `https://api.tianheg.org/`(SOLVED)
+### Incorrect Home Page Title (SOLVED)
 
-Explicitly set baseUrl to https://api.tianheg.org
+Solution: Explicitly set `baseUrl` to `https://api.tianheg.org`.
+
+---
+
+## Security Issues
+
+1. (Solved)**Magic Links Storage**: Currently stored in memory, which may cause DoS attacks and data loss on restart. Use Redis or a database.
+2. (Solved)**Rate Limiting**: Add rate-limiting middleware to authentication endpoints.
+3. **CSRF Protection**: Add CSRF protection for state-changing POST requests.
+4. **Backup File Access**: Ensure SQL backup files are not publicly accessible.
+5. **Error Information**: Simplify error responses to avoid exposing internal details.
+6. **CORS Policy**: Set a strict CORS policy to limit API call origins.
+7. **Environment Variables**: Ensure sensitive variables like `JWT_SECRET` are strong and well-managed.
+
+---
 
 ## Authentication API
 
-The API uses a passwordless authentication system with magic links.
+The API uses passwordless authentication with magic links.
 
 ### Endpoints
 
-- `POST /auth/magic-link` - Request a magic link to be sent to an email
-  - Request body: `{ "email": "user@example.com" }`
+- `POST /auth/magic-link`
+  - Request: `{ "email": "user@example.com" }`
   - Response: `{ "success": true, "message": "Magic link sent to your email" }`
 
-- `POST /auth/verify` - Verify a magic link token
-  - Request body: `{ "token": "your-token-here" }`
+- `POST /auth/verify`
+  - Request: `{ "token": "your-token-here" }`
   - Response: `{ "token": "jwt-token", "user": { "email": "user@example.com" } }`
 
-- `GET /auth/me` - Get current user info (protected route)
+- `GET /auth/me`
   - Headers: `Authorization: Bearer your-jwt-token`
   - Response: `{ "user": { "email": "user@example.com" } }`
 
-## Refer
+---
 
-- https://github.com/fedeperin/potterapi
-- https://github.com/fadhlimulyana20/fastify-docker-simple
-- https://github.com/fastify/demo
+## References
+
+- [PotterAPI](https://github.com/fedeperin/potterapi)
+- [Fastify Docker Simple](https://github.com/fadhlimulyana20/fastify-docker-simple)
+- [Fastify Demo](https://github.com/fastify/demo)

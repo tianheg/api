@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
+import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -29,10 +30,10 @@ const fetchSentences = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch(`${API_URL}/sentences`);
+    const response = await fetch(`${API_URL}/words`);
     if (!response.ok) throw new Error("Failed to fetch sentences");
     const data = await response.json();
-    sentences.value = data.data || []; // Use the data array from the response
+    sentences.value = data.data || [];
     console.log("Sentences:", sentences.value);
   } catch (err) {
     console.error("Error fetching sentences:", err);
@@ -45,7 +46,8 @@ const fetchSentences = async () => {
 // Create a new sentence
 const createSentence = async () => {
   try {
-    const response = await fetch(`${API_URL}/sentences`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -53,9 +55,10 @@ const createSentence = async () => {
       body: JSON.stringify(newSentence),
     });
 
+    const response = await fetch(`${API_URL}/words`, requestOptions);
+
     if (!response.ok) throw new Error("Failed to create sentence");
 
-    // Reset form and refresh sentences
     Object.assign(newSentence, { content: "" });
     showAddForm.value = false;
     fetchSentences();
@@ -66,17 +69,18 @@ const createSentence = async () => {
 };
 
 // Start editing a sentence
-const startEdit = (item) => {
-  editedSentence.id = item.id;
-  editedSentence.content = item.content;
+const startEdit = (sentence) => {
+  editedSentence.id = sentence.id;
+  editedSentence.content = sentence.content;
   showEditForm.value = true;
-  currentSentence.value = item;
+  currentSentence.value = sentence;
 };
 
 // Update a sentence
 const updateSentence = async () => {
   try {
-    const response = await fetch(`${API_URL}/sentences/${editedSentence.id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -86,9 +90,10 @@ const updateSentence = async () => {
       }),
     });
 
+    const response = await fetch(`${API_URL}/words/${editedSentence.id}`, requestOptions);
+
     if (!response.ok) throw new Error("Failed to update sentence");
 
-    // Reset form and refresh sentences
     showEditForm.value = false;
     currentSentence.value = null;
     fetchSentences();
@@ -103,13 +108,15 @@ const deleteSentence = async (id) => {
   if (!confirm("Are you sure you want to delete this sentence?")) return;
 
   try {
-    const response = await fetch(`${API_URL}/sentences/${id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "DELETE",
     });
 
+    const response = await fetch(`${API_URL}/words/${id}`, requestOptions);
+
     if (!response.ok) throw new Error("Failed to delete sentence");
 
-    // Refresh sentences after delete
     fetchSentences();
   } catch (err) {
     console.error("Error deleting sentence:", err);

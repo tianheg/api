@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
+import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -49,13 +50,16 @@ const fetchSeries = async () => {
 // Create a new series
 const createSeries = async () => {
   try {
-    const response = await fetch(`${API_URL}/series`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newSeries),
     });
+
+    const response = await fetch(`${API_URL}/series`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to create series");
 
@@ -82,7 +86,8 @@ const startEdit = (item) => {
 // Update a series
 const updateSeries = async () => {
   try {
-    const response = await fetch(`${API_URL}/series/${editedSeries.id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -93,6 +98,8 @@ const updateSeries = async () => {
         date: editedSeries.date
       }),
     });
+
+    const response = await fetch(`${API_URL}/series/${editedSeries.id}`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to update series");
 
@@ -111,9 +118,12 @@ const deleteSeries = async (id) => {
   if (!confirm("Are you sure you want to delete this series?")) return;
 
   try {
-    const response = await fetch(`${API_URL}/series/${id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "DELETE",
     });
+
+    const response = await fetch(`${API_URL}/series/${id}`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to delete series");
 

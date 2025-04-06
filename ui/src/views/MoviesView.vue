@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref } from "vue";
+import { csrfService } from "@/csrf";
 
 // Base API URL
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
@@ -49,13 +50,16 @@ const fetchMovies = async () => {
 // Create a new movie
 const createMovie = async () => {
   try {
-    const response = await fetch(`${API_URL}/movies`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(newMovie),
     });
+
+    const response = await fetch(`${API_URL}/movies`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to create movie");
 
@@ -85,7 +89,8 @@ const startEdit = (movie) => {
 // Update a movie
 const updateMovie = async () => {
   try {
-    const response = await fetch(`${API_URL}/movies/${editedMovie.id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -96,6 +101,8 @@ const updateMovie = async () => {
         date: editedMovie.date
       }),
     });
+
+    const response = await fetch(`${API_URL}/movies/${editedMovie.id}`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to update movie");
 
@@ -113,9 +120,12 @@ const deleteMovie = async (id) => {
   if (!confirm("Are you sure you want to delete this movie?")) return;
 
   try {
-    const response = await fetch(`${API_URL}/movies/${id}`, {
+    // Prepare request with CSRF token
+    const requestOptions = await csrfService.addTokenToRequest({
       method: "DELETE",
     });
+
+    const response = await fetch(`${API_URL}/movies/${id}`, requestOptions);
 
     if (!response.ok) throw new Error("Failed to delete movie");
 
