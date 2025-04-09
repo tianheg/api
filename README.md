@@ -52,6 +52,7 @@ Example references:
 
 - Move `series` entries from `data/movies.js` to `data/series.js` (a large task).
 - Transfer marked content from [NeoDB](https://neodb.social/users/tianheg/) to the API (only records remain).
+- Improve the Form UI for better user experience.
 
 ---
 
@@ -119,7 +120,7 @@ Solution: Explicitly set `baseUrl` to `https://api.tianheg.org`.
 1. (Solved)**Magic Links Storage**: Currently stored in memory, which may cause DoS attacks and data loss on restart. Use Redis or a database.
 2. (Solved)**Rate Limiting**: Add rate-limiting middleware to authentication endpoints.
 3. **CSRF Protection**: Add CSRF protection for state-changing POST requests.
-4. **Backup File Access**: Ensure SQL backup files are not publicly accessible.
+4. (Solved)**Backup File Access**: Ensure SQL backup files are not publicly accessible.
 5. **Error Information**: Simplify error responses to avoid exposing internal details.
 6. **CORS Policy**: Set a strict CORS policy to limit API call origins.
 7. **Environment Variables**: Ensure sensitive variables like `JWT_SECRET` are strong and well-managed.
