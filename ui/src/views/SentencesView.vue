@@ -135,73 +135,73 @@ onMounted(fetchSentences);
 </script>
 
 <template>
-  <div class="card bg-base-100 shadow-xl">
+  <div class="card bg-base-100 shadow-xl border border-base-300">
     <div class="card-body">
-      <h1 class="card-title text-2xl mb-6">Sentences Management</h1>
+      <h1 class="card-title text-2xl mb-6 text-primary">Sentences Management</h1>
       
       <!-- Error display -->
-      <div v-if="error" class="alert alert-error mb-4">
+      <div v-if="error" class="alert alert-error mb-4 text-error-content">
         <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         <span>{{ error }}</span>
       </div>
 
       <!-- Loading indicator -->
       <div v-if="loading" class="flex justify-center my-8">
-        <span class="loading loading-spinner loading-lg"></span>
+        <span class="loading loading-spinner loading-lg text-primary"></span>
       </div>
       
       <!-- Add Sentence Button -->
       <div class="mb-6" v-if="!showAddForm && !showEditForm">
-        <button class="btn btn-primary" @click="showAddForm = true">
+        <button class="btn btn-primary text-primary-content" @click="showAddForm = true">
           Add New Sentence
         </button>
       </div>
 
       <!-- Add Sentence Form -->
-      <div class="card bg-base-200" v-if="showAddForm">
+      <div class="card bg-base-200 border border-base-300" v-if="showAddForm">
         <div class="card-body">
-          <h3 class="card-title">Add New Sentence</h3>
+          <h3 class="card-title text-secondary">Add New Sentence</h3>
           <form @submit.prevent="createSentence">
             <div class="form-control mb-4">
               <label class="label" for="content">
-                <span class="label-text">Content</span>
+                <span class="label-text text-base-content">Content</span>
               </label>
               <textarea 
                 id="content" 
                 v-model="newSentence.content"
                 required
-                class="textarea textarea-bordered h-24"
+                class="textarea textarea-bordered h-24 bg-base-100 text-base-content"
               ></textarea>
             </div>
             
             <div class="flex justify-end gap-2 mt-4">
-              <button type="button" class="btn" @click="cancelForm">Cancel</button>
-              <button type="submit" class="btn btn-primary">Save Sentence</button>
+              <button type="button" class="btn btn-ghost text-base-content" @click="cancelForm">Cancel</button>
+              <button type="submit" class="btn btn-primary text-primary-content">Save Sentence</button>
             </div>
           </form>
         </div>
       </div>
       
       <!-- Edit Sentence Form -->
-      <div class="card bg-base-200" v-if="showEditForm">
+      <div class="card bg-base-200 border border-base-300" v-if="showEditForm">
         <div class="card-body">
-          <h3 class="card-title">Edit Sentence</h3>
+          <h3 class="card-title text-secondary">Edit Sentence</h3>
           <form @submit.prevent="updateSentence">
             <div class="form-control mb-4">
               <label class="label" for="editContent">
-                <span class="label-text">Content</span>
+                <span class="label-text text-base-content">Content</span>
               </label>
               <textarea 
                 id="editContent" 
                 v-model="editedSentence.content"
                 required
-                class="textarea textarea-bordered h-24"
+                class="textarea textarea-bordered h-24 bg-base-100 text-base-content"
               ></textarea>
             </div>
             
             <div class="flex justify-end gap-2 mt-4">
-              <button type="button" class="btn" @click="cancelForm">Cancel</button>
-              <button type="submit" class="btn btn-primary">Update Sentence</button>
+              <button type="button" class="btn btn-ghost text-base-content" @click="cancelForm">Cancel</button>
+              <button type="submit" class="btn btn-primary text-primary-content">Update Sentence</button>
             </div>
           </form>
         </div>
@@ -209,20 +209,20 @@ onMounted(fetchSentences);
 
       <!-- Sentences Table -->
       <div class="overflow-x-auto" v-if="!loading && sentences.length && !showAddForm && !showEditForm">
-        <table class="table table-zebra">
-          <thead>
+        <table class="table table-zebra w-full">
+          <thead class="bg-base-200 text-base-content">
             <tr>
               <th>Content</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody class="bg-base-100 text-base-content">
             <tr v-for="item in sentences" :key="item.id">
               <td>{{ item.content }}</td>
               <td>
                 <div class="flex gap-2">
-                  <button class="btn btn-sm btn-info" @click="startEdit(item)">Edit</button>
-                  <button class="btn btn-sm btn-error" @click="deleteSentence(item.id)">Delete</button>
+                  <button class="btn btn-sm btn-info text-info-content" @click="startEdit(item)">Edit</button>
+                  <button class="btn btn-sm btn-error text-error-content" @click="deleteSentence(item.id)">Delete</button>
                 </div>
               </td>
             </tr>
@@ -231,7 +231,7 @@ onMounted(fetchSentences);
       </div>
       
       <!-- No sentences message -->
-      <div v-if="!loading && !sentences.length && !showAddForm && !showEditForm" class="alert alert-info">
+      <div v-if="!loading && !sentences.length && !showAddForm && !showEditForm" class="alert alert-info text-info-content">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span>No sentences found. Add some sentences!</span>
       </div>
