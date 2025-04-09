@@ -16,55 +16,107 @@ const logoutAndRedirect = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-base-200">
-    <header class="bg-base-100 shadow-lg p-4">
-      <div class="container mx-auto text-center">
-        <h1 class="text-4xl font-extrabold text-primary mb-2">Lifebook</h1>
-        <h2 class="text-xl text-secondary mb-4">
-          -- My books, feeds, movies, music, musicals, series, and sentences --
-        </h2>
+  <div class="min-h-screen bg-base-200 text-base-content font-serif flex flex-col">
+    <header class="bg-base-300 shadow-lg">
+      <div class="container mx-auto px-4">
+        <div class="navbar">
+          <!-- Brand Section -->
+          <div class="navbar-start">
+            <RouterLink to="/" class="btn btn-ghost px-2">
+              <h1 class="text-4xl font-bold text-primary">Lifebook</h1>
+            </RouterLink>
+          </div>
 
-        <nav class="navbar bg-base-100 justify-center space-x-4">
-          <RouterLink class="btn btn-primary" to="/">Home</RouterLink>
-          
-          <!-- Show navigation only if authenticated -->
-          <template v-if="isAuthenticated">
-            <RouterLink class="btn btn-primary" to="/books">Books</RouterLink>
-            <div class="dropdown dropdown-hover">
-              <label tabindex="0" class="btn btn-primary">Others</label>
-              <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                <li><RouterLink to="/feeds">Feeds</RouterLink></li>
-                <li><RouterLink to="/movies">Movies</RouterLink></li>
-                <li><RouterLink to="/music">Music</RouterLink></li>
-                <li><RouterLink to="/musicals">Musicals</RouterLink></li>
-                <li><RouterLink to="/series">Series</RouterLink></li>
-                <li><RouterLink to="/sentences">Sentences</RouterLink></li>
+          <!-- Desktop Navigation -->
+          <div class="navbar-center hidden lg:flex">
+            <nav class="flex items-center gap-4">
+              <RouterLink 
+                to="/" 
+                class="btn btn-ghost text-lg"
+                active-class="btn-primary"
+              >
+                Home
+              </RouterLink>
+
+              <template v-if="isAuthenticated">
+                <RouterLink 
+                  to="/books" 
+                  class="btn btn-ghost text-lg"
+                  active-class="btn-primary"
+                >
+                  Books
+                </RouterLink>
+
+                <div class="dropdown dropdown-hover">
+                  <label tabindex="0" class="btn btn-ghost text-lg">
+                    Others
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </label>
+                  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52">
+                    <li><RouterLink to="/feeds">Feeds</RouterLink></li>
+                    <li><RouterLink to="/movies">Movies</RouterLink></li>
+                    <li><RouterLink to="/music">Music</RouterLink></li>
+                    <li><RouterLink to="/musicals">Musicals</RouterLink></li>
+                    <li><RouterLink to="/series">Series</RouterLink></li>
+                    <li><RouterLink to="/sentences">Sentences</RouterLink></li>
+                  </ul>
+                </div>
+              </template>
+            </nav>
+          </div>
+
+          <!-- Mobile Menu -->
+          <div class="navbar-end lg:hidden">
+            <div class="dropdown dropdown-end">
+              <label tabindex="0" class="btn btn-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </label>
+              <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52 mt-4">
+                <li><RouterLink to="/">Home</RouterLink></li>
+                <template v-if="isAuthenticated">
+                  <li><RouterLink to="/books">Books</RouterLink></li>
+                  <li class="menu-title"><span>Others</span></li>
+                  <li><RouterLink to="/feeds">Feeds</RouterLink></li>
+                  <li><RouterLink to="/movies">Movies</RouterLink></li>
+                  <li><RouterLink to="/music">Music</RouterLink></li>
+                  <li><RouterLink to="/musicals">Musicals</RouterLink></li>
+                  <li><RouterLink to="/series">Series</RouterLink></li>
+                  <li><RouterLink to="/sentences">Sentences</RouterLink></li>
+                </template>
               </ul>
             </div>
-          </template>
+          </div>
 
-          <!-- Auth buttons -->
-          <div class="ml-auto">
+          <!-- Auth Section -->
+          <div class="navbar-end hidden lg:flex">
             <template v-if="isAuthenticated">
               <div class="dropdown dropdown-end">
-                <label tabindex="0" class="btn">
-                  {{ user?.email || 'Account' }}
+                <label tabindex="0" class="btn btn-ghost">
+                  <div class="flex items-center gap-2">
+                    <span class="truncate max-w-[120px] text-neutral-content">{{ user?.email }}</span>
+                  </div>
                 </label>
-                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                  <li><button @click="logoutAndRedirect">Logout</button></li>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52">
+                  <li><button @click="logoutAndRedirect" class="text-error">Logout</button></li>
                 </ul>
               </div>
             </template>
             <template v-else>
-              <RouterLink class="btn btn-secondary" to="/login">Login</RouterLink>
+              <RouterLink to="/login" class="btn btn-primary text-lg">Login</RouterLink>
             </template>
           </div>
-        </nav>
+        </div>
       </div>
     </header>
 
-    <main class="container mx-auto py-8 px-4 bg-white shadow-md rounded-lg">
-      <RouterView />
+    <main class="container mx-auto px-4 py-8 flex-1">
+      <div class="bg-base-300 rounded-box shadow-lg p-6">
+        <RouterView />
+      </div>
     </main>
   </div>
 </template>
