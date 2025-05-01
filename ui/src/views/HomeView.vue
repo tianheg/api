@@ -77,7 +77,7 @@ setTimeout(() => {
           </div>
         </RouterLink>
 
-        <RouterLink ref="card2" to="/movies"
+        <RouterLink ref="card2" to="/watch"
           class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-300"
           :style="{
             opacity: isCard2Visible ? 1 : 0,
@@ -85,21 +85,8 @@ setTimeout(() => {
             transition: 'all 0.5s ease-out 0.1s',
           }">
           <div class="card-body items-center text-center">
-            <h2 class="card-title text-xl mb-2 text-primary">Movies</h2>
-            <p class="text-base-content">Track movies you've watched</p>
-          </div>
-        </RouterLink>
-
-        <RouterLink ref="card3" to="/series"
-          class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-300"
-          :style="{
-            opacity: isCard3Visible ? 1 : 0,
-            transform: isCard3Visible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'all 0.5s ease-out 0.2s',
-          }">
-          <div class="card-body items-center text-center">
-            <h2 class="card-title text-xl mb-2 text-primary">Series</h2>
-            <p class="text-base-content">Keep up with your favorite series</p>
+            <h2 class="card-title text-xl mb-2 text-primary">Watch</h2>
+            <p class="text-base-content">Track what I'm watching</p>
           </div>
         </RouterLink>
       </div>
@@ -115,7 +102,7 @@ setTimeout(() => {
           }">
           <h2 class="text-2xl font-semibold text-primary">My Personal Archive</h2>
           <p class="text-base-content">
-            Organize my books, movies, and series in one place
+            Organize my books, watch in one place
           </p>
         </div>
       </div>

@@ -56,10 +56,9 @@ const logoutAndRedirect = () => {
                   </label>
                   <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52 text-base-content">
                     <li><RouterLink to="/feeds">Feeds</RouterLink></li>
-                    <li><RouterLink to="/movies">Movies</RouterLink></li>
+                    <li><RouterLink to="/watch">Watch</RouterLink></li>
                     <li><RouterLink to="/music">Music</RouterLink></li>
                     <li><RouterLink to="/musicals">Musicals</RouterLink></li>
-                    <li><RouterLink to="/series">Series</RouterLink></li>
                     <li><RouterLink to="/sentences">Sentences</RouterLink></li>
                   </ul>
                 </div>
@@ -81,10 +80,9 @@ const logoutAndRedirect = () => {
                   <li><RouterLink to="/books">Books</RouterLink></li>
                   <li class="menu-title"><span class="text-base-content/70">Others</span></li>
                   <li><RouterLink to="/feeds">Feeds</RouterLink></li>
-                  <li><RouterLink to="/movies">Movies</RouterLink></li>
+                  <li><RouterLink to="/watch">Watch</RouterLink></li>
                   <li><RouterLink to="/music">Music</RouterLink></li>
                   <li><RouterLink to="/musicals">Musicals</RouterLink></li>
-                  <li><RouterLink to="/series">Series</RouterLink></li>
                   <li><RouterLink to="/sentences">Sentences</RouterLink></li>
                 </template>
               </ul>
