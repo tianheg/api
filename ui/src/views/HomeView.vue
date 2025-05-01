@@ -1,7 +1,11 @@
 <script setup>
 import { useAuthStore } from "@/stores/auth";
+import {
+  TransitionPresets,
+  useElementVisibility,
+  useTransition,
+} from "@vueuse/core";
 import { computed, ref } from "vue";
-import { useTransition, TransitionPresets, useElementVisibility } from "@vueuse/core";
 
 const authStore = useAuthStore();
 const isAuthenticated = computed(() => authStore.isAuthenticated());

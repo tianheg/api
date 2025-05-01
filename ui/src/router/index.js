@@ -22,9 +22,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: "/movies",
-      name: "movies",
-      component: () => import("@/views/MoviesView.vue"),
+      path: "/watch",
+      name: "watch",
+      component: () => import("@/views/WatchView.vue"),
       meta: { requiresAuth: true },
     },
     {
@@ -43,12 +43,6 @@ const router = createRouter({
       path: "/sentences",
       name: "sentences",
       component: () => import("@/views/SentencesView.vue"),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: "/series",
-      name: "series",
-      component: () => import("@/views/SeriesView.vue"),
       meta: { requiresAuth: true },
     },
     // Authentication routes

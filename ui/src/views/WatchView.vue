@@ -1,132 +1,120 @@
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { ref, reactive, onMounted } from "vue";
+import { API_URL } from "@/config";
 
-// Base API URL
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-
-// Movie data and state management
 const movies = ref([]);
-const loading = ref(false);
-const error = ref(null);
-
-// Form states
+const loading = ref(true);
 const showAddForm = ref(false);
 const showEditForm = ref(false);
-const currentMovie = ref(null);
+const error = ref(null);
 
-// Form models
 const newMovie = reactive({
   name: "",
   review: "",
+  type: "movie"
 });
 
 const editedMovie = reactive({
   id: null,
   name: "",
   review: "",
+  type: "movie"
 });
 
 // Fetch all movies
 const fetchMovies = async () => {
   loading.value = true;
-  error.value = null;
   try {
-    const response = await fetch(`${API_URL}/movies`);
+    const response = await fetch(`${API_URL}/watch?type=movie`);
     if (!response.ok) throw new Error("Failed to fetch movies");
     const data = await response.json();
     movies.value = data.data || [];
     console.log("Movies:", movies.value);
   } catch (err) {
     console.error("Error fetching movies:", err);
-    error.value = err.message;
+    error.value = "Failed to load movies. Please try again.";
   } finally {
     loading.value = false;
   }
 };
 
-// Create a new movie
-const createMovie = async () => {
+// Add a new movie
+const addMovie = async () => {
   try {
     const requestOptions = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newMovie),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: newMovie.name,
+        review: newMovie.review,
+        type: "movie"
+      }),
     };
 
-    const response = await fetch(`${API_URL}/movies`, requestOptions);
-
-    if (!response.ok) throw new Error("Failed to create movie");
-
-    Object.assign(newMovie, {
-      name: "",
-      review: "",
-    });
+    const response = await fetch(`${API_URL}/watch`, requestOptions);
+    if (!response.ok) throw new Error("Failed to add movie");
+    
     showAddForm.value = false;
+    newMovie.name = "";
+    newMovie.review = "";
     fetchMovies();
   } catch (err) {
-    console.error("Error creating movie:", err);
-    error.value = err.message;
+    console.error(err);
+    error.value = "Failed to add movie. Please try again.";
   }
 };
 
-// Start editing a movie
-const startEdit = (movie) => {
+// Edit an existing movie
+const editMovie = (movie) => {
   editedMovie.id = movie.id;
   editedMovie.name = movie.name;
-  editedMovie.review = movie.review || "";
+  editedMovie.review = movie.review;
   showEditForm.value = true;
-  currentMovie.value = movie;
 };
 
-// Update a movie
+// Update movie
 const updateMovie = async () => {
   try {
     const requestOptions = {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: editedMovie.name,
         review: editedMovie.review,
+        type: "movie"
       }),
     };
 
     const response = await fetch(
-      `${API_URL}/movies/${editedMovie.id}`,
-      requestOptions,
+      `${API_URL}/watch/${editedMovie.id}`,
+      requestOptions
     );
-
     if (!response.ok) throw new Error("Failed to update movie");
-
+    
     showEditForm.value = false;
-    currentMovie.value = null;
     fetchMovies();
   } catch (err) {
-    console.error("Error updating movie:", err);
-    error.value = err.message;
+    console.error(err);
+    error.value = "Failed to update movie. Please try again.";
   }
 };
 
 // Delete a movie
 const deleteMovie = async (id) => {
   if (!confirm("Are you sure you want to delete this movie?")) return;
-
+  
   try {
     const requestOptions = {
       method: "DELETE",
     };
 
-    const response = await fetch(`${API_URL}/movies/${id}`, requestOptions);
-
+    const response = await fetch(`${API_URL}/watch/${id}`, requestOptions);
     if (!response.ok) throw new Error("Failed to delete movie");
-
+    
     fetchMovies();
   } catch (err) {
-    console.error("Error deleting movie:", err);
-    error.value = err.message;
+    console.error(err);
+    error.value = "Failed to delete movie. Please try again.";
   }
 };
 
@@ -134,7 +122,6 @@ const deleteMovie = async (id) => {
 const cancelForm = () => {
   showAddForm.value = false;
   showEditForm.value = false;
-  currentMovie.value = null;
 };
 
 // Load movies when component is mounted
@@ -171,7 +158,7 @@ onMounted(fetchMovies);
       <div class="card bg-base-200 border border-base-300" v-if="showAddForm">
         <div class="card-body">
           <h3 class="card-title text-secondary">Add New Movie</h3>
-          <form @submit.prevent="createMovie">
+          <form @submit.prevent="addMovie">
             <div class="form-control mb-4">
               <label class="label" for="name">
                 <span class="label-text text-base-content">Name</span>
@@ -239,7 +226,7 @@ onMounted(fetchMovies);
               <td>{{ movie.review }}</td>
               <td>
                 <div class="flex gap-2">
-                  <button class="btn btn-sm btn-info text-info-content" @click="startEdit(movie)">Edit</button>
+                  <button class="btn btn-sm btn-info text-info-content" @click="editMovie(movie)">Edit</button>
                   <button class="btn btn-sm btn-error text-error-content" @click="deleteMovie(movie.id)">Delete</button>
                 </div>
               </td>
