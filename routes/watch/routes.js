@@ -1,148 +1,138 @@
 import { getPaginatedData, paginationSchema } from "../utils.js";
 
 export default function watch(app, opts, done) {
-
+  // Define schemas for validation
   const watchSchema = {
-    type: 'object',
+    type: "object",
+    required: ["name"],
     properties: {
-      name: { type: 'string' },
-      review: { type: 'string' },
-    }
+      name: { type: "string" },
+      review: { type: "string" },
+    },
   };
 
-  // Get client from app for database connection
-  const client = app.pg;
+  const paramsSchema = {
+    type: "object",
+    required: ["id"],
+    properties: {
+      id: { type: "integer" },
+    },
+  };
 
-  async function getWatchItems(request, reply) {
-    const { search, page, limit, type } = request.query;
-
+  // Handler functions
+  async function getWatch(request, reply) {
+    const { page, limit, search } = request.query;
+    const client = await app.pg.connect();
     try {
-      let query = "SELECT * FROM watch";
-      const params = [];
-
-      // Add type filter if specified
-      if (type && (type === 'movie' || type === 'series')) {
-        query += " WHERE type = $1";
-        params.push(type);
-      }
-
-      const watchData = await client.query(query, params);
+      const watchData = await client.query("SELECT * FROM watch");
       return getPaginatedData(watchData.rows, search, page, limit);
-    } catch (err) {
-      console.error("Error getting watch items:", err);
-      return reply.status(500).send({ error: "Failed to retrieve items" });
+    } catch (error) {
+      app.log.error(error);
+      return reply.status(500).send({ error: "Failed to retrieve watch" });
+    } finally {
+      client.release();
     }
   }
 
-  async function createWatchItem(request, reply) {
-    const { name, review, type } = request.body;
-
+  async function createWatch(request, reply) {
+    const { name, review } = request.body;
+    const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "INSERT INTO watch (name, review, type) VALUES ($1, $2, $3) RETURNING *",
-        [name, review, type || 'movie']
+        "INSERT INTO watch (name, review) VALUES ($1, $2) RETURNING *",
+        [name, review],
       );
-      return reply.send(result.rows[0]);
-    } catch (err) {
-      console.error("Error creating watch item:", err);
-      return reply.status(500).send({ error: "Failed to create item" });
+      return reply.status(201).send(result.rows[0]);
+    } catch (error) {
+      app.log.error(error);
+      return reply.status(500).send({ error: "Failed to create watch" });
+    } finally {
+      client.release();
     }
   }
 
-  async function updateWatchItem(request, reply) {
+  async function updateWatch(request, reply) {
     const { id } = request.params;
-    const { name, review, type } = request.body;
-
+    const { name, review } = request.body;
+    const client = await app.pg.connect();
     try {
       const result = await client.query(
-        "UPDATE watch SET name = $1, review = $2, type = $3 WHERE id = $4 RETURNING *",
-        [name, review, type || 'movie', id]
+        "UPDATE watch SET name = $1, review = $2 WHERE id = $3 RETURNING *",
+        [name, review, id],
       );
-      if (result.rows.length === 0) {
-        return reply.status(404).send({ message: "Item not found" });
+      if (result.rowCount === 0) {
+        return reply.status(404).send({ message: "Watch not found" });
       }
       return reply.send(result.rows[0]);
-    } catch (err) {
-      console.error("Error updating watch item:", err);
-      return reply.status(500).send({ error: "Failed to update item" });
+    } catch (error) {
+      app.log.error(error);
+      return reply.status(500).send({ error: "Failed to update watch" });
+    } finally {
+      client.release();
     }
   }
 
-  async function deleteWatchItem(request, reply) {
+  async function deleteWatch(request, reply) {
     const { id } = request.params;
-
+    const client = await app.pg.connect();
     try {
       const result = await client.query(
         "DELETE FROM watch WHERE id = $1 RETURNING *",
-        [id]
+        [id],
       );
-      if (result.rows.length === 0) {
-        return reply.status(404).send({ message: "Item not found" });
+      if (result.rowCount === 0) {
+        return reply.status(404).send({ message: "Watch not found" });
       }
-      return reply.send({ message: "Item deleted successfully" });
-    } catch (err) {
-      console.error("Error deleting watch item:", err);
-      return reply.status(500).send({ error: "Failed to delete item" });
+      return reply.send({ message: "Watch deleted successfully" });
+    } catch (error) {
+      app.log.error(error);
+      return reply.status(500).send({ error: "Failed to delete watch" });
+    } finally {
+      client.release();
     }
   }
 
-  // Routes
-  app.route({
-    method: "GET",
-    url: "/watch",
-    schema: {
-      querystring: {
-        type: { type: "string", enum: ["movie", "series"] },
-        search: { type: "string" },
-        page: { type: "integer", default: 1 },
-        limit: { type: "integer", default: 10 }
-      }
+  // Route definitions
+  app.get(
+    "/watch",
+    {
+      schema: {
+        querystring: paginationSchema,
+      },
     },
-    handler: getWatchItems,
-  });
+    getWatch,
+  );
 
-  app.route({
-    method: "POST",
-    url: "/watch",
-    schema: {
-      body: watchSchema,
+  app.post(
+    "/watch",
+    {
+      schema: {
+        body: watchSchema,
+      },
     },
-    handler: createWatchItem,
-  });
+    createWatch,
+  );
 
-  app.route({
-    method: "PUT",
-    url: "/watch/:id",
-    schema: {
-      body: watchSchema,
+  app.put(
+    "/watch/:id",
+    {
+      schema: {
+        params: paramsSchema,
+        body: watchSchema,
+      },
     },
-    handler: updateWatchItem,
-  });
+    updateWatch,
+  );
 
-  app.route({
-    method: "DELETE",
-    url: "/watch/:id",
-    handler: deleteWatchItem,
-  });
-
-  // Legacy endpoints to ensure backward compatibility
-  app.route({
-    method: "GET",
-    url: "/movies",
-    handler: async (request, reply) => {
-      request.query.type = 'movie';
-      return getWatchItems(request, reply);
-    }
-  });
-
-  app.route({
-    method: "GET",
-    url: "/series",
-    handler: async (request, reply) => {
-      request.query.type = 'series';
-      return getWatchItems(request, reply);
-    }
-  });
+  app.delete(
+    "/watch/:id",
+    {
+      schema: {
+        params: paramsSchema,
+      },
+    },
+    deleteWatch,
+  );
 
   done();
 }
