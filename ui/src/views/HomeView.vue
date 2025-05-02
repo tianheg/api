@@ -64,19 +64,6 @@ setTimeout(() => {
 
     <template v-if="isAuthenticated">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <RouterLink ref="card1" to="/books"
-          class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-300"
-          :style="{
-            opacity: isCard1Visible ? 1 : 0,
-            transform: isCard1Visible ? 'translateY(0)' : 'translateY(20px)',
-            transition: 'all 0.5s ease-out',
-          }">
-          <div class="card-body items-center text-center">
-            <h2 class="card-title text-xl mb-2 text-primary">Books</h2>
-            <p class="text-base-content">Manage your book collection</p>
-          </div>
-        </RouterLink>
-
         <RouterLink ref="card2" to="/watch"
           class="card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-300 border border-base-300"
           :style="{
