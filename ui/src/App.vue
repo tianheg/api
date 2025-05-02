@@ -39,13 +39,6 @@ const logoutAndRedirect = () => {
               </RouterLink>
 
               <template v-if="isAuthenticated">
-                <RouterLink 
-                  to="/books" 
-                  class="btn btn-ghost text-lg text-base-content"
-                  active-class="btn-primary text-primary-content"
-                >
-                  Books
-                </RouterLink>
 
                 <div class="dropdown dropdown-hover">
                   <label tabindex="0" class="btn btn-ghost text-lg text-base-content">
@@ -77,7 +70,6 @@ const logoutAndRedirect = () => {
               <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52 mt-4 text-base-content">
                 <li><RouterLink to="/">Home</RouterLink></li>
                 <template v-if="isAuthenticated">
-                  <li><RouterLink to="/books">Books</RouterLink></li>
                   <li class="menu-title"><span class="text-base-content/70">Others</span></li>
                   <li><RouterLink to="/feeds">Feeds</RouterLink></li>
                   <li><RouterLink to="/watch">Watch</RouterLink></li>
