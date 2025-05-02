@@ -95,6 +95,9 @@ const logoutAndRedirect = () => {
                   <li><RouterLink to="/musicals">Musicals</RouterLink></li>
                   <li><RouterLink to="/sentences">Sentences</RouterLink></li>
                 </template>
+                <template v-else>
+                  <li><RouterLink to="/login" class="text-primary">Login</RouterLink></li>
+                </template>
               </ul>
             </div>
           </div>
