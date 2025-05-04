@@ -182,8 +182,7 @@ onMounted(fetchFeeds);
         @update:page="handlePageChange"
       >
         <template #url="{ item }">
-          <a :href="item.url" target="_blank" rel="noopener noreferrer" class="badge badge-outline badge-primary px-3 py-2 text-xs break-all">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline w-4 h-4 mr-1 align-text-bottom" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 015.656 5.656l-3.535 3.535a4 4 0 01-5.656-5.656m1.414-1.414a4 4 0 015.656 5.656" /></svg>
+          <a :href="item.url" target="_blank" rel="noopener noreferrer" class="link link-primary">
             {{ item.url }}
           </a>
         </template>
