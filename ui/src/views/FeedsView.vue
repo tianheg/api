@@ -33,9 +33,11 @@ const feedColumns = [
 
 watch([showAddForm, showEditForm, currentFeed], ([add, edit, feed]) => {
   if (add) {
+    Object.keys(formModel).forEach(key => delete formModel[key]);
     Object.assign(formModel, { title: "", url: "", description: "", rss: "" });
   } else if (edit && feed) {
     const { id, ...rest } = feed;
+    Object.keys(formModel).forEach(key => delete formModel[key]);
     Object.assign(formModel, rest);
   }
 });
