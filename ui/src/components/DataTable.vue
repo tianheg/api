@@ -1,4 +1,6 @@
 <script setup>
+import { computed } from 'vue';
+
 const props = defineProps({
   columns: { type: Array, required: true },
   items: { type: Array, required: true },
