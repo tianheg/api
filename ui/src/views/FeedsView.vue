@@ -36,9 +36,9 @@ watch([showAddForm, showEditForm, currentFeed], ([add, edit, feed]) => {
     Object.keys(formModel).forEach(key => delete formModel[key]);
     Object.assign(formModel, { title: "", url: "", description: "", rss: "" });
   } else if (edit && feed) {
-    const { id, ...rest } = feed;
+    // Keep the id in formModel for edit mode
     Object.keys(formModel).forEach(key => delete formModel[key]);
-    Object.assign(formModel, rest);
+    Object.assign(formModel, { ...feed });
   }
 });
 
