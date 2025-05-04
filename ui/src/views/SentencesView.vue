@@ -29,7 +29,8 @@ watch([showAddForm, showEditForm, currentSentence], ([add, edit, item]) => {
   if (add) {
     Object.assign(formModel, { content: "" });
   } else if (edit && item) {
-    Object.assign(formModel, item);
+    const { id, ...rest } = item;
+    Object.assign(formModel, rest);
   }
 });
 

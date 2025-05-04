@@ -31,7 +31,8 @@ watch([showAddForm, showEditForm, currentMusic], ([add, edit, item]) => {
   if (add) {
     Object.assign(formModel, { name: "", url: "" });
   } else if (edit && item) {
-    Object.assign(formModel, item);
+    const { id, ...rest } = item;
+    Object.assign(formModel, rest);
   }
 });
 

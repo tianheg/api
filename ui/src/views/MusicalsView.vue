@@ -31,7 +31,8 @@ watch([showAddForm, showEditForm, currentMusical], ([add, edit, item]) => {
   if (add) {
     Object.assign(formModel, { name: "", review: "" });
   } else if (edit && item) {
-    Object.assign(formModel, item);
+    const { id, ...rest } = item;
+    Object.assign(formModel, rest);
   }
 });
 

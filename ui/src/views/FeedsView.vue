@@ -35,7 +35,8 @@ watch([showAddForm, showEditForm, currentFeed], ([add, edit, feed]) => {
   if (add) {
     Object.assign(formModel, { title: "", url: "", description: "", rss: "" });
   } else if (edit && feed) {
-    Object.assign(formModel, feed);
+    const { id, ...rest } = feed;
+    Object.assign(formModel, rest);
   }
 });
 
