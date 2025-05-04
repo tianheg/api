@@ -24,7 +24,7 @@ export default function music(app, opts, done) {
     const { page, limit, search } = request.query;
     const client = await app.pg.connect();
     try {
-      const musicData = await client.query("SELECT * FROM music");
+      const musicData = await client.query("SELECT * FROM music ORDER BY id DESC");
       return await getPaginatedData(musicData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);

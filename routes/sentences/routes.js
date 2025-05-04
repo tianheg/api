@@ -23,7 +23,7 @@ export default function sentences(app, opts, done) {
     const { page, limit, search } = request.query;
     const client = await app.pg.connect();
     try {
-      const sentencesData = await client.query("SELECT * FROM sentences");
+      const sentencesData = await client.query("SELECT * FROM sentences ORDER BY id DESC");
       return await getPaginatedData(sentencesData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);

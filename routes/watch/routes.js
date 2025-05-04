@@ -24,7 +24,7 @@ export default function watch(app, opts, done) {
     const { page, limit, search } = request.query;
     const client = await app.pg.connect();
     try {
-      const watchData = await client.query("SELECT * FROM watch");
+      const watchData = await client.query("SELECT * FROM watch ORDER BY id DESC");
       return getPaginatedData(watchData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);

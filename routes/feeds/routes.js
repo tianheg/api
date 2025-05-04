@@ -26,7 +26,7 @@ export default function feeds(app, opts, done) {
     const { page, limit, search } = request.query;
     const client = await app.pg.connect();
     try {
-      const feedsData = await client.query("SELECT * FROM feeds");
+      const feedsData = await client.query("SELECT * FROM feeds ORDER BY id DESC");
       return await getPaginatedData(feedsData.rows, search, page, limit);
     } catch (error) {
       app.log.error(error);
