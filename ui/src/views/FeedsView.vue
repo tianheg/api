@@ -37,8 +37,10 @@ watch([showAddForm, showEditForm, currentFeed], ([add, edit, feed]) => {
     Object.assign(formModel, { title: "", url: "", description: "", rss: "" });
     editedFeed.value = { id: null, title: "", url: "", description: "", rss: "" };
   } else if (edit && feed) {
+    console.log('Editing feed:', feed); // Log the incoming feed data
     Object.assign(formModel, { ...feed });
     editedFeed.value = { ...feed };
+    console.log('Set editedFeed.value to:', editedFeed.value); // Log the value after setting
   }
 });
 
