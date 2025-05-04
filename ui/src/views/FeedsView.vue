@@ -188,10 +188,7 @@ onMounted(fetchFeeds);
           </a>
         </template>
         <template #rss="{ item }">
-          <a :href="item.rss" target="_blank" rel="noopener noreferrer" class="badge badge-outline badge-accent px-3 py-2 text-xs break-all">
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline w-4 h-4 mr-1 align-text-bottom" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405M19 13V7a2 2 0 00-2-2h-4a2 2 0 00-2 2v6m0 4h6" /></svg>
-            {{ item.rss }}
-          </a>
+          <a :href="item.rss" target="_blank" rel="noopener noreferrer" class="link link-primary">{{ item.rss }}</a>
         </template>
         <template #description="{ item }">
           <span class="max-w-xs truncate" :title="item.description">{{ item.description }}</span>
