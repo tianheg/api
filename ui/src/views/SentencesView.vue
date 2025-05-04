@@ -10,7 +10,7 @@ const error = ref(null);
 const showAddForm = ref(false);
 const showEditForm = ref(false);
 const currentSentence = ref(null);
-const formModel = reactive({ content: "" });
+const formModel = reactive({ id: null, content: "" });
 const isEditMode = computed(() => showEditForm.value);
 
 const page = ref(1);
@@ -26,11 +26,13 @@ const sentenceColumns = [
 ];
 
 watch([showAddForm, showEditForm, currentSentence], ([add, edit, item]) => {
+  error.value = null;
   if (add) {
-    Object.assign(formModel, { content: "" });
+    Object.assign(formModel, { id: null, content: "" });
   } else if (edit && item) {
-    const { id, ...rest } = item;
-    Object.assign(formModel, rest);
+    Object.assign(formModel, { ...item });
+  } else if (!add && !edit) {
+    Object.assign(formModel, { id: null, content: "" });
   }
 });
 
@@ -72,7 +74,7 @@ const createSentenceUnified = async () => {
     };
     const response = await fetch(`${API_URL}/sentences`, requestOptions);
     if (!response.ok) throw new Error("Failed to create sentence");
-    Object.assign(formModel, { content: "" });
+    Object.assign(formModel, { id: null, content: "" });
     showAddForm.value = false;
     fetchSentences();
   } catch (err) {
@@ -82,12 +84,15 @@ const createSentenceUnified = async () => {
 
 const updateSentenceUnified = async () => {
   try {
+    const { id, ...updateData } = formModel;
+    if (!id) throw new Error("Cannot update sentence without ID.");
+
     const requestOptions = {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formModel),
+      body: JSON.stringify(updateData),
     };
-    const response = await fetch(`${API_URL}/sentences/${currentSentence.value.id}`, requestOptions);
+    const response = await fetch(`${API_URL}/sentences/${id}`, requestOptions);
     if (!response.ok) throw new Error("Failed to update sentence");
     showEditForm.value = false;
     currentSentence.value = null;
@@ -114,6 +119,10 @@ const cancelForm = () => {
   showEditForm.value = false;
   currentSentence.value = null;
 };
+
+function handleFormUpdate(newValue) {
+  Object.assign(formModel, newValue);
+}
 
 const tableActions = [
   {
@@ -155,7 +164,8 @@ onMounted(fetchSentences);
           </h3>
           <DataForm
             :fields="sentenceFields"
-            v-model="formModel"
+            :modelValue="formModel"
+            @update:modelValue="handleFormUpdate"
             :onSubmit="submitForm"
             :submitLabel="isEditMode ? 'Update Sentence' : 'Save Sentence'"
             cancelLabel="Cancel"

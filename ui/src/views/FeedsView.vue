@@ -31,13 +31,12 @@ const feedColumns = [
   { label: "RSS URL", key: "rss" },
 ];
 
-watch([showAddForm, showEditForm, currentFeed], ([add, edit, feed]) => {
+watch([showAddForm, showEditForm, currentFeed], ([add, edit, item]) => {
   error.value = null; // Clear previous errors
   if (add) {
     Object.assign(formModel, { id: null, title: "", url: "", description: "", rss: "" });
-  } else if (edit && feed) {
-    Object.assign(formModel, { ...feed });
-    console.log('Editing feed, set formModel to:', JSON.parse(JSON.stringify(formModel))); // Log plain object
+  } else if (edit && item) {
+    Object.assign(formModel, { ...item });
   } else if (!add && !edit) {
     Object.assign(formModel, { id: null, title: "", url: "", description: "", rss: "" });
   }

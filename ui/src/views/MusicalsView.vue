@@ -10,7 +10,7 @@ const error = ref(null);
 const showAddForm = ref(false);
 const showEditForm = ref(false);
 const currentMusical = ref(null);
-const formModel = reactive({ name: "", review: "" });
+const formModel = reactive({ id: null, name: "", review: "" });
 const isEditMode = computed(() => showEditForm.value);
 
 const page = ref(1);
@@ -28,11 +28,13 @@ const musicalColumns = [
 ];
 
 watch([showAddForm, showEditForm, currentMusical], ([add, edit, item]) => {
+  error.value = null;
   if (add) {
-    Object.assign(formModel, { name: "", review: "" });
+    Object.assign(formModel, { id: null, name: "", review: "" });
   } else if (edit && item) {
-    const { id, ...rest } = item;
-    Object.assign(formModel, rest);
+    Object.assign(formModel, { ...item });
+  } else if (!add && !edit) {
+    Object.assign(formModel, { id: null, name: "", review: "" });
   }
 });
 
@@ -74,7 +76,7 @@ const createMusicalUnified = async () => {
     };
     const response = await fetch(`${API_URL}/musicals`, requestOptions);
     if (!response.ok) throw new Error("Failed to create musical");
-    Object.assign(formModel, { name: "", review: "" });
+    Object.assign(formModel, { id: null, name: "", review: "" });
     showAddForm.value = false;
     fetchMusicals();
   } catch (err) {
@@ -84,12 +86,15 @@ const createMusicalUnified = async () => {
 
 const updateMusicalUnified = async () => {
   try {
+    const { id, ...updateData } = formModel;
+    if (!id) throw new Error("Cannot update musical without ID.");
+
     const requestOptions = {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formModel),
+      body: JSON.stringify(updateData),
     };
-    const response = await fetch(`${API_URL}/musicals/${currentMusical.value.id}`, requestOptions);
+    const response = await fetch(`${API_URL}/musicals/${id}`, requestOptions);
     if (!response.ok) throw new Error("Failed to update musical");
     showEditForm.value = false;
     currentMusical.value = null;
@@ -116,6 +121,10 @@ const cancelForm = () => {
   showEditForm.value = false;
   currentMusical.value = null;
 };
+
+function handleFormUpdate(newValue) {
+  Object.assign(formModel, newValue);
+}
 
 const tableActions = [
   {
@@ -157,7 +166,8 @@ onMounted(fetchMusicals);
           </h3>
           <DataForm
             :fields="musicalFields"
-            v-model="formModel"
+            :modelValue="formModel"
+            @update:modelValue="handleFormUpdate"
             :onSubmit="submitForm"
             :submitLabel="isEditMode ? 'Update Musical' : 'Save Musical'"
             cancelLabel="Cancel"
