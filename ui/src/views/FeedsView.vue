@@ -9,9 +9,8 @@ const loading = ref(false);
 const error = ref(null);
 const showAddForm = ref(false);
 const showEditForm = ref(false);
-const currentFeed = ref(null);
-const formModel = reactive({ title: "", url: "", description: "", rss: "" });
-const editedFeed = ref({ id: null, title: "", url: "", description: "", rss: "" });
+const currentFeed = ref(null); // Still needed to trigger the watch
+const formModel = reactive({ id: null, title: "", url: "", description: "", rss: "" });
 const isEditMode = computed(() => showEditForm.value);
 
 const page = ref(1);
@@ -33,14 +32,14 @@ const feedColumns = [
 ];
 
 watch([showAddForm, showEditForm, currentFeed], ([add, edit, feed]) => {
+  error.value = null; // Clear previous errors
   if (add) {
-    Object.assign(formModel, { title: "", url: "", description: "", rss: "" });
-    editedFeed.value = { id: null, title: "", url: "", description: "", rss: "" };
+    Object.assign(formModel, { id: null, title: "", url: "", description: "", rss: "" });
   } else if (edit && feed) {
-    console.log('Editing feed:', feed); // Log the incoming feed data
     Object.assign(formModel, { ...feed });
-    editedFeed.value = { ...feed };
-    console.log('Set editedFeed.value to:', editedFeed.value); // Log the value after setting
+    console.log('Editing feed, set formModel to:', JSON.parse(JSON.stringify(formModel))); // Log plain object
+  } else if (!add && !edit) {
+    Object.assign(formModel, { id: null, title: "", url: "", description: "", rss: "" });
   }
 });
 
@@ -75,14 +74,15 @@ const submitForm = async () => {
 
 const createFeedUnified = async () => {
   try {
+    const { id, ...createData } = formModel;
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formModel),
+      body: JSON.stringify(createData),
     };
     const response = await fetch(`${API_URL}/feeds`, requestOptions);
     if (!response.ok) throw new Error("Failed to create feed");
-    Object.assign(formModel, { title: "", url: "", description: "", rss: "" });
+    Object.assign(formModel, { id: null, title: "", url: "", description: "", rss: "" });
     showAddForm.value = false;
     fetchFeeds();
   } catch (err) {
@@ -92,16 +92,19 @@ const createFeedUnified = async () => {
 
 const updateFeed = async () => {
   try {
+    const { id, ...updateData } = formModel;
+    if (!id) throw new Error("Cannot update feed without ID.");
+
     const requestOptions = {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(editedFeed.value),
+      body: JSON.stringify(updateData),
     };
 
     const response = await fetch(
-      `${API_URL}/feeds/${editedFeed.value.id}`,
+      `${API_URL}/feeds/${id}`,
       requestOptions,
     );
 
@@ -132,6 +135,10 @@ const cancelForm = () => {
   showEditForm.value = false;
   currentFeed.value = null;
 };
+
+function handleFormUpdate(newValue) {
+  Object.assign(formModel, newValue);
+}
 
 const tableActions = [
   {
@@ -173,8 +180,8 @@ onMounted(fetchFeeds);
           </h3>
           <DataForm
             :fields="feedFields"
-            :modelValue="isEditMode ? editedFeed.value : formModel"
-            @update:modelValue="isEditMode ? editedFeed.value = $event : Object.assign(formModel, $event)"
+            :modelValue="formModel"
+            @update:modelValue="handleFormUpdate"
             :onSubmit="submitForm"
             :submitLabel="isEditMode ? 'Update Feed' : 'Save Feed'"
             cancelLabel="Cancel"

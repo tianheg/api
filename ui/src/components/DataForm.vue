@@ -1,5 +1,5 @@
 <script setup>
-import { computed, toRefs } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   fields: { type: Array, required: true },
@@ -12,14 +12,12 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:modelValue', 'cancel']);
 
-const localModel = computed({
-  get: () => props.modelValue,
-  set: (val) => emit('update:modelValue', val),
-});
-
-function handleInput(field, value) {
-  localModel.value[field] = value;
-  emit('update:modelValue', { ...localModel.value });
+// Function to handle input changes and emit the full updated object
+function handleFieldUpdate(fieldName, value) {
+  // Ensure modelValue is treated as an object even if initially null/undefined briefly
+  const currentModel = props.modelValue || {};
+  const updatedModel = { ...currentModel, [fieldName]: value };
+  emit('update:modelValue', updatedModel);
 }
 
 function handleSubmit(e) {
@@ -37,7 +35,6 @@ function handleSubmit(e) {
       </label>
       <component
         :is="field.type === 'textarea' ? 'textarea' : 'input'"
-        v-model="localModel[field.name]"
         :id="field.name"
         :type="field.type !== 'textarea' ? field.type : undefined"
         :placeholder="field.placeholder"
@@ -46,6 +43,8 @@ function handleSubmit(e) {
         class="input input-bordered bg-base-100 text-base-content textarea-bordered"
         :aria-required="field.required ? 'true' : 'false'"
         :aria-describedby="field.desc ? field.name + '-desc' : undefined"
+        :value="props.modelValue ? props.modelValue[field.name] : ''"
+        @input="handleFieldUpdate(field.name, $event.target.value)"
       />
       <span v-if="field.desc" :id="field.name + '-desc'" class="text-xs text-base-content/60">{{ field.desc }}</span>
     </div>
