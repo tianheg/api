@@ -4,12 +4,12 @@ import DataForm from "@/components/DataForm.vue";
 import DataTable from "@/components/DataTable.vue";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const watchList = ref([]);
+const items = ref([]);
 const loading = ref(false);
 const error = ref(null);
 const showAddForm = ref(false);
 const showEditForm = ref(false);
-const currentWatch = ref(null);
+const currentItem = ref(null);
 const formModel = reactive({ id: null, name: "", review: "" });
 const isEditMode = computed(() => showEditForm.value);
 
@@ -17,17 +17,17 @@ const page = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 
-const watchFields = [
+const fields = [
   { name: "name", label: "Name", type: "text", required: true, desc: "Enter the name of the item." },
   { name: "review", label: "Review", type: "textarea", required: true, desc: "Write your review here." },
 ];
 
-const watchColumns = [
+const columns = [
   { label: "Name", key: "name" },
   { label: "Review", key: "review" },
 ];
 
-watch([showAddForm, showEditForm, currentWatch], ([add, edit, item]) => {
+watch([showAddForm, showEditForm, currentItem], ([add, edit, item]) => {
   error.value = null;
   if (add) {
     Object.assign(formModel, { id: null, name: "", review: "" });
@@ -38,14 +38,14 @@ watch([showAddForm, showEditForm, currentWatch], ([add, edit, item]) => {
   }
 });
 
-const fetchWatch = async () => {
+const fetchItems = async () => {
   loading.value = true;
   error.value = null;
   try {
     const response = await fetch(`${API_URL}/watch?page=${page.value}&limit=${pageSize.value}`);
     if (!response.ok) throw new Error("Failed to fetch watch items");
     const data = await response.json();
-    watchList.value = data.data || [];
+    items.value = data.data || [];
     total.value = data.total || 0;
   } catch (err) {
     error.value = err.message;
@@ -56,18 +56,18 @@ const fetchWatch = async () => {
 
 function handlePageChange(newPage) {
   page.value = newPage;
-  fetchWatch();
+  fetchItems();
 }
 
 const submitForm = async () => {
   if (isEditMode.value) {
-    await updateWatchUnified();
+    await updateItem();
   } else {
-    await createWatchUnified();
+    await createItem();
   }
 };
 
-const createWatchUnified = async () => {
+const createItem = async () => {
   try {
     const requestOptions = {
       method: "POST",
@@ -78,13 +78,13 @@ const createWatchUnified = async () => {
     if (!response.ok) throw new Error("Failed to create watch item");
     Object.assign(formModel, { id: null, name: "", review: "" });
     showAddForm.value = false;
-    fetchWatch();
+    fetchItems();
   } catch (err) {
     error.value = err.message;
   }
 };
 
-const updateWatchUnified = async () => {
+const updateItem = async () => {
   try {
     const { id, ...updateData } = formModel;
     if (!id) throw new Error("Cannot update watch item without ID.");
@@ -97,20 +97,20 @@ const updateWatchUnified = async () => {
     const response = await fetch(`${API_URL}/watch/${id}`, requestOptions);
     if (!response.ok) throw new Error("Failed to update watch item");
     showEditForm.value = false;
-    currentWatch.value = null;
-    fetchWatch();
+    currentItem.value = null;
+    fetchItems();
   } catch (err) {
     error.value = err.message;
   }
 };
 
-const deleteWatch = async (id) => {
+const deleteItem = async (id) => {
   if (!confirm("Are you sure you want to delete this watch item?")) return;
   try {
     const requestOptions = { method: "DELETE" };
     const response = await fetch(`${API_URL}/watch/${id}`, requestOptions);
     if (!response.ok) throw new Error("Failed to delete watch item");
-    fetchWatch();
+    fetchItems();
   } catch (err) {
     error.value = err.message;
   }
@@ -119,7 +119,7 @@ const deleteWatch = async (id) => {
 const cancelForm = () => {
   showAddForm.value = false;
   showEditForm.value = false;
-  currentWatch.value = null;
+  currentItem.value = null;
 };
 
 function handleFormUpdate(newValue) {
@@ -131,17 +131,17 @@ const tableActions = [
     label: "Edit",
     class: "btn-info text-info-content",
     icon: `<svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4 mr-1' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3z' /></svg>`,
-    onClick: (item) => { currentWatch.value = item; showEditForm.value = true; },
+    onClick: (item) => { currentItem.value = item; showEditForm.value = true; },
   },
   {
     label: "Delete",
     class: "btn-error text-error-content",
     icon: `<svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4 mr-1' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12' /></svg>`,
-    onClick: (item) => deleteWatch(item.id),
+    onClick: (item) => deleteItem(item.id),
   },
 ];
 
-onMounted(fetchWatch);
+onMounted(fetchItems);
 </script>
 <template>
   <div class="card bg-base-100">
@@ -165,7 +165,7 @@ onMounted(fetchWatch);
             {{ isEditMode ? 'Edit Watch' : 'Add New Watch' }}
           </h3>
           <DataForm
-            :fields="watchFields"
+            :fields="fields"
             :modelValue="formModel"
             @update:modelValue="handleFormUpdate"
             :onSubmit="submitForm"
@@ -178,9 +178,9 @@ onMounted(fetchWatch);
         </div>
       </div>
       <DataTable
-        v-if="!loading && watchList.length && !showAddForm && !showEditForm"
-        :columns="watchColumns"
-        :items="watchList"
+        v-if="!loading && items.length && !showAddForm && !showEditForm"
+        :columns="columns"
+        :items="items"
         :actions="tableActions"
         emptyText="No watch items found. Add some watch items!"
         :page="page"
@@ -188,7 +188,7 @@ onMounted(fetchWatch);
         :total="total"
         @update:page="handlePageChange"
       />
-      <div v-if="!loading && !watchList.length && !showAddForm && !showEditForm" class="alert alert-info text-info-content">
+      <div v-if="!loading && !items.length && !showAddForm && !showEditForm" class="alert alert-info text-info-content">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span>No watch items found. Add some watch items!</span>
       </div>

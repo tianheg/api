@@ -4,12 +4,12 @@ import DataForm from "@/components/DataForm.vue";
 import DataTable from "@/components/DataTable.vue";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const musicList = ref([]);
+const items = ref([]);
 const loading = ref(false);
 const error = ref(null);
 const showAddForm = ref(false);
 const showEditForm = ref(false);
-const currentMusic = ref(null);
+const currentItem = ref(null);
 const formModel = reactive({ id: null, name: "", url: "" });
 const isEditMode = computed(() => showEditForm.value);
 
@@ -17,17 +17,17 @@ const page = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 
-const musicFields = [
+const fields = [
   { name: "name", label: "Name", type: "text", required: true, desc: "Enter the name of the music." },
   { name: "url", label: "URL", type: "url", required: false, placeholder: "https://", desc: "Optional: Link to the music." },
 ];
 
-const musicColumns = [
+const columns = [
   { label: "Name", key: "name" },
   { label: "URL", key: "url" },
 ];
 
-watch([showAddForm, showEditForm, currentMusic], ([add, edit, item]) => {
+watch([showAddForm, showEditForm, currentItem], ([add, edit, item]) => {
   error.value = null;
   if (add) {
     Object.assign(formModel, { id: null, name: "", url: "" });
@@ -38,14 +38,14 @@ watch([showAddForm, showEditForm, currentMusic], ([add, edit, item]) => {
   }
 });
 
-const fetchMusic = async () => {
+const fetchItems = async () => {
   loading.value = true;
   error.value = null;
   try {
     const response = await fetch(`${API_URL}/music?page=${page.value}&limit=${pageSize.value}`);
     if (!response.ok) throw new Error("Failed to fetch music");
     const data = await response.json();
-    musicList.value = data.data || [];
+    items.value = data.data || [];
     total.value = data.total || 0;
   } catch (err) {
     error.value = err.message;
@@ -56,18 +56,18 @@ const fetchMusic = async () => {
 
 function handlePageChange(newPage) {
   page.value = newPage;
-  fetchMusic();
+  fetchItems();
 }
 
 const submitForm = async () => {
   if (isEditMode.value) {
-    await updateMusicUnified();
+    await updateItem();
   } else {
-    await createMusicUnified();
+    await createItem();
   }
 };
 
-const createMusicUnified = async () => {
+const createItem = async () => {
   try {
     const requestOptions = {
       method: "POST",
@@ -78,13 +78,13 @@ const createMusicUnified = async () => {
     if (!response.ok) throw new Error("Failed to create music");
     Object.assign(formModel, { id: null, name: "", url: "" });
     showAddForm.value = false;
-    fetchMusic();
+    fetchItems();
   } catch (err) {
     error.value = err.message;
   }
 };
 
-const updateMusicUnified = async () => {
+const updateItem = async () => {
   try {
     const { id, ...updateData } = formModel;
     if (!id) throw new Error("Cannot update music without ID.");
@@ -97,20 +97,20 @@ const updateMusicUnified = async () => {
     const response = await fetch(`${API_URL}/music/${id}`, requestOptions);
     if (!response.ok) throw new Error("Failed to update music");
     showEditForm.value = false;
-    currentMusic.value = null;
-    fetchMusic();
+    currentItem.value = null;
+    fetchItems();
   } catch (err) {
     error.value = err.message;
   }
 };
 
-const deleteMusic = async (id) => {
+const deleteItem = async (id) => {
   if (!confirm("Are you sure you want to delete this music?")) return;
   try {
     const requestOptions = { method: "DELETE" };
     const response = await fetch(`${API_URL}/music/${id}`, requestOptions);
     if (!response.ok) throw new Error("Failed to delete music");
-    fetchMusic();
+    fetchItems();
   } catch (err) {
     error.value = err.message;
   }
@@ -119,7 +119,7 @@ const deleteMusic = async (id) => {
 const cancelForm = () => {
   showAddForm.value = false;
   showEditForm.value = false;
-  currentMusic.value = null;
+  currentItem.value = null;
 };
 
 function handleFormUpdate(newValue) {
@@ -131,17 +131,17 @@ const tableActions = [
     label: "Edit",
     class: "btn-info text-info-content",
     icon: `<svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4 mr-1' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3z' /></svg>`,
-    onClick: (item) => { currentMusic.value = item; showEditForm.value = true; },
+    onClick: (item) => { currentItem.value = item; showEditForm.value = true; },
   },
   {
     label: "Delete",
     class: "btn-error text-error-content",
     icon: `<svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4 mr-1' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12' /></svg>`,
-    onClick: (item) => deleteMusic(item.id),
+    onClick: (item) => deleteItem(item.id),
   },
 ];
 
-onMounted(fetchMusic);
+onMounted(fetchItems);
 </script>
 <template>
   <div class="card bg-base-100">
@@ -165,7 +165,7 @@ onMounted(fetchMusic);
             {{ isEditMode ? 'Edit Music' : 'Add New Music' }}
           </h3>
           <DataForm
-            :fields="musicFields"
+            :fields="fields"
             :modelValue="formModel"
             @update:modelValue="handleFormUpdate"
             :onSubmit="submitForm"
@@ -178,9 +178,9 @@ onMounted(fetchMusic);
         </div>
       </div>
       <DataTable
-        v-if="!loading && musicList.length && !showAddForm && !showEditForm"
-        :columns="musicColumns"
-        :items="musicList"
+        v-if="!loading && items.length && !showAddForm && !showEditForm"
+        :columns="columns"
+        :items="items"
         :actions="tableActions"
         emptyText="No music found. Add some music!"
         :page="page"
@@ -193,7 +193,7 @@ onMounted(fetchMusic);
           <span v-else class="text-base-content/50">-</span>
         </template>
       </DataTable>
-      <div v-if="!loading && !musicList.length && !showAddForm && !showEditForm" class="alert alert-info text-info-content">
+      <div v-if="!loading && !items.length && !showAddForm && !showEditForm" class="alert alert-info text-info-content">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
         <span>No music found. Add some music!</span>
       </div>
