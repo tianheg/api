@@ -131,7 +131,10 @@ const tableActions = [
   },
 ];
 
-onMounted(fetchWatch);
+onMounted(() => {
+  page.value = 1;
+  fetchWatch();
+});
 </script>
 <template>
   <div class="card bg-base-100">
