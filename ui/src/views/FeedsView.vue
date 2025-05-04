@@ -90,12 +90,14 @@ const createFeedUnified = async () => {
 
 const updateFeedUnified = async () => {
   try {
+    // Copy formModel and remove id from body
+    const { id, ...body } = formModel;
     const requestOptions = {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formModel),
+      body: JSON.stringify(body),
     };
-    const response = await fetch(`${API_URL}/feeds/${currentFeed.value.id}`, requestOptions);
+    const response = await fetch(`${API_URL}/feeds/${formModel.id}`, requestOptions);
     if (!response.ok) throw new Error("Failed to update feed");
     showEditForm.value = false;
     currentFeed.value = null;
