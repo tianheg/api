@@ -95,12 +95,7 @@ const updateFeed = async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        title: editedFeed.value.title,
-        url: editedFeed.value.url,
-        description: editedFeed.value.description,
-        rss: editedFeed.value.rss,
-      }),
+      body: JSON.stringify(editedFeed.value),
     };
 
     const response = await fetch(
@@ -176,7 +171,8 @@ onMounted(fetchFeeds);
           </h3>
           <DataForm
             :fields="feedFields"
-            v-model="isEditMode ? editedFeed : formModel"
+            :modelValue="isEditMode ? editedFeed.value : formModel"
+            @update:modelValue="isEditMode ? editedFeed.value = $event : Object.assign(formModel, $event)"
             :onSubmit="submitForm"
             :submitLabel="isEditMode ? 'Update Feed' : 'Save Feed'"
             cancelLabel="Cancel"
