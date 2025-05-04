@@ -11,6 +11,7 @@ const showAddForm = ref(false);
 const showEditForm = ref(false);
 const currentFeed = ref(null);
 const formModel = reactive({ title: "", url: "", description: "", rss: "" });
+const editedFeed = ref({ id: null, title: "", url: "", description: "", rss: "" });
 const isEditMode = computed(() => showEditForm.value);
 
 const page = ref(1);
@@ -33,12 +34,11 @@ const feedColumns = [
 
 watch([showAddForm, showEditForm, currentFeed], ([add, edit, feed]) => {
   if (add) {
-    Object.keys(formModel).forEach(key => delete formModel[key]);
     Object.assign(formModel, { title: "", url: "", description: "", rss: "" });
+    editedFeed.value = { id: null, title: "", url: "", description: "", rss: "" };
   } else if (edit && feed) {
-    // Keep the id in formModel for edit mode
-    Object.keys(formModel).forEach(key => delete formModel[key]);
     Object.assign(formModel, { ...feed });
+    editedFeed.value = { ...feed };
   }
 });
 
@@ -65,7 +65,7 @@ function handlePageChange(newPage) {
 
 const submitForm = async () => {
   if (isEditMode.value) {
-    await updateFeedUnified();
+    await updateFeed();
   } else {
     await createFeedUnified();
   }
@@ -88,17 +88,28 @@ const createFeedUnified = async () => {
   }
 };
 
-const updateFeedUnified = async () => {
+const updateFeed = async () => {
   try {
-    // Copy formModel and remove id from body
-    const { id, ...body } = formModel;
     const requestOptions = {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: editedFeed.value.title,
+        url: editedFeed.value.url,
+        description: editedFeed.value.description,
+        rss: editedFeed.value.rss,
+      }),
     };
-    const response = await fetch(`${API_URL}/feeds/${formModel.id}`, requestOptions);
+
+    const response = await fetch(
+      `${API_URL}/feeds/${editedFeed.value.id}`,
+      requestOptions,
+    );
+
     if (!response.ok) throw new Error("Failed to update feed");
+
     showEditForm.value = false;
     currentFeed.value = null;
     fetchFeeds();
@@ -165,7 +176,7 @@ onMounted(fetchFeeds);
           </h3>
           <DataForm
             :fields="feedFields"
-            v-model="formModel"
+            v-model="isEditMode ? editedFeed : formModel"
             :onSubmit="submitForm"
             :submitLabel="isEditMode ? 'Update Feed' : 'Save Feed'"
             cancelLabel="Cancel"
