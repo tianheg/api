@@ -13,6 +13,10 @@ const currentFeed = ref(null);
 const formModel = reactive({ title: "", url: "", description: "", rss: "" });
 const isEditMode = computed(() => showEditForm.value);
 
+const page = ref(1);
+const pageSize = ref(10);
+const total = ref(0);
+
 const feedFields = [
   { name: "title", label: "Title", type: "text", required: true, desc: "Enter a descriptive title for the feed." },
   { name: "url", label: "URL", type: "url", required: true, placeholder: "https://", desc: "The main website for this feed." },
@@ -39,16 +43,22 @@ const fetchFeeds = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch(`${API_URL}/feeds`);
+    const response = await fetch(`${API_URL}/feeds?page=${page.value}&limit=${pageSize.value}`);
     if (!response.ok) throw new Error("Failed to fetch feeds");
     const data = await response.json();
     feeds.value = data.data || [];
+    total.value = data.total || 0;
   } catch (err) {
     error.value = err.message;
   } finally {
     loading.value = false;
   }
 };
+
+function handlePageChange(newPage) {
+  page.value = newPage;
+  fetchFeeds();
+}
 
 const submitForm = async () => {
   if (isEditMode.value) {
@@ -166,6 +176,10 @@ onMounted(fetchFeeds);
         :items="feeds"
         :actions="tableActions"
         emptyText="No feeds found. Add some feeds!"
+        :page="page"
+        :pageSize="pageSize"
+        :total="total"
+        @update:page="handlePageChange"
       >
         <template #url="{ item }">
           <a :href="item.url" target="_blank" rel="noopener noreferrer" class="badge badge-outline badge-primary px-3 py-2 text-xs break-all">

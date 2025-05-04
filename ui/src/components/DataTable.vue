@@ -37,8 +37,8 @@ function setPage(p) {
             </slot>
           </td>
           <td v-if="actions.length">
-            <div class="join">
-              <button v-for="action in actions" :key="action.label" class="btn btn-sm join-item" :class="action.class" @click="() => action.onClick(item)" :aria-label="action.label">
+            <div class="flex gap-2">
+              <button v-for="action in actions" :key="action.label" :class="['btn btn-sm', action.label === 'Edit' ? 'btn-outline btn-info' : '', action.label === 'Delete' ? 'btn-error' : '', 'text-base-content']" @click="() => action.onClick(item)" :aria-label="action.label">
                 <span v-if="action.icon" v-html="action.icon" class="mr-1"></span>{{ action.label }}
               </button>
             </div>
