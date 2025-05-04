@@ -46,7 +46,6 @@ function handleSubmit(e) {
         class="input input-bordered bg-base-100 text-base-content textarea-bordered"
         :aria-required="field.required ? 'true' : 'false'"
         :aria-describedby="field.desc ? field.name + '-desc' : undefined"
-        @input="handleInput(field.name, $event.target.value)"
       />
       <span v-if="field.desc" :id="field.name + '-desc'" class="text-xs text-base-content/60">{{ field.desc }}</span>
     </div>
