@@ -128,7 +128,7 @@ const tableActions = [
 onMounted(fetchFeeds);
 </script>
 <template>
-  <div class="card bg-base-100 shadow-xl border border-base-300">
+  <div class="card bg-base-100">
     <div class="card-body">
       <h1 class="card-title text-2xl mb-6 text-primary">Feeds Management</h1>
       <div v-if="error" class="alert alert-error mb-4 text-error-content">
