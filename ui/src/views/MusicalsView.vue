@@ -13,6 +13,10 @@ const currentMusical = ref(null);
 const formModel = reactive({ name: "", review: "" });
 const isEditMode = computed(() => showEditForm.value);
 
+const page = ref(1);
+const pageSize = ref(10);
+const total = ref(0);
+
 const musicalFields = [
   { name: "name", label: "Name", type: "text", required: true, desc: "Enter the name of the musical." },
   { name: "review", label: "Review", type: "textarea", required: true, desc: "Write your review here." },
@@ -35,16 +39,22 @@ const fetchMusicals = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch(`${API_URL}/musicals`);
+    const response = await fetch(`${API_URL}/musicals?page=${page.value}&limit=${pageSize.value}`);
     if (!response.ok) throw new Error("Failed to fetch musicals");
     const data = await response.json();
     musicals.value = data.data || [];
+    total.value = data.total || 0;
   } catch (err) {
     error.value = err.message;
   } finally {
     loading.value = false;
   }
 };
+
+function handlePageChange(newPage) {
+  page.value = newPage;
+  fetchMusicals();
+}
 
 const submitForm = async () => {
   if (isEditMode.value) {
@@ -162,6 +172,10 @@ onMounted(fetchMusicals);
         :items="musicals"
         :actions="tableActions"
         emptyText="No musicals found. Add some musicals!"
+        :page="page"
+        :pageSize="pageSize"
+        :total="total"
+        @update:page="handlePageChange"
       />
       <div v-if="!loading && !musicals.length && !showAddForm && !showEditForm" class="alert alert-info text-info-content">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>

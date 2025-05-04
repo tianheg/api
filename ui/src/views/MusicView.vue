@@ -13,6 +13,10 @@ const currentMusic = ref(null);
 const formModel = reactive({ name: "", url: "" });
 const isEditMode = computed(() => showEditForm.value);
 
+const page = ref(1);
+const pageSize = ref(10);
+const total = ref(0);
+
 const musicFields = [
   { name: "name", label: "Name", type: "text", required: true, desc: "Enter the name of the music." },
   { name: "url", label: "URL", type: "url", required: false, placeholder: "https://", desc: "Optional: Link to the music." },
@@ -35,16 +39,22 @@ const fetchMusic = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch(`${API_URL}/music`);
+    const response = await fetch(`${API_URL}/music?page=${page.value}&limit=${pageSize.value}`);
     if (!response.ok) throw new Error("Failed to fetch music");
     const data = await response.json();
     musicList.value = data.data || [];
+    total.value = data.total || 0;
   } catch (err) {
     error.value = err.message;
   } finally {
     loading.value = false;
   }
 };
+
+function handlePageChange(newPage) {
+  page.value = newPage;
+  fetchMusic();
+}
 
 const submitForm = async () => {
   if (isEditMode.value) {
@@ -162,6 +172,10 @@ onMounted(fetchMusic);
         :items="musicList"
         :actions="tableActions"
         emptyText="No music found. Add some music!"
+        :page="page"
+        :pageSize="pageSize"
+        :total="total"
+        @update:page="handlePageChange"
       >
         <template #url="{ item }">
           <a v-if="item.url" :href="item.url" target="_blank" rel="noopener noreferrer" class="link link-primary">{{ item.url }}</a>

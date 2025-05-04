@@ -13,6 +13,10 @@ const currentWatch = ref(null);
 const formModel = reactive({ name: "", review: "" });
 const isEditMode = computed(() => showEditForm.value);
 
+const page = ref(1);
+const pageSize = ref(10);
+const total = ref(0);
+
 const watchFields = [
   { name: "name", label: "Name", type: "text", required: true, desc: "Enter the name of the item." },
   { name: "review", label: "Review", type: "textarea", required: true, desc: "Write your review here." },
@@ -35,16 +39,22 @@ const fetchWatch = async () => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch(`${API_URL}/watch`);
+    const response = await fetch(`${API_URL}/watch?page=${page.value}&limit=${pageSize.value}`);
     if (!response.ok) throw new Error("Failed to fetch watch items");
     const data = await response.json();
     watchList.value = data.data || [];
+    total.value = data.total || 0;
   } catch (err) {
     error.value = err.message;
   } finally {
     loading.value = false;
   }
 };
+
+function handlePageChange(newPage) {
+  page.value = newPage;
+  fetchWatch();
+}
 
 const submitForm = async () => {
   if (isEditMode.value) {
@@ -162,6 +172,10 @@ onMounted(fetchWatch);
         :items="watchList"
         :actions="tableActions"
         emptyText="No watch items found. Add some watch items!"
+        :page="page"
+        :pageSize="pageSize"
+        :total="total"
+        @update:page="handlePageChange"
       />
       <div v-if="!loading && !watchList.length && !showAddForm && !showEditForm" class="alert alert-info text-info-content">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
