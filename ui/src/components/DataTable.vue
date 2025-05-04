@@ -16,6 +16,23 @@ const totalPages = computed(() => Math.max(1, Math.ceil(props.total / props.page
 function setPage(p) {
   if (p >= 1 && p <= totalPages.value && p !== props.page) emit('update:page', p);
 }
+const getPageButtons = computed(() => {
+  const pages = [];
+  const total = totalPages.value;
+  const current = props.page;
+  if (total <= 5) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if (current > 3) pages.push('...');
+    const start = Math.max(2, current - 1);
+    const end = Math.min(total - 1, current + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (current < total - 2) pages.push('...');
+    pages.push(total);
+  }
+  return pages;
+});
 </script>
 <template>
   <div class="overflow-x-auto">
@@ -52,7 +69,10 @@ function setPage(p) {
     <div v-if="total > pageSize" class="flex justify-center mt-4">
       <div class="join">
         <button class="btn btn-sm join-item" :disabled="props.page === 1" @click="setPage(props.page - 1)">&laquo;</button>
-        <button v-for="p in totalPages" :key="p" class="btn btn-sm join-item" :class="p === props.page ? 'btn-primary text-primary-content' : ''" @click="setPage(p)">{{ p }}</button>
+        <template v-for="p in getPageButtons" :key="p">
+          <button v-if="p !== '...'" class="btn btn-sm join-item" :class="p === props.page ? 'btn-primary text-primary-content' : ''" @click="setPage(p)">{{ p }}</button>
+          <span v-else class="btn btn-sm join-item btn-disabled cursor-default">...</span>
+        </template>
         <button class="btn btn-sm join-item" :disabled="props.page === totalPages" @click="setPage(props.page + 1)">&raquo;</button>
       </div>
     </div>
