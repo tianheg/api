@@ -40,7 +40,9 @@ function handleSubmit(e) {
         :placeholder="field.placeholder"
         :required="field.required"
         :rows="field.rows || (field.type === 'textarea' ? 3 : undefined)"
-        class="input input-bordered bg-base-100 text-base-content textarea-bordered"
+        :class="field.type === 'textarea'
+          ? 'textarea textarea-bordered bg-base-100 text-base-content'
+          : 'input input-bordered bg-base-100 text-base-content'"
         :aria-required="field.required ? 'true' : 'false'"
         :aria-describedby="field.desc ? field.name + '-desc' : undefined"
         :value="props.modelValue ? props.modelValue[field.name] : ''"
