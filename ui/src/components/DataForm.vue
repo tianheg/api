@@ -20,6 +20,13 @@ function handleFieldUpdate(fieldName, value) {
   emit('update:modelValue', updatedModel);
 }
 
+// Auto-resize textarea to fit content
+function autoResizeTextarea(event) {
+  const textarea = event.target;
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
 function handleSubmit(e) {
   e.preventDefault();
   props.onSubmit();
@@ -54,6 +61,7 @@ function handleKeydown(e) {
         :aria-describedby="field.desc ? field.name + '-desc' : undefined"
         :value="props.modelValue ? props.modelValue[field.name] : ''"
         @input="handleFieldUpdate(field.name, $event.target.value)"
+        @input="field.type === 'textarea' ? autoResizeTextarea($event) : null"
       />
       <span v-if="field.desc" :id="field.name + '-desc'" class="text-xs text-base-content/60">{{ field.desc }}</span>
     </div>
