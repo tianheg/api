@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, nextTick, watch } from 'vue';
 
 const props = defineProps({
   fields: { type: Array, required: true },
@@ -12,19 +12,24 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:modelValue', 'cancel']);
 
+const internalModel = computed({
+  get: () => props.modelValue || {},
+  set: (value) => emit('update:modelValue', value),
+});
+
 // Auto-resize textarea to fit content
-function autoResizeTextarea(event) {
-  const textarea = event.target;
+function autoResizeTextarea(eventOrElement) {
+  const textarea = eventOrElement?.target || eventOrElement;
+  if (!textarea) return;
   textarea.style.height = 'auto';
   textarea.style.height = `${textarea.scrollHeight}px`;
+  textarea.style.overflowY = 'hidden';
 }
 
-// Function to handle input changes and emit the full updated object
+// Function to handle input changes
 function handleFieldUpdate(fieldName, value) {
-  // Ensure modelValue is treated as an object even if initially null/undefined briefly
-  const currentModel = props.modelValue || {};
-  const updatedModel = { ...currentModel, [fieldName]: value };
-  emit('update:modelValue', updatedModel);
+  const updatedModel = { ...internalModel.value, [fieldName]: value };
+  internalModel.value = updatedModel;
 }
 
 function handleSubmit(e) {
@@ -46,6 +51,34 @@ function onInput(field, event) {
     autoResizeTextarea(event);
   }
 }
+
+// Watch for modelValue changes to auto-resize textarea fields
+watch(
+  () => props.modelValue,
+  (newVal) => {
+    nextTick(() => {
+      props.fields.forEach(field => {
+        if (field.type === 'textarea') {
+          const textarea = document.getElementById(field.name);
+          if (textarea) autoResizeTextarea(textarea);
+        }
+      });
+    });
+  },
+  { deep: true }
+);
+
+onMounted(() => {
+  nextTick(() => {
+    // Auto-resize all textareas on mount (for pre-filled values)
+    props.fields.forEach(field => {
+      if (field.type === 'textarea') {
+        const textarea = document.getElementById(field.name);
+        if (textarea) autoResizeTextarea(textarea);
+      }
+    });
+  });
+});
 </script>
 <template>
   <form @submit="handleSubmit" @keydown="handleKeydown" autocomplete="off">
@@ -60,13 +93,13 @@ function onInput(field, event) {
         :id="field.name"
         :type="field.type !== 'textarea' ? field.type : undefined"
         :placeholder="field.placeholder"
+        v-model="internalModel[field.name]"
         @input="onInput(field, $event)"
         :class="field.type === 'textarea'
           ? 'textarea textarea-bordered bg-base-100 text-base-content'
           : 'input input-bordered bg-base-100 text-base-content'"
         :aria-required="field.required ? 'true' : 'false'"
         :aria-describedby="field.desc ? field.name + '-desc' : undefined"
-        :value="props.modelValue ? props.modelValue[field.name] : ''"
       />
       <span v-if="field.desc" :id="field.name + '-desc'" class="text-xs text-base-content/60">{{ field.desc }}</span>
     </div>
