@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, reactive, ref, computed, watch } from "vue";
 import DataForm from "@/components/DataForm.vue";
 import DataTable from "@/components/DataTable.vue";
 
@@ -10,7 +10,7 @@ const error = ref(null);
 const showAddForm = ref(false);
 const showEditForm = ref(false);
 const currentItem = ref(null);
-const formModel = ref({ id: null, name: "", review: "" });
+const formModel = reactive({ id: null, name: "", review: "" });
 const isEditMode = computed(() => showEditForm.value);
 
 const page = ref(1);
@@ -27,20 +27,16 @@ const columns = [
   { label: "Review", key: "review" },
 ];
 
-const startAddForm = () => {
-  formModel.value = { id: null, name: '', review: '' };
-  showAddForm.value = true;
-  showEditForm.value = false;
-  currentItem.value = null;
-};
-
-const startEditForm = (item) => {
-  // Replace formModel with a new object for reactivity
-  formModel.value = JSON.parse(JSON.stringify(item));
-  showEditForm.value = true;
-  showAddForm.value = false;
-  currentItem.value = item;
-};
+watch([showAddForm, showEditForm, currentItem], ([add, edit, item]) => {
+  error.value = null;
+  if (add) {
+    Object.assign(formModel, { id: null, name: "", review: "" });
+  } else if (edit && item) {
+    Object.assign(formModel, { ...item });
+  } else if (!add && !edit) {
+    Object.assign(formModel, { id: null, name: "", review: "" });
+  }
+});
 
 const fetchItems = async () => {
   loading.value = true;
@@ -76,11 +72,11 @@ const createItem = async () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formModel.value),
+      body: JSON.stringify(formModel),
     };
     const response = await fetch(`${API_URL}/watch`, requestOptions);
     if (!response.ok) throw new Error("Failed to create watch item");
-    formModel.value = { id: null, name: "", review: "" };
+    Object.assign(formModel, { id: null, name: "", review: "" });
     showAddForm.value = false;
     fetchItems();
   } catch (err) {
@@ -90,7 +86,7 @@ const createItem = async () => {
 
 const updateItem = async () => {
   try {
-    const { id, ...updateData } = formModel.value;
+    const { id, ...updateData } = formModel;
     if (!id) throw new Error("Cannot update watch item without ID.");
 
     const requestOptions = {
@@ -127,7 +123,7 @@ const cancelForm = () => {
 };
 
 function handleFormUpdate(newValue) {
-  formModel.value = { ...newValue };
+  Object.assign(formModel, newValue);
 }
 
 const tableActions = [
@@ -135,7 +131,7 @@ const tableActions = [
     label: "Edit",
     class: "btn-info text-info-content",
     icon: `<svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4 mr-1' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3z' /></svg>`,
-    onClick: (item) => startEditForm(item),
+    onClick: (item) => { currentItem.value = item; showEditForm.value = true; },
   },
   {
     label: "Delete",
@@ -155,7 +151,7 @@ onMounted(fetchItems);
         <span class="loading loading-spinner loading-lg text-primary"></span>
       </div>
       <div class="mb-6" v-if="!showAddForm && !showEditForm">
-        <button class="btn btn-primary text-primary-content" @click="startAddForm">
+        <button class="btn btn-primary text-primary-content" @click="showAddForm = true">
           Add New Watch
         </button>
       </div>
@@ -166,7 +162,7 @@ onMounted(fetchItems);
           </h3>
           <DataForm
             :fields="fields"
-            :modelValue="formModel.value"
+            :modelValue="formModel"
             @update:modelValue="handleFormUpdate"
             :onSubmit="submitForm"
             :submitLabel="isEditMode ? 'Update Watch' : 'Save Watch'"
