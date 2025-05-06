@@ -16,7 +16,7 @@ const logoutAndRedirect = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-base-200 text-base-content font-serif flex flex-col">
+  <div class="min-h-screen bg-base-200 text-base-content font-sans flex flex-col">
     <header class="bg-base-300 shadow-lg">
       <div class="container mx-auto px-4">
         <div class="navbar">
