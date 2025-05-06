@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref, computed, watch } from "vue";
+import { onMounted, reactive, ref, computed } from "vue";
 import DataForm from "@/components/DataForm.vue";
 import DataTable from "@/components/DataTable.vue";
 
@@ -27,16 +27,20 @@ const columns = [
   { label: "Review", key: "review" },
 ];
 
-watch([showAddForm, showEditForm, currentItem], ([add, edit, item]) => {
-  error.value = null;
-  if (add) {
-    Object.assign(formModel, { id: null, name: "", review: "" });
-  } else if (edit && item) {
-    Object.assign(formModel, { ...item });
-  } else if (!add && !edit) {
-    Object.assign(formModel, { id: null, name: "", review: "" });
-  }
-});
+const startAddForm = () => {
+  Object.assign(formModel, { id: null, name: '', review: '' });
+  showAddForm.value = true;
+  showEditForm.value = false;
+  currentItem.value = null;
+};
+
+const startEditForm = (item) => {
+  // Always assign a new object to formModel for reactivity
+  Object.assign(formModel, JSON.parse(JSON.stringify(item)));
+  showEditForm.value = true;
+  showAddForm.value = false;
+  currentItem.value = item;
+};
 
 const fetchItems = async () => {
   loading.value = true;
@@ -131,7 +135,7 @@ const tableActions = [
     label: "Edit",
     class: "btn-info text-info-content",
     icon: `<svg xmlns='http://www.w3.org/2000/svg' class='w-4 h-4 mr-1' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M15.232 5.232l3.536 3.536M9 13h3l8-8a2.828 2.828 0 00-4-4l-8 8v3z' /></svg>`,
-    onClick: (item) => { currentItem.value = item; showEditForm.value = true; },
+    onClick: (item) => startEditForm(item),
   },
   {
     label: "Delete",
@@ -151,7 +155,7 @@ onMounted(fetchItems);
         <span class="loading loading-spinner loading-lg text-primary"></span>
       </div>
       <div class="mb-6" v-if="!showAddForm && !showEditForm">
-        <button class="btn btn-primary text-primary-content" @click="showAddForm = true">
+        <button class="btn btn-primary text-primary-content" @click="startAddForm">
           Add New Watch
         </button>
       </div>
