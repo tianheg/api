@@ -24,9 +24,16 @@ function handleSubmit(e) {
   e.preventDefault();
   props.onSubmit();
 }
+
+function handleKeydown(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+    e.preventDefault();
+    props.onSubmit();
+  }
+}
 </script>
 <template>
-  <form @submit="handleSubmit" autocomplete="off">
+  <form @submit="handleSubmit" @keydown="handleKeydown" autocomplete="off">
     <div v-for="field in fields" :key="field.name" class="form-control grid mb-4">
       <label class="label justify-start" :for="field.name">
         <span class="label-text text-base-content font-semibold">
