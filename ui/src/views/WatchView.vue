@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref, computed } from "vue";
+import { onMounted, ref, computed } from "vue";
 import DataForm from "@/components/DataForm.vue";
 import DataTable from "@/components/DataTable.vue";
 
@@ -10,7 +10,7 @@ const error = ref(null);
 const showAddForm = ref(false);
 const showEditForm = ref(false);
 const currentItem = ref(null);
-const formModel = reactive({ id: null, name: "", review: "" });
+const formModel = ref({ id: null, name: "", review: "" });
 const isEditMode = computed(() => showEditForm.value);
 
 const page = ref(1);
@@ -28,15 +28,15 @@ const columns = [
 ];
 
 const startAddForm = () => {
-  Object.assign(formModel, { id: null, name: '', review: '' });
+  formModel.value = { id: null, name: '', review: '' };
   showAddForm.value = true;
   showEditForm.value = false;
   currentItem.value = null;
 };
 
 const startEditForm = (item) => {
-  // Always assign a new object to formModel for reactivity
-  Object.assign(formModel, JSON.parse(JSON.stringify(item)));
+  // Replace formModel with a new object for reactivity
+  formModel.value = JSON.parse(JSON.stringify(item));
   showEditForm.value = true;
   showAddForm.value = false;
   currentItem.value = item;
@@ -76,11 +76,11 @@ const createItem = async () => {
     const requestOptions = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formModel),
+      body: JSON.stringify(formModel.value),
     };
     const response = await fetch(`${API_URL}/watch`, requestOptions);
     if (!response.ok) throw new Error("Failed to create watch item");
-    Object.assign(formModel, { id: null, name: "", review: "" });
+    formModel.value = { id: null, name: "", review: "" };
     showAddForm.value = false;
     fetchItems();
   } catch (err) {
@@ -90,7 +90,7 @@ const createItem = async () => {
 
 const updateItem = async () => {
   try {
-    const { id, ...updateData } = formModel;
+    const { id, ...updateData } = formModel.value;
     if (!id) throw new Error("Cannot update watch item without ID.");
 
     const requestOptions = {
@@ -127,7 +127,7 @@ const cancelForm = () => {
 };
 
 function handleFormUpdate(newValue) {
-  Object.assign(formModel, newValue);
+  formModel.value = { ...newValue };
 }
 
 const tableActions = [
@@ -166,7 +166,7 @@ onMounted(fetchItems);
           </h3>
           <DataForm
             :fields="fields"
-            :modelValue="formModel"
+            :modelValue="formModel.value"
             @update:modelValue="handleFormUpdate"
             :onSubmit="submitForm"
             :submitLabel="isEditMode ? 'Update Watch' : 'Save Watch'"
