@@ -12,19 +12,19 @@ const props = defineProps({
 });
 const emit = defineEmits(['update:modelValue', 'cancel']);
 
+// Auto-resize textarea to fit content
+function autoResizeTextarea(event) {
+  const textarea = event.target;
+  textarea.style.height = 'auto';
+  textarea.style.height = `${textarea.scrollHeight}px`;
+}
+
 // Function to handle input changes and emit the full updated object
 function handleFieldUpdate(fieldName, value) {
   // Ensure modelValue is treated as an object even if initially null/undefined briefly
   const currentModel = props.modelValue || {};
   const updatedModel = { ...currentModel, [fieldName]: value };
   emit('update:modelValue', updatedModel);
-}
-
-// Auto-resize textarea to fit content
-function autoResizeTextarea(event) {
-  const textarea = event.target;
-  textarea.style.height = 'auto';
-  textarea.style.height = `${textarea.scrollHeight}px`;
 }
 
 function handleSubmit(e) {
@@ -36,6 +36,14 @@ function handleKeydown(e) {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
     e.preventDefault();
     props.onSubmit();
+  }
+}
+
+// Combined input handler to update model and auto-resize textarea if needed
+function onInput(field, event) {
+  handleFieldUpdate(field.name, event.target.value);
+  if (field.type === 'textarea') {
+    autoResizeTextarea(event);
   }
 }
 </script>
@@ -52,16 +60,13 @@ function handleKeydown(e) {
         :id="field.name"
         :type="field.type !== 'textarea' ? field.type : undefined"
         :placeholder="field.placeholder"
-        :required="field.required"
-        :rows="field.rows || (field.type === 'textarea' ? 3 : undefined)"
+        @input="onInput(field, $event)"
         :class="field.type === 'textarea'
           ? 'textarea textarea-bordered bg-base-100 text-base-content'
           : 'input input-bordered bg-base-100 text-base-content'"
         :aria-required="field.required ? 'true' : 'false'"
         :aria-describedby="field.desc ? field.name + '-desc' : undefined"
         :value="props.modelValue ? props.modelValue[field.name] : ''"
-        @input="handleFieldUpdate(field.name, $event.target.value)"
-        @input="field.type === 'textarea' ? autoResizeTextarea($event) : null"
       />
       <span v-if="field.desc" :id="field.name + '-desc'" class="text-xs text-base-content/60">{{ field.desc }}</span>
     </div>
