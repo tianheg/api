@@ -1,27 +1,17 @@
 # git-cliff ~ default configuration file
 # https://git-cliff.org/docs/configuration
-#
-# Lines starting with "#" are comments.
-# Configuration options are organized into tables and keys.
-# See documentation for more information on available options.
 
 [changelog]
 # template for the changelog header
 header = """
-# Changelog\n
-All notable changes to this project will be documented in this file.\n
+# Changelog
 """
 # template for the changelog body
 # https://keats.github.io/tera/docs/#introduction
 body = """
-{% if version %}\
-    ## [{{ version | trim_start_matches(pat="v") }}] - {{ timestamp | date(format="%Y-%m-%d") }}
-{% else %}\
-    ## [unreleased]
-{% endif %}\
 {% for group, commits in commits | group_by(attribute="group") %}
-    ### {{ group | striptags | trim | upper_first }}
-    {% for commit in commits %}
+    ## {{ group | striptags | trim | upper_first }}
+    {% for commit in commits | unique(attribute="message") %}
         - {% if commit.scope %}*({{ commit.scope }})* {% endif %}\
             {% if commit.breaking %}[**breaking**] {% endif %}\
             {{ commit.message | upper_first }}\
@@ -34,14 +24,6 @@ footer = """
 """
 # remove the leading and trailing s
 trim = true
-# postprocessors
-postprocessors = [
-  # { pattern = '<REPO>', replace = "https://github.com/orhun/git-cliff" }, # replace repository URL
-]
-# render body even when there are no releases to process
-# render_always = true
-# output file path
-# output = "test.md"
 
 [git]
 # parse the commits based on https://www.conventionalcommits.org
