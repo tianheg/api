@@ -1,22 +1,14 @@
 <script setup>
-import { onMounted, reactive, ref, computed, watch } from "vue";
+import { onMounted } from "vue";
 import DataForm from "@/components/DataForm.vue";
 import DataTable from "@/components/DataTable.vue";
+import { useCrud } from "@/composables/useCrud";
+import { useApi } from "@/composables/useApi";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const items = ref([]);
-const loading = ref(false);
-const error = ref(null);
-const showAddForm = ref(false);
-const showEditForm = ref(false);
-const currentItem = ref(null);
-const formModel = reactive({ id: null, name: "", url: "" });
-const isEditMode = computed(() => showEditForm.value);
+// Get API utilities
+const { getResourceUrl, handleSuccess, handleError } = useApi();
 
-const page = ref(1);
-const pageSize = ref(10);
-const total = ref(0);
-
+// Define form fields and table columns
 const fields = [
   { name: "name", label: "Name", type: "text", required: true, desc: "Enter the name of the music." },
   { name: "url", label: "URL", type: "url", required: false, placeholder: "https://", desc: "Optional: Link to the music." },
@@ -27,105 +19,34 @@ const columns = [
   { label: "URL", key: "url" },
 ];
 
-watch([showAddForm, showEditForm, currentItem], ([add, edit, item]) => {
-  error.value = null;
-  if (add) {
-    Object.assign(formModel, { id: null, name: "", url: "" });
-  } else if (edit && item) {
-    Object.assign(formModel, { ...item });
-  } else if (!add && !edit) {
-    Object.assign(formModel, { id: null, name: "", url: "" });
-  }
+// Use the CRUD composable with Music-specific configuration
+const {
+  items,
+  loading,
+  error,
+  showAddForm,
+  showEditForm,
+  currentItem,
+  formModel,
+  isEditMode,
+  page,
+  pageSize,
+  total,
+  fetchItems,
+  handlePageChange,
+  submitForm,
+  deleteItem,
+  cancelForm,
+  handleFormUpdate
+} = useCrud({
+  resourceUrl: getResourceUrl('music'),
+  initialItem: { id: null, name: "", url: "" },
+  onSuccess: handleSuccess,
+  onError: handleError,
+  resourceName: 'music'
 });
 
-const fetchItems = async () => {
-  loading.value = true;
-  error.value = null;
-  try {
-    const response = await fetch(`${API_URL}/music?page=${page.value}&limit=${pageSize.value}`);
-    if (!response.ok) throw new Error("Failed to fetch music");
-    const data = await response.json();
-    items.value = data.data || [];
-    total.value = data.total || 0;
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    loading.value = false;
-  }
-};
-
-function handlePageChange(newPage) {
-  page.value = newPage;
-  fetchItems();
-}
-
-const submitForm = async () => {
-  if (isEditMode.value) {
-    await updateItem();
-  } else {
-    await createItem();
-  }
-};
-
-const createItem = async () => {
-  try {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formModel),
-    };
-    const response = await fetch(`${API_URL}/music`, requestOptions);
-    if (!response.ok) throw new Error("Failed to create music");
-    Object.assign(formModel, { id: null, name: "", url: "" });
-    showAddForm.value = false;
-    fetchItems();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const updateItem = async () => {
-  try {
-    const { id, ...updateData } = formModel;
-    if (!id) throw new Error("Cannot update music without ID.");
-
-    const requestOptions = {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updateData),
-    };
-    const response = await fetch(`${API_URL}/music/${id}`, requestOptions);
-    if (!response.ok) throw new Error("Failed to update music");
-    showEditForm.value = false;
-    currentItem.value = null;
-    fetchItems();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const deleteItem = async (id) => {
-  if (!confirm("Are you sure you want to delete this music?")) return;
-  try {
-    const requestOptions = { method: "DELETE" };
-    const response = await fetch(`${API_URL}/music/${id}`, requestOptions);
-    if (!response.ok) throw new Error("Failed to delete music");
-    fetchItems();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const cancelForm = () => {
-  showAddForm.value = false;
-  showEditForm.value = false;
-  currentItem.value = null;
-};
-
-function handleFormUpdate(newValue) {
-  Object.assign(formModel, newValue);
-}
-
+// Action buttons for table rows
 const tableActions = [
   {
     label: "Edit",
@@ -141,6 +62,7 @@ const tableActions = [
   },
 ];
 
+// Fetch items on component mount
 onMounted(fetchItems);
 </script>
 <template>

@@ -1,22 +1,14 @@
 <script setup>
-import { onMounted, reactive, ref, computed, watch } from "vue";
+import { onMounted } from "vue";
 import DataForm from "@/components/DataForm.vue";
 import DataTable from "@/components/DataTable.vue";
+import { useCrud } from "@/composables/useCrud";
+import { useApi } from "@/composables/useApi";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const items = ref([]);
-const loading = ref(false);
-const error = ref(null);
-const showAddForm = ref(false);
-const showEditForm = ref(false);
-const currentItem = ref(null);
-const formModel = reactive({ id: null, content: "" });
-const isEditMode = computed(() => showEditForm.value);
+// Get API utilities
+const { getResourceUrl, handleSuccess, handleError } = useApi();
 
-const page = ref(1);
-const pageSize = ref(10);
-const total = ref(0);
-
+// Define form fields and table columns
 const fields = [
   { name: "content", label: "Content", type: "textarea", required: true, desc: "Enter the sentence content." },
 ];
@@ -25,105 +17,34 @@ const columns = [
   { label: "Content", key: "content" },
 ];
 
-watch([showAddForm, showEditForm, currentItem], ([add, edit, item]) => {
-  error.value = null;
-  if (add) {
-    Object.assign(formModel, { id: null, content: "" });
-  } else if (edit && item) {
-    Object.assign(formModel, { ...item });
-  } else if (!add && !edit) {
-    Object.assign(formModel, { id: null, content: "" });
-  }
+// Use the CRUD composable with Sentences-specific configuration
+const {
+  items,
+  loading,
+  error,
+  showAddForm,
+  showEditForm,
+  currentItem,
+  formModel,
+  isEditMode,
+  page,
+  pageSize,
+  total,
+  fetchItems,
+  handlePageChange,
+  submitForm,
+  deleteItem,
+  cancelForm,
+  handleFormUpdate
+} = useCrud({
+  resourceUrl: getResourceUrl('sentences'),
+  initialItem: { id: null, content: "" },
+  onSuccess: handleSuccess,
+  onError: handleError,
+  resourceName: 'sentence'
 });
 
-const fetchItems = async () => {
-  loading.value = true;
-  error.value = null;
-  try {
-    const response = await fetch(`${API_URL}/sentences?page=${page.value}&limit=${pageSize.value}`);
-    if (!response.ok) throw new Error("Failed to fetch sentences");
-    const data = await response.json();
-    items.value = data.data || [];
-    total.value = data.total || 0;
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    loading.value = false;
-  }
-};
-
-function handlePageChange(newPage) {
-  page.value = newPage;
-  fetchItems();
-}
-
-const submitForm = async () => {
-  if (isEditMode.value) {
-    await updateItem();
-  } else {
-    await createItem();
-  }
-};
-
-const createItem = async () => {
-  try {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formModel),
-    };
-    const response = await fetch(`${API_URL}/sentences`, requestOptions);
-    if (!response.ok) throw new Error("Failed to create sentence");
-    Object.assign(formModel, { id: null, content: "" });
-    showAddForm.value = false;
-    fetchItems();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const updateItem = async () => {
-  try {
-    const { id, ...updateData } = formModel;
-    if (!id) throw new Error("Cannot update sentence without ID.");
-
-    const requestOptions = {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updateData),
-    };
-    const response = await fetch(`${API_URL}/sentences/${id}`, requestOptions);
-    if (!response.ok) throw new Error("Failed to update sentence");
-    showEditForm.value = false;
-    currentItem.value = null;
-    fetchItems();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const deleteItem = async (id) => {
-  if (!confirm("Are you sure you want to delete this sentence?")) return;
-  try {
-    const requestOptions = { method: "DELETE" };
-    const response = await fetch(`${API_URL}/sentences/${id}`, requestOptions);
-    if (!response.ok) throw new Error("Failed to delete sentence");
-    fetchItems();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const cancelForm = () => {
-  showAddForm.value = false;
-  showEditForm.value = false;
-  currentItem.value = null;
-};
-
-function handleFormUpdate(newValue) {
-  Object.assign(formModel, newValue);
-}
-
+// Action buttons for table rows
 const tableActions = [
   {
     label: "Edit",
@@ -139,6 +60,7 @@ const tableActions = [
   },
 ];
 
+// Fetch items on component mount
 onMounted(fetchItems);
 </script>
 <template>

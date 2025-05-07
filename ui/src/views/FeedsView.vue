@@ -1,22 +1,14 @@
 <script setup>
-import { onMounted, reactive, ref, computed, watch } from "vue";
+import { onMounted } from "vue";
 import DataForm from "@/components/DataForm.vue";
 import DataTable from "@/components/DataTable.vue";
+import { useCrud } from "@/composables/useCrud";
+import { useApi } from "@/composables/useApi";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const items = ref([]);
-const loading = ref(false);
-const error = ref(null);
-const showAddForm = ref(false);
-const showEditForm = ref(false);
-const currentItem = ref(null);
-const formModel = reactive({ id: null, title: "", url: "", description: "", rss: "" });
-const isEditMode = computed(() => showEditForm.value);
+// Get API utilities
+const { getResourceUrl, handleSuccess, handleError } = useApi();
 
-const page = ref(1);
-const pageSize = ref(10);
-const total = ref(0);
-
+// Define form fields and table columns
 const fields = [
   { name: "title", label: "Title", type: "text", required: true, desc: "Enter a descriptive title for the feed." },
   { name: "url", label: "URL", type: "url", required: true, placeholder: "https://", desc: "The main website for this feed." },
@@ -31,114 +23,34 @@ const columns = [
   { label: "RSS URL", key: "rss" },
 ];
 
-watch([showAddForm, showEditForm, currentItem], ([add, edit, item]) => {
-  error.value = null;
-  if (add) {
-    Object.assign(formModel, { id: null, title: "", url: "", description: "", rss: "" });
-  } else if (edit && item) {
-    Object.assign(formModel, { ...item });
-  } else if (!add && !edit) {
-    Object.assign(formModel, { id: null, title: "", url: "", description: "", rss: "" });
-  }
+// Use the CRUD composable with Feeds-specific configuration
+const {
+  items,
+  loading,
+  error,
+  showAddForm,
+  showEditForm,
+  currentItem,
+  formModel,
+  isEditMode,
+  page,
+  pageSize,
+  total,
+  fetchItems,
+  handlePageChange,
+  submitForm,
+  deleteItem,
+  cancelForm,
+  handleFormUpdate
+} = useCrud({
+  resourceUrl: getResourceUrl('feeds'),
+  initialItem: { id: null, title: "", url: "", description: "", rss: "" },
+  onSuccess: handleSuccess,
+  onError: handleError,
+  resourceName: 'feed'
 });
 
-const fetchItems = async () => {
-  loading.value = true;
-  error.value = null;
-  try {
-    const response = await fetch(`${API_URL}/feeds?page=${page.value}&limit=${pageSize.value}`);
-    if (!response.ok) throw new Error("Failed to fetch feeds");
-    const data = await response.json();
-    items.value = data.data || [];
-    total.value = data.total || 0;
-  } catch (err) {
-    error.value = err.message;
-  } finally {
-    loading.value = false;
-  }
-};
-
-function handlePageChange(newPage) {
-  page.value = newPage;
-  fetchItems();
-}
-
-const submitForm = async () => {
-  if (isEditMode.value) {
-    await updateItem();
-  } else {
-    await createItem();
-  }
-};
-
-const createItem = async () => {
-  try {
-    const { id, ...createData } = formModel;
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(createData),
-    };
-    const response = await fetch(`${API_URL}/feeds`, requestOptions);
-    if (!response.ok) throw new Error("Failed to create feed");
-    Object.assign(formModel, { id: null, title: "", url: "", description: "", rss: "" });
-    showAddForm.value = false;
-    fetchItems();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const updateItem = async () => {
-  try {
-    const { id, ...updateData } = formModel;
-    if (!id) throw new Error("Cannot update feed without ID.");
-
-    const requestOptions = {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updateData),
-    };
-
-    const response = await fetch(
-      `${API_URL}/feeds/${id}`,
-      requestOptions,
-    );
-
-    if (!response.ok) throw new Error("Failed to update feed");
-
-    showEditForm.value = false;
-    currentItem.value = null;
-    fetchItems();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const deleteItem = async (id) => {
-  if (!confirm("Are you sure you want to delete this feed?")) return;
-  try {
-    const requestOptions = { method: "DELETE" };
-    const response = await fetch(`${API_URL}/feeds/${id}`, requestOptions);
-    if (!response.ok) throw new Error("Failed to delete feed");
-    fetchItems();
-  } catch (err) {
-    error.value = err.message;
-  }
-};
-
-const cancelForm = () => {
-  showAddForm.value = false;
-  showEditForm.value = false;
-  currentItem.value = null;
-};
-
-function handleFormUpdate(newValue) {
-  Object.assign(formModel, newValue);
-}
-
+// Action buttons for table rows
 const tableActions = [
   {
     label: "Edit",
@@ -154,6 +66,7 @@ const tableActions = [
   },
 ];
 
+// Fetch items on component mount
 onMounted(fetchItems);
 </script>
 <template>
