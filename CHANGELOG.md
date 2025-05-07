@@ -2,91 +2,92 @@
 
 ## 🚀 Features
 
-- Modify file structure
+- Add useApi and useCrud composables for API utilities and CRUD operations
+- Use Cliff to generate CHANGELOG
+- Add shortcut to form
+- Fetch /sentences to HomeView
+- Modify the data order
+- Not using pm2
+- Update index page
+- Disable backup DB from railway
+- Setup vuejs ui
+- Split plugins and routes
+- Add backup
+- Add CHANGELOG
+- Add auth measure
+- Add frontend/nextjs
+- Use PostgreSQL
+- Add test
+- Add search ability through /xxx?search=CONTENT_TO_BE_SEARCH
+- Refactor code, merge routes files into man server.js
+- Add new route /series
+- Add new route /prompts
+- Change cors option
+- Add route /feeds
+- Add route /music
+- Add new route /movies; add data/* files
+- Add new route /books
+- Add pino,pino-prety
+- Change @fastify/under-pressure config
+- Rm headers in vercel.json
 - Add plugins
 - Add plugin: swagger
-- Rm headers in vercel.json
-- Change @fastify/under-pressure config
-- Add pino,pino-prety
-- Add new route /books
-- Add new route /movies; add data/* files
-- Add route /music
-- Add route /feeds
-- Change cors option
-- Add new route /prompts
-- Add new route /series
-- Refactor code, merge routes files into man server.js
-- Add search ability through /xxx?search=CONTENT_TO_BE_SEARCH
-- Add test
-- Use PostgreSQL
-- Add frontend/nextjs
-- Add auth measure
-- Add CHANGELOG
-- Add backup
-- Split plugins and routes
-- Setup vuejs ui
-- Disable backup DB from railway
-- Update index page
-- Not using pm2
-- Modify the data order
-- Fetch /sentences to HomeView
-- Add shortcut to form
-- Use Cliff to generate CHANGELOG
+- Modify file structure
 
 ## 🐛 Bug Fixes
 
-- Disable cors
-- Change cache
-- Disable helmet
-- Rm @fastify/one-line-logger
-- Vercel serverless func crash
-- @fastify/swagger
-- Change cors origin
-- SwaggerUI cannot display
-- Stream closed prematurely
-- Routes error
-- Explicitly set baseUrl to https://api.tianheg.org
-- Action error
-- Action git commit error
-- Action backup file name
-- Start app error
-- Deepsource checking issues
-- Return/reply.send
-- Not async/await with routes
-- Rm /books route POST,PUT,DELETE code just for now
-- Rm process.exit(1)
-- Rm unused var
-- Dokploy error
-- Dokploy error 3000 to 3001
-- Dokploy error missing env
-- Rm NODE_ENV on api Dokploy
-- Seperate the fastify app with db
-- Dockerfile CMD
-- Dockerfile
-- Use 0.0.0.0
-- Update pm2 config
-- UI
-- Add login btn on mobile
-- No data
-- No pagination and wrong style of action btn
-- Style about feeds
-- Pagination
-- Pagination donot have 1st page
-- Cannot edit current item
-- Rm extra code
-- *(style)* Form textarea auto wrap
-- *(style)* Use sans font
 - *(style)* Display all content in textarea
-- Duplicate attribute
-- Several BUGs in form
 - Recover to orignal code
+- Cannot edit current item
+- Several BUGs in form
+- Duplicate attribute
+- *(style)* Use sans font
+- *(style)* Form textarea auto wrap
+- Rm extra code
+- Pagination donot have 1st page
+- Pagination
+- Style about feeds
+- No pagination and wrong style of action btn
+- No data
+- Add login btn on mobile
+- UI
+- Update pm2 config
+- Use 0.0.0.0
+- Dockerfile
+- Dockerfile CMD
+- Seperate the fastify app with db
+- Rm NODE_ENV on api Dokploy
+- Dokploy error missing env
+- Dokploy error 3000 to 3001
+- Dokploy error
+- Rm unused var
+- Rm process.exit(1)
+- Rm /books route POST,PUT,DELETE code just for now
+- Not async/await with routes
+- Return/reply.send
+- Deepsource checking issues
+- Start app error
+- Action backup file name
+- Action git commit error
+- Action error
+- Explicitly set baseUrl to https://api.tianheg.org
+- Routes error
+- Stream closed prematurely
+- SwaggerUI cannot display
+- Change cors origin
+- @fastify/swagger
+- Vercel serverless func crash
+- Rm @fastify/one-line-logger
+- Disable helmet
+- Change cache
+- Disable cors
 
 ## 💼 Other
 
-- Allow all port on localhost
-- Use default
-- Ignore data/*.js files to update data
 - Donot ignore files
+- Ignore data/*.js files to update data
+- Use default
+- Allow all port on localhost
 
 ## 🚜 Refactor
 
@@ -94,30 +95,31 @@
 
 ## 🎨 Styling
 
-- Change primary color
 - Rm extra shadow
+- Change primary color
 
 ## ⚙️ Miscellaneous Tasks
 
-- Pkgs
-- Enable plugins
-- Use pnpm
-- Disable @fastify/under-pressure
-- Change config about pino-pretty
-- Update home route
-- Update README
-- Add doc to home page
-- Change routes order
-- Add docs
-- Update CHANGELOG
-- Rm extra files
-- Add .deepsource.toml
-- Mv from Vercel to Railway
-- Upgrade pkg
-- Rm useless file
-- Rm extra code
-- Simplify the variable name
-- Simplify the error UI
+- Mv CHANGELOG to root
 - Clean the code
+- Upgrade pkg
+- Simplify the error UI
+- Simplify the variable name
+- Rm extra code
+- Rm useless file
+- Update README
+- Mv from Vercel to Railway
+- Update CHANGELOG
+- Add .deepsource.toml
+- Rm extra files
+- Add docs
+- Change routes order
+- Add doc to home page
+- Update home route
+- Change config about pino-pretty
+- Disable @fastify/under-pressure
+- Use pnpm
+- Enable plugins
+- Pkgs
 
 <!-- generated by git-cliff -->
