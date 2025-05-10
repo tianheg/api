@@ -69,7 +69,7 @@ onMounted(fetchItems);
   <div class="card bg-base-100">
     <div class="card-body">
       <h1 class="card-title text-2xl mb-6 text-primary">Musicals Management</h1>
-      <div v-if="loading" class="flex justify-center my-8">
+      <div v-if="loading && !showAddForm && !showEditForm" class="flex justify-center my-8">
         <span class="loading loading-spinner loading-lg text-primary"></span>
       </div>
       <div class="mb-6" v-if="!showAddForm && !showEditForm">
