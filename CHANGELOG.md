@@ -103,6 +103,7 @@
 
 ## ⚙️ Miscellaneous Tasks
 
+- Rm backup.md
 - Newest commit first at CHANGELOG
 - Mv CHANGELOG to root
 - Clean the code
