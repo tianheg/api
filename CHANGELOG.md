@@ -2,6 +2,7 @@
 
 ## 🚀 Features
 
+- Add husky to update CHANGELOG
 - Add useApi and useCrud composables for API utilities and CRUD operations
 - Use Cliff to generate CHANGELOG
 - Add shortcut to form
