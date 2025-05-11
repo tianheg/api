@@ -36,6 +36,7 @@
 
 ## 🐛 Bug Fixes
 
+- Only need one loading on Form
 - *(style)* Display all content in textarea
 - Recover to orignal code
 - Cannot edit current item
@@ -91,6 +92,7 @@
 
 ## 🚜 Refactor
 
+- Simplify component setup by removing unused imports and integrating CRUD functionality
 - Split code into routes and utils
 
 ## 🎨 Styling
@@ -100,6 +102,7 @@
 
 ## ⚙️ Miscellaneous Tasks
 
+- Newest commit first at CHANGELOG
 - Mv CHANGELOG to root
 - Clean the code
 - Upgrade pkg

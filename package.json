@@ -5,6 +5,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "cheerio": "^1.0.0",
+    "husky": "^9.1.7",
     "nodemon": "^3.1.9",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0"
@@ -33,7 +34,8 @@
   "scripts": {
     "dev": "nodemon .",
     "lint": "biome check --write .",
-    "start": "node app.js"
+    "start": "node app.js",
+    "prepare": "husky"
   },
   "engines": {
     "node": "22.x"
