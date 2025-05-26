@@ -43,7 +43,8 @@ const {
   initialItem: { id: null, name: "", review: "" },
   onSuccess: handleSuccess,
   onError: handleError,
-  resourceName: 'watch item'
+  resourceName: 'watch item',
+  initialPageSize: 10000  // Custom page size for Watch view
 });
 
 // Action buttons for table rows

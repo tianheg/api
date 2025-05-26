@@ -103,6 +103,7 @@
 
 ## ⚙️ Miscellaneous Tasks
 
+- Add deepwiki badge
 - Rm backup.md
 - Newest commit first at CHANGELOG
 - Mv CHANGELOG to root

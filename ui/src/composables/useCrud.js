@@ -8,6 +8,7 @@ import { ref, reactive, computed, watch } from 'vue';
  * @param {Function} options.onSuccess - Callback to execute after successful operations (optional)
  * @param {Function} options.onError - Callback to handle errors (optional)
  * @param {string} options.resourceName - Name of the resource for error messages
+ * @param {number} options.initialPageSize - Initial page size for pagination (optional, defaults to 10)
  * @returns {Object} CRUD operations and state
  */
 export function useCrud(options) {
@@ -16,7 +17,8 @@ export function useCrud(options) {
     initialItem,
     onSuccess,
     onError,
-    resourceName = 'item'
+    resourceName = 'item',
+    initialPageSize = 10
   } = options;
 
   // Reactive state
@@ -31,7 +33,7 @@ export function useCrud(options) {
 
   // Pagination
   const page = ref(1);
-  const pageSize = ref(10);
+  const pageSize = ref(initialPageSize);
   const total = ref(0);
 
   // Watch for form state changes to reset the form
