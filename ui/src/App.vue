@@ -14,8 +14,8 @@ import { RouterLink, RouterView } from "vue-router";
             </RouterLink>
           </div>
 
-          <!-- Desktop Navigation -->
-          <div class="navbar-center lg:flex">
+          <!-- Desktop Navigation (hidden on small screens) -->
+          <div class="navbar-center hidden lg:flex">
             <nav class="flex items-center gap-4">
               <RouterLink to="/" class="btn btn-ghost text-lg text-base-content"
                 active-class="btn-primary text-primary-content">
