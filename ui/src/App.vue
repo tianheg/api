@@ -1,7 +1,5 @@
 <script setup>
-import { computed } from "vue";
 import { RouterLink, RouterView } from "vue-router";
-
 </script>
 
 <template>
@@ -17,7 +15,7 @@ import { RouterLink, RouterView } from "vue-router";
           </div>
 
           <!-- Desktop Navigation -->
-          <div class="navbar-center hidden lg:flex">
+          <div class="navbar-center lg:flex">
             <nav class="flex items-center gap-4">
               <RouterLink 
                 to="/" 
