@@ -37,6 +37,7 @@
 
 ## 🐛 Bug Fixes
 
+- Modify watchView pagesize
 - Only need one loading on Form
 - *(style)* Display all content in textarea
 - Recover to orignal code

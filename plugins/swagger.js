@@ -9,15 +9,6 @@ export default fp(async (app, _) => {
         title: "tianheg's API",
         description: "Recording things in my life",
       },
-      // components: {
-      //   securitySchemes: {
-      //     bearerAuth: {
-      //       type: 'http',
-      //       scheme: 'bearer',
-      //       bearerFormat: 'JWT',
-      //     },
-      //   },
-      // },
     },
   });
   await app.register(swaggerUI, {

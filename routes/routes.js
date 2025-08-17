@@ -27,12 +27,7 @@ export default function home(app, opts, done) {
       const routesDir = path.dirname(fileURLToPath(import.meta.url));
       const routeFiles = fs
         .readdirSync(routesDir)
-        .filter(
-          (file) =>
-            !file.endsWith(".js") &&
-            file !== "routes.js" &&
-            !file.includes("auth"),
-        )
+        .filter((file) => !file.endsWith(".js") && file !== "routes.js")
         .map((file) => path.parse(file).name);
 
       const routes = routeFiles.map((route) =>

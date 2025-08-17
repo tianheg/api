@@ -17,16 +17,8 @@ const envSchema = {
   required: ["POSTGRES_URL", "JWT_SECRET"],
   properties: {
     POSTGRES_URL: { type: "string" },
-    JWT_SECRET: { type: "string" },
     NODE_ENV: { type: "string", default: "development" },
     PORT: { type: "string", default: "3000" },
-    COOKIE_SECRET: { type: "string" },
-    // Email configuration
-    EMAIL_SMTP_HOST: { type: "string" },
-    EMAIL_SMTP_PORT: { type: "string" },
-    EMAIL_SMTP_USER: { type: "string" },
-    EMAIL_SMTP_PASS: { type: "string" },
-    EMAIL_FROM: { type: "string" },
   },
 };
 
@@ -40,21 +32,6 @@ const createLogger = () => {
     colorize: process.env.NODE_ENV === "development",
   });
   return pino({ level: "info" }, stream);
-};
-
-/**
- * Authentication middleware
- */
-const createAuthenticator = (app) => {
-  // Decorate with authenticate method but don't apply globally
-  app.decorate("authenticate", async (request, reply) => {
-    try {
-      await request.jwtVerify();
-    } catch (err) {
-      reply.code(401);
-      return reply.send({ error: "Unauthorized", message: err.message });
-    }
-  });
 };
 
 /**
@@ -105,9 +82,6 @@ const buildApp = async () => {
     schema: envSchema,
     dotenv: true,
   });
-
-  // Setup authentication
-  createAuthenticator(app);
 
   // Register plugins
   await app.register(AutoLoad, {

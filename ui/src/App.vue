@@ -1,18 +1,7 @@
 <script setup>
-import { useAuthStore } from "@/stores/auth";
 import { computed } from "vue";
 import { RouterLink, RouterView } from "vue-router";
-import { useRouter } from "vue-router";
 
-const authStore = useAuthStore();
-const isAuthenticated = computed(() => authStore.isAuthenticated());
-const user = computed(() => authStore.user);
-const logout = authStore.logout;
-const router = useRouter();
-const logoutAndRedirect = () => {
-  logout();
-  router.push("/login");
-};
 </script>
 
 <template>
@@ -38,7 +27,7 @@ const logoutAndRedirect = () => {
                 Home
               </RouterLink>
 
-              <template v-if="isAuthenticated">
+              <template>
                 <RouterLink 
                   to="/feeds" 
                   class="btn btn-ghost text-lg text-base-content"
@@ -88,37 +77,15 @@ const logoutAndRedirect = () => {
               </label>
               <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52 mt-4 text-base-content">
                 <li><RouterLink to="/">Home</RouterLink></li>
-                <template v-if="isAuthenticated">
+                <template>
                   <li><RouterLink to="/feeds">Feeds</RouterLink></li>
                   <li><RouterLink to="/watch">Watch</RouterLink></li>
                   <li><RouterLink to="/music">Music</RouterLink></li>
                   <li><RouterLink to="/musicals">Musicals</RouterLink></li>
                   <li><RouterLink to="/sentences">Sentences</RouterLink></li>
                 </template>
-                <template v-else>
-                  <li><RouterLink to="/login" class="text-primary">Login</RouterLink></li>
-                </template>
               </ul>
             </div>
-          </div>
-
-          <!-- Auth Section -->
-          <div class="navbar-end hidden lg:flex">
-            <template v-if="isAuthenticated">
-              <div class="dropdown dropdown-end">
-                <label tabindex="0" class="btn btn-ghost">
-                  <div class="flex items-center gap-2">
-                    <span class="truncate max-w-[120px] text-base-content">{{ user?.email }}</span>
-                  </div>
-                </label>
-                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-52 text-base-content">
-                  <li><button @click="logoutAndRedirect" class="text-error">Logout</button></li>
-                </ul>
-              </div>
-            </template>
-            <template v-else>
-              <RouterLink to="/login" class="btn btn-primary text-primary-content text-lg">Login</RouterLink>
-            </template>
           </div>
         </div>
       </div>
