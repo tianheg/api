@@ -22,7 +22,7 @@ export default function home(app, opts, done) {
       const baseUrl =
         process.env.NODE_ENV === "development"
           ? "http://localhost:3000"
-          : "https://api-tianheg.up.railway.app/";
+          : "https://api-tianheg.up.railway.app";
 
       const routesDir = path.dirname(fileURLToPath(import.meta.url));
       const routeFiles = fs
