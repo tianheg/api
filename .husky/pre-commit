@@ -1,2 +1,0 @@
-git-cliff -o CHANGELOG.md
-git add CHANGELOG.md
