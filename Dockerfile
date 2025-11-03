@@ -9,7 +9,7 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm ci --only=production && npm cache clean --force
+RUN npm install && npm ci --only=production && npm cache clean --force
 
 # Copy application source code with correct ownership
 COPY --chown=appuser:appuser . .
