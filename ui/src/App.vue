@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
+import SearchBar from "@/components/SearchBar.vue";
 </script>
 
 <template>
@@ -15,7 +16,8 @@ import { RouterLink, RouterView } from "vue-router";
           </div>
 
           <!-- Desktop Navigation (hidden on small screens) -->
-          <div class="navbar-center hidden lg:flex">
+          <div class="navbar-center hidden lg:flex gap-4">
+            <SearchBar />
             <nav class="flex items-center gap-4">
               <RouterLink to="/" class="btn btn-ghost text-lg text-base-content"
                 active-class="btn-primary text-primary-content">
